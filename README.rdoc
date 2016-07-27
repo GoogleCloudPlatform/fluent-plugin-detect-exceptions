@@ -1,0 +1,86 @@
+= Exception detector plugin for {fluentd}[http://github.com/fluent/fluentd]
+
+fluent-plugin-detect-exceptions is an
+{output plugin for fluentd}[http://docs.fluentd.org/articles/output-plugin-overview]
+which scans a log stream text messages or JSON records for multi-line exception
+stack traces: If a consecutive sequence of log messages forms an exception stack
+trace, the log messages are forwarded as a single, combined log message.
+Otherwise, the input log data is forwarded as is.
+
+Text log messages are assumed to contain single lines and are combined by
+concatenating them.
+
+For JSON records, the log message is taken from a configurable message field
+of the log record. The message field is assumed to contain a single line of
+text. If the message fields of a consecutive sequence of logs records
+form an exception stack, they are combined to a single log record by taking
+the first log record of the sequence and replacing the content of the message
+field with the concatenated content of all message fields in the sequence.
+Note that the content of other fields in the records of the sequence are thus
+not reflected in the combined output. This plugin is intended to be used in
+cases where the content of log records that belong to a single exception stack
+are so similar (e.g. because they contain the timestamp of the log entry) that
+this loss of information is irrelevant.
+
+This is NOT an official Google product.
+
+{<img src="https://badge.fury.io/rb/fluent-plugin-detect-exceptions.svg" alt="Gem Version" />}[http://badge.fury.io/rb/fluent-plugin-detect-exceptions]
+{<img src="https://secure.travis-ci.org/GoogleCloudPlatform/fluent-plugin-detect-exceptions.png" alt="Build Status" />}[https://travis-ci.org/GoogleCloudPlatform/fluent-plugin-detect-exceptions]
+
+== Installation
+
+This gem is hosted at
+{RubyGems.org}[https://rubygems.org/gems/fluent-plugin-detect-exceptions]
+and can be installed using:
+
+    $ gem install fluent-plugin-detect-exceptions
+
+Installing {google-fluentd}[https://cloud.google.com/logging/docs/agent/]
+will also install and configure the gem.
+
+== Configuration
+
+The plugin supports the following parameters:
+
+[message]  Name of the field in the JSON record that contains the
+           single-line log messages that shall be scanned for exceptions.
+           Default: 'message'.
+
+[remove_tag_prefix]  The prefix to remove from the input tag when outputting
+            a record. A prefix has to be a complete tag part.
+            Example: If remove_tag_prefix is set to 'foo', the input tag
+            foo.bar.baz is transformed to bar.baz and the input tag
+            'foofoo.bar' is not modified. Default: empty string.
+
+[languages]  A list of language for which exception stack traces shall be
+             detected. The values in the list can be separated by commas or
+             written as JSON list.
+             Supported values: java, js, csharp, python, go, ruby, php, all.
+             Default: all.
+
+[multiline_flush_interval]  Interval in seconds after which a (possibly not
+                            yet complete) buffered exception stack shall be
+                            forwarded. If not set, incomplete exceptions stacks
+                            are not flushed.
+
+[max_lines]  Maximum number of lines in a detected exception stack trace.
+             If this maximum number is exceeded, the detected exception stack
+             trace that has been detected so far will be output as a single
+             log message and the detection will start from scratch.
+             This is intended as a safeguard against buffering very large
+             amounts of data before outputting them to the log stream.
+             Default: 1000.
+
+Example configuration:
+
+    <match **>
+      remove_tag_prefix foo
+      message log
+      languages java, python
+      multiline_flush_interval 0.1
+    </match>
+
+== Copyright
+
+Copyright:: Copyright 2016 Google Inc. All rights reserved.
+License::   Apache License, Version 2.0
