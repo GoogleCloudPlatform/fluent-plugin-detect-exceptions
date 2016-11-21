@@ -350,4 +350,28 @@ END
       assert_equal(expected_json(s.actual_field, s.output), out, s.desc)
     end
   end
+
+  def test_max_lines_limit
+    max_lines = JAVA_EXC_PART1.lines.length
+    out = []
+    buffer = Fluent::TraceAccumulator.new(nil,
+                                          [:all],
+                                          max_lines: max_lines) do |_, m|
+      out << m
+    end
+    feed_lines(buffer, JAVA_EXC)
+    assert_equal([JAVA_EXC_PART1] + JAVA_EXC_PART2.lines, out)
+  end
+
+  def test_max_bytes_limit
+    max_bytes = JAVA_EXC_PART1.length + JAVA_EXC_PART2.lines[0].length - 1
+    out = []
+    buffer = Fluent::TraceAccumulator.new(nil,
+                                          [:all],
+                                          max_bytes: max_bytes) do |_, m|
+      out << m
+    end
+    feed_lines(buffer, JAVA_EXC)
+    assert_equal([JAVA_EXC_PART1] + JAVA_EXC_PART2.lines, out)
+  end
 end

@@ -30,8 +30,10 @@ module Fluent
     config_param :multiline_flush_interval, :time, default: nil
     desc 'Programming languages for which to detect exceptions. Default: all.'
     config_param :languages, :array, value_type: :string, default: []
-    desc 'Maximum number of lines in a detected stack trace. Default: 1000.'
-    config_param :max_lines, :integer, default: 1000
+    desc 'Maximum number of lines to be buffered. Default: 0 (no limit).'
+    config_param :max_lines, :integer, default: 0
+    desc 'Maximum number of bytes to be buffered. Default: 0 (no limit).'
+    config_param :max_bytes, :integer, default: 0
 
     Fluent::Plugin.register_output('detect_exceptions', self)
 
@@ -85,14 +87,14 @@ module Fluent
         unless @accumulators.key?(tag)
           out_tag = tag.sub(/^#{Regexp.escape(remove_tag_prefix)}\./, '')
           @accumulators[tag] =
-            Fluent::TraceAccumulator.new(message, @languages) do |t, r|
+            Fluent::TraceAccumulator.new(message, @languages,
+                                         max_lines: max_lines,
+                                         max_bytes: max_bytes) do |t, r|
               router.emit(out_tag, t, r)
             end
         end
 
         @accumulators[tag].push(time_sec, record)
-
-        @accumulators[tag].force_flush if @accumulators[tag].length > max_lines
       end
     end
 

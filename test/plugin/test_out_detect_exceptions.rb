@@ -167,7 +167,7 @@ END
       feed_lines(d, t, PYTHON_EXC, JAVA_EXC)
     end
     expected =
-      [PYTHON_EXC.lines[0..2].join] + PYTHON_EXC.lines[3..-1] + [JAVA_EXC]
+      [PYTHON_EXC.lines[0..1].join] + PYTHON_EXC.lines[2..-1] + [JAVA_EXC]
     assert_equal(make_logs(t, *expected), d.events)
   end
 end
