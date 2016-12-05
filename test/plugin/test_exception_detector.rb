@@ -363,7 +363,9 @@ END
     assert_equal([JAVA_EXC_PART1] + JAVA_EXC_PART2.lines, out)
   end
 
-  def test_max_bytes_limit
+  def test_high_max_bytes_limit
+    # Limit is just too small to add one more line to the buffered first part of
+    # the exception.
     max_bytes = JAVA_EXC_PART1.length + JAVA_EXC_PART2.lines[0].length - 1
     out = []
     buffer = Fluent::TraceAccumulator.new(nil,
@@ -372,6 +374,22 @@ END
       out << m
     end
     feed_lines(buffer, JAVA_EXC)
+    # Check that the trace is flushed after the first part.
+    assert_equal([JAVA_EXC_PART1] + JAVA_EXC_PART2.lines, out)
+  end
+
+  def test_low_max_bytes_limit
+    # Limit is exceeded by the character that follows the buffered first part of
+    # the exception.
+    max_bytes = JAVA_EXC_PART1.length
+    out = []
+    buffer = Fluent::TraceAccumulator.new(nil,
+                                          [:all],
+                                          max_bytes: max_bytes) do |_, m|
+      out << m
+    end
+    feed_lines(buffer, JAVA_EXC)
+    # Check that the trace is flushed after the first part.
     assert_equal([JAVA_EXC_PART1] + JAVA_EXC_PART2.lines, out)
   end
 end
