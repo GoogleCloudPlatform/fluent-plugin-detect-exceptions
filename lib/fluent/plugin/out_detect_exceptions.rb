@@ -30,8 +30,8 @@ module Fluent
     config_param :multiline_flush_interval, :time, default: nil
     desc 'Programming languages for which to detect exceptions. Default: all.'
     config_param :languages, :array, value_type: :string, default: []
-    desc 'Max. number of lines in combined log entries. Default: 0 (no limit).'
-    config_param :max_lines, :integer, default: 0
+    desc 'Max. number of lines in combined log entries. Default: 1000.'
+    config_param :max_lines, :integer, default: 1000
     desc 'Max. number of bytes in combined log entries. Default: 0 (no limit).'
     config_param :max_bytes, :integer, default: 0
 
