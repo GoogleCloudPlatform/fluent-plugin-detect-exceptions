@@ -252,6 +252,7 @@ END
     check_exception(PYTHON_EXC, true)
     check_exception(COMPLEX_JAVA_EXC, false)
     check_exception(NODE_JS_EXC, false)
+    check_exception(PHP_EXC, false)
     check_exception(PHP_ON_GAE_EXC, true)
     check_exception(CLIENT_JS_EXC, false)
     check_exception(GO_EXC, false)
