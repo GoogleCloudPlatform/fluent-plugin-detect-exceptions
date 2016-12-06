@@ -48,22 +48,22 @@ random_text = (1..(size / line_length)).collect do
 end
 
 exceptions = {
-  'java' => (JAVA_EXC * (size / JAVA_EXC.length)).lines,
-  'python' => (PYTHON_EXC * (size / PYTHON_EXC.length)).lines
+  java: (JAVA_EXC * (size / JAVA_EXC.length)).lines,
+  python: (PYTHON_EXC * (size / PYTHON_EXC.length)).lines
 }
 
 puts "Start benchmark. Input size #{size_in_m}M."
 Benchmark.bm do |x|
   languages = Fluent::ExceptionDetectorConfig::RULES_BY_LANG.keys
   languages.each do |lang|
-    buffer = Fluent::ExceptionBuffer.new(nil, lang) {}
+    buffer = Fluent::TraceAccumulator.new(nil, lang) {}
     x.report("#{lang}_detector_random_text") do
       random_text.each { |l| buffer.push(0, l) }
     end
   end
-  %w(java python all).each do |detector_lang|
-    buffer = Fluent::ExceptionBuffer.new(nil, lang) {}
-    exc_languages = detector_lang == 'all' ? exceptions.keys : [detector_lang]
+  [:java, :python, :all].each do |detector_lang|
+    buffer = Fluent::TraceAccumulator.new(nil, detector_lang) {}
+    exc_languages = detector_lang == :all ? exceptions.keys : [detector_lang]
     exc_languages.each do |exc_lang|
       x.report("#{detector_lang}_detector_#{exc_lang}_stacks") do
         exceptions[exc_lang].each { |l| buffer.push(0, l) }
