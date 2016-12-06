@@ -107,10 +107,10 @@ Exception: ('spam', 'eggs')
 END
 
   PHP_EXC = <<END.freeze
-exception 'Exception' with message 'Custom exception' in /Users/steren/work/test-php/test.php:5
+exception 'Exception' with message 'Custom exception' in /home/joe/work/test-php/test.php:5
 Stack trace:
-#0 /Users/steren/work/test-php/test.php(9): func1()
-#1 /Users/steren/work/test-php/test.php(13): func2()
+#0 /home/joe/work/test-php/test.php(9): func1()
+#1 /home/joe/work/test-php/test.php(13): func2()
 #2 {main}
 END
 
