@@ -166,11 +166,11 @@ END
     d.run do
       feed_lines(d, t, PYTHON_EXC, JAVA_EXC)
     end
-    # Expected: the firsti two lines of the exception are buffered and combined.
-    # Then the max_lines setting kicks in and the rest Python exception is
-    # logged line-by-line (since it's not an exception stack in itself).
-    # Finally, the Java exception is logged in a single log entry, since it
-    # only has two lines.
+    # Expected: the first two lines of the exception are buffered and combined.
+    # Then the max_lines setting kicks in and the rest of the Python exception
+    # is logged line-by-line (since it's not an exception stack in itself).
+    # Finally, the Java exception is logged in its entirety, since it only
+    # has two lines.
     expected =
       [PYTHON_EXC.lines[0..1].join] + PYTHON_EXC.lines[2..-1] + [JAVA_EXC]
     assert_equal(make_logs(t, *expected), d.events)

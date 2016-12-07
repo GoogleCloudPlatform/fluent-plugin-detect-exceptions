@@ -352,6 +352,8 @@ END
   end
 
   def test_max_lines_limit
+    # Limit is equal to the first part of the exception and forces it to be
+    # flushed before the rest of the exception is processed.
     max_lines = JAVA_EXC_PART1.lines.length
     out = []
     buffer = Fluent::TraceAccumulator.new(nil,
