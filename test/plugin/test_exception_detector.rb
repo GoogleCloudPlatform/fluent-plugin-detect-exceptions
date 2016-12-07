@@ -107,6 +107,14 @@ Exception: ('spam', 'eggs')
 END
 
   PHP_EXC = <<END.freeze
+exception 'Exception' with message 'Custom exception' in /home/joe/work/test-php/test.php:5
+Stack trace:
+#0 /home/joe/work/test-php/test.php(9): func1()
+#1 /home/joe/work/test-php/test.php(13): func2()
+#2 {main}
+END
+
+  PHP_ON_GAE_EXC = <<END.freeze
 PHP Fatal error:  Uncaught exception 'Exception' with message 'message' in /base/data/home/apps/s~crash-example-php/1.388306779641080894/errors.php:60
 Stack trace:
 #0 [internal function]: ErrorEntryGenerator::{closure}()
@@ -227,7 +235,8 @@ END
   end
 
   def test_php
-    check_exception(PHP_EXC, true)
+    check_exception(PHP_EXC, false)
+    check_exception(PHP_ON_GAE_EXC, true)
   end
 
   def test_go
@@ -243,7 +252,8 @@ END
     check_exception(PYTHON_EXC, true)
     check_exception(COMPLEX_JAVA_EXC, false)
     check_exception(NODE_JS_EXC, false)
-    check_exception(PHP_EXC, true)
+    check_exception(PHP_EXC, false)
+    check_exception(PHP_ON_GAE_EXC, true)
     check_exception(CLIENT_JS_EXC, false)
     check_exception(GO_EXC, false)
     check_exception(CSHARP_EXC, false)

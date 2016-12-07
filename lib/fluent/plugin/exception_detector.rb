@@ -66,8 +66,9 @@ module Fluent
     ].freeze
 
     PHP_RULES = [
-      rule(:start_state, /PHP (?:Notice|Parse error|Fatal error|Warning):/,
-           :php_stack_begin),
+      rule(:start_state, /
+        (?:PHP\ (?:Notice|Parse\ error|Fatal\ error|Warning):)|
+        (?:exception\ '[^']+'\ with\ message\ ')/x, :php_stack_begin),
       rule(:php_stack_begin, /^Stack trace:/, :php_stack_frames),
       rule(:php_stack_frames, /^#\d/, :php_stack_frames),
       rule(:php_stack_frames, /^\s+thrown in /, :start_state)
