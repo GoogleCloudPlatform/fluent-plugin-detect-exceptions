@@ -191,34 +191,36 @@ module Fluent
     # message_field may contain the empty string. In this case, the
     # TraceAccumulator 'learns' the field name from the first record by checking
     # for some pre-defined common field names of text logs.
-    def initialize(message_field, languages, &emit_callback)
+    # The named parameters max_lines and max_bytes limit the maximum amount
+    # of data to be buffered. The default value 0 indicates 'no limit'.
+    def initialize(message_field, languages, max_lines: 0, max_bytes: 0,
+                   &emit_callback)
       @exception_detector = Fluent::ExceptionDetector.new(*languages)
+      @max_lines = max_lines
+      @max_bytes = max_bytes
       @message_field = message_field
       @messages = []
       @buffer_start_time = Time.now
+      @buffer_size = 0
       @first_record = nil
       @first_timestamp = nil
       @emit = emit_callback
     end
 
     def push(time_sec, record)
-      if !@message_field.nil? && @message_field.empty?
-        ExceptionDetectorConfig::DEFAULT_FIELDS.each do |f|
-          if record.key?(f)
-            @message_field = f
-            break
-          end
-        end
-      end
-      message = @message_field.nil? ? record : record[@message_field]
+      message = extract_message(record)
       if message.nil?
         @exception_detector.reset
         detection_status = :no_trace
       else
+        force_flush if @max_bytes > 0 &&
+                       @buffer_size + message.length > @max_bytes
         detection_status = @exception_detector.update(message)
       end
 
       update_buffer(detection_status, time_sec, record, message)
+
+      force_flush if @max_lines > 0 && @messages.length == @max_lines
     end
 
     def flush
@@ -240,6 +242,7 @@ module Fluent
       @messages = []
       @first_record = nil
       @first_timestamp = nil
+      @buffer_size = 0
     end
 
     def force_flush
@@ -247,11 +250,19 @@ module Fluent
       @exception_detector.reset
     end
 
-    def length
-      @messages.length
-    end
-
     private
+
+    def extract_message(record)
+      if !@message_field.nil? && @message_field.empty?
+        ExceptionDetectorConfig::DEFAULT_FIELDS.each do |f|
+          if record.key?(f)
+            @message_field = f
+            break
+          end
+        end
+      end
+      @message_field.nil? ? record : record[@message_field]
+    end
 
     def update_buffer(detection_status, time_sec, record, message)
       trigger_emit = detection_status == :no_trace ||
@@ -260,6 +271,7 @@ module Fluent
         @emit.call(time_sec, record)
         return
       end
+
       case detection_status
       when :inside_trace
         add(time_sec, record, message)
@@ -282,7 +294,10 @@ module Fluent
         @first_timestamp = time_sec
         @buffer_start_time = Time.now
       end
-      @messages << message unless message.nil?
+      unless message.nil?
+        @messages << message
+        @buffer_size += message.length
+      end
     end
   end
 end
