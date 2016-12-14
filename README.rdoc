@@ -44,8 +44,8 @@ The plugin supports the following parameters:
 
 [message]  Name of the field in the JSON record that contains the
            single-line log messages that shall be scanned for exceptions.
-           If message is '', it will automatically be set to 'message' or
-           'log' if these fields are present in the log data.
+           If the setting is '', it will automatically be changed to 'message'
+           or 'log' if these fields are present in the log data.
            The parameter is only applicable for log streams that contain JSON
            records.
            Default: ''.
@@ -92,7 +92,7 @@ The plugin supports the following parameters:
           for the logical log streams are interleaved in the 'real' log stream.
           Consequently, only records that belong to the same stream will be
           combined.
-          This parameter is ignored if stream is ''.
+          This parameter is ignored if set to ''.
           The parameter is only applicable for log streams that contain JSON
           records.
           Default: ''.
