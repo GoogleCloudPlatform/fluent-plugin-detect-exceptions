@@ -44,7 +44,11 @@ The plugin supports the following parameters:
 
 [message]  Name of the field in the JSON record that contains the
            single-line log messages that shall be scanned for exceptions.
-           Default: 'message'.
+           If message is '', it will automatically be set to 'message' or
+           'log' if these fields are present in the log data.
+           The parameter is only applicable for log streams that contain JSON
+           records.
+           Default: ''.
 
 [remove_tag_prefix]  The prefix to remove from the input tag when outputting
             a record. A prefix has to be a complete tag part.
@@ -69,7 +73,29 @@ The plugin supports the following parameters:
              log message and the detection will start from scratch.
              This is intended as a safeguard against buffering very large
              amounts of data before outputting them to the log stream.
+             Zero means no limit.
              Default: 1000.
+
+[max_bytes]  Maximum number of bytes in a detected exception stack trace.
+             If this maximum number is exceeded, the detected exception stack
+             trace that has been detected so far will be output as a single
+             log message and the detection will start from scratch.
+             This is intended as a safeguard against buffering very large
+             amounts of data before outputting them to the log stream.
+             Zero means no limit.
+             Default: 0.
+
+[stream]  Name of a field in the JSON record that contains the name of a
+          logical log stream within the 'real' log stream.
+          The exception detection is handled separately for each logical
+          log stream, i.e., exceptions will be detected even if the messages
+          for the logical log streams are interleaved in the 'real' log stream.
+          Consequently, only records that belong to the same stream will be
+          combined.
+          This parameter is ignored if stream is ''.
+          The parameter is only applicable for log streams that contain JSON
+          records.
+          Default: ''.
 
 Example configuration:
 
