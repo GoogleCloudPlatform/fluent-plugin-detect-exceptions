@@ -34,7 +34,7 @@ module Fluent
     config_param :max_lines, :integer, default: 1000
     desc 'Maximum number of bytes to flush (0 means no limit). Default: 0.'
     config_param :max_bytes, :integer, default: 0
-    desc 'Separate log streams by this field (if set). Default: nil.'
+    desc "Separate log streams by this field (if set). Default: ''."
     config_param :stream, :string, default: ''
 
     Fluent::Plugin.register_output('detect_exceptions', self)
@@ -86,11 +86,11 @@ module Fluent
 
     def process_record(tag, time_sec, record)
       synchronize do
-        accumulator_key = [tag]
-        accumulator_key.push(record.fetch(stream, '')) unless stream.empty?
-        unless @accumulators.key?(accumulator_key)
+        log_id = [tag]
+        log_id.push(record.fetch(stream, '')) unless stream.empty?
+        unless @accumulators.key?(log_id)
           out_tag = tag.sub(/^#{Regexp.escape(remove_tag_prefix)}\./, '')
-          @accumulators[accumulator_key] =
+          @accumulators[log_id] =
             Fluent::TraceAccumulator.new(message, @languages,
                                          max_lines: max_lines,
                                          max_bytes: max_bytes) do |t, r|
@@ -98,7 +98,7 @@ module Fluent
             end
         end
 
-        @accumulators[accumulator_key].push(time_sec, record)
+        @accumulators[log_id].push(time_sec, record)
       end
     end
 
