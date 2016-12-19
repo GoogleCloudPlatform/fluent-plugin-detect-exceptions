@@ -22,7 +22,7 @@ module Fluent
   # an exception stack trace, they forwarded as a single, combined JSON
   # object. Otherwise, the input log data is forwarded as is.
   class DetectExceptionsOutput < Output
-    desc 'The field which contains the raw message text in the input json data.'
+    desc 'The field which contains the raw message text in the input JSON data.'
     config_param :message, :string, default: ''
     desc 'The prefix to be removed from the input tag when outputting a record.'
     config_param :remove_tag_prefix, :string, default: ''
@@ -34,6 +34,8 @@ module Fluent
     config_param :max_lines, :integer, default: 1000
     desc 'Maximum number of bytes to flush (0 means no limit). Default: 0.'
     config_param :max_bytes, :integer, default: 0
+    desc 'Separate log streams by this field in the input JSON data.'
+    config_param :stream, :string, default: ''
 
     Fluent::Plugin.register_output('detect_exceptions', self)
 
@@ -69,7 +71,7 @@ module Fluent
       # Before shutdown is not available in older fluentd versions.
       # Hence, we make sure that we flush the buffers here as well.
       flush_buffers
-      @thread.join if multiline_flush_interval
+      @thread.join if @multiline_flush_interval
       super
     end
 
@@ -84,17 +86,19 @@ module Fluent
 
     def process_record(tag, time_sec, record)
       synchronize do
-        unless @accumulators.key?(tag)
-          out_tag = tag.sub(/^#{Regexp.escape(remove_tag_prefix)}\./, '')
-          @accumulators[tag] =
-            Fluent::TraceAccumulator.new(message, @languages,
-                                         max_lines: max_lines,
-                                         max_bytes: max_bytes) do |t, r|
+        log_id = [tag]
+        log_id.push(record.fetch(@stream, '')) unless @stream.empty?
+        unless @accumulators.key?(log_id)
+          out_tag = tag.sub(/^#{Regexp.escape(@remove_tag_prefix)}\./, '')
+          @accumulators[log_id] =
+            Fluent::TraceAccumulator.new(@message, @languages,
+                                         max_lines: @max_lines,
+                                         max_bytes: @max_bytes) do |t, r|
               router.emit(out_tag, t, r)
             end
         end
 
-        @accumulators[tag].push(time_sec, record)
+        @accumulators[log_id].push(time_sec, record)
       end
     end
 
@@ -112,8 +116,8 @@ module Fluent
           now = Time.now
           break if @stop_check
           @accumulators.each_value do |acc|
-            needs_flush = now - acc.buffer_start_time > multiline_flush_interval
-            acc.force_flush if needs_flush
+            acc.force_flush if now - acc.buffer_start_time >
+                               @multiline_flush_interval
           end
         end
       end
@@ -123,7 +127,7 @@ module Fluent
     end
 
     def synchronize(&block)
-      if multiline_flush_interval
+      if @multiline_flush_interval
         @flush_buffer_mutex.synchronize(&block)
       else
         yield
