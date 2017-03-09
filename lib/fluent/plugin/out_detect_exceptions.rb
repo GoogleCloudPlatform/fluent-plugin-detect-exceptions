@@ -25,7 +25,7 @@ module Fluent
     desc 'The field which contains the raw message text in the input JSON data.'
     config_param :message, :string, default: ''
     desc 'The prefix to be removed from the input tag when outputting a record.'
-    config_param :remove_tag_prefix, :string, default: ''
+    config_param :remove_tag_prefix, :string
     desc 'The interval of flushing the buffer for multiline format.'
     config_param :multiline_flush_interval, :time, default: nil
     desc 'Programming languages for which to detect exceptions. Default: all.'

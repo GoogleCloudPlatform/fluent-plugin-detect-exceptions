@@ -26,3 +26,7 @@ Metrics/MethodLength:
 # Offense count: 3
 Metrics/PerceivedComplexity:
   Max: 50
+
+AllCops:
+  Exclude:
+  - '*.gemspec'

@@ -11,12 +11,13 @@ eos
   gem.homepage      = \
     'https://github.com/GoogleCloudPlatform/fluent-plugin-detect-exceptions'
   gem.license       = 'Apache-2.0'
-  gem.version       = '0.0.5'
+  gem.version       = '0.0.6'
   gem.authors       = ['Thomas Schickinger']
   gem.email         = ['schickin@google.com']
   gem.required_ruby_version = Gem::Requirement.new('>= 2.0')
 
-  gem.files         = Dir['**/*'].keep_if { |file| File.file?(file) }
+  gem.files         = Dir['**/*'].keep_if{ |file| File.file?(file) &&
+                                                  !file.end_with?('gem') }
   gem.test_files    = gem.files.grep(/^(test)/)
   gem.require_paths = ['lib']
 

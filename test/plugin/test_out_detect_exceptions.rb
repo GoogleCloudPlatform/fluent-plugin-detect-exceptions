@@ -40,9 +40,9 @@ Traceback (most recent call last):
 Exception: ('spam', 'eggs')
 END
 
-  def create_driver(conf = CONFIG, tag = DEFAULT_TAG)
+  def create_driver(conf = '', tag = DEFAULT_TAG)
     d = Fluent::Test::OutputTestDriver.new(Fluent::DetectExceptionsOutput, tag)
-    d.configure(conf)
+    d.configure(CONFIG + conf)
     d
   end
 

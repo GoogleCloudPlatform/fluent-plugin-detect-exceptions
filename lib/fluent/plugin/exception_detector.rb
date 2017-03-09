@@ -223,6 +223,15 @@ module Fluent
       force_flush if @max_lines > 0 && @messages.length == @max_lines
     end
 
+    def combined_message
+      combined = ''
+      @messages.each do |m|
+        combined << $RS if !combined.empty? && !combined.end_with?("\n")
+        combined << m
+      end
+      combined
+    end
+
     def flush
       case @messages.length
       when 0
@@ -230,7 +239,6 @@ module Fluent
       when 1
         @emit.call(@first_timestamp, @first_record)
       else
-        combined_message = @messages.join
         if @message_field.nil?
           output_record = combined_message
         else
@@ -290,7 +298,7 @@ module Fluent
 
     def add(time_sec, record, message)
       if @messages.empty?
-        @first_record = record unless @message_field.nil?
+        @first_record = record
         @first_timestamp = time_sec
         @buffer_start_time = Time.now
       end
