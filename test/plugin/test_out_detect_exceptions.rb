@@ -29,8 +29,11 @@ END
   ARBITRARY_TEXT = 'This line is not an exception.'.freeze
 
   JAVA_EXC = <<END.freeze
-Exception: foo
+SomeException: foo
   at bar
+Caused by: org.AnotherException
+  at bar2
+  at bar3
 END
 
   PYTHON_EXC = <<END.freeze
@@ -170,15 +173,15 @@ END
     d = create_driver(cfg)
     t = Time.now.to_i
     d.run do
-      feed_lines(d, t, PYTHON_EXC, JAVA_EXC)
+      feed_lines(d, t, PYTHON_EXC, JAVA_EXC.lines[0..1].join)
     end
     # Expected: the first two lines of the exception are buffered and combined.
     # Then the max_lines setting kicks in and the rest of the Python exception
     # is logged line-by-line (since it's not an exception stack in itself).
     # Finally, the Java exception is logged in its entirety, since it only
     # has two lines.
-    expected =
-      [PYTHON_EXC.lines[0..1].join] + PYTHON_EXC.lines[2..-1] + [JAVA_EXC]
+    expected = [PYTHON_EXC.lines[0..1].join] + PYTHON_EXC.lines[2..-1] + \
+               [JAVA_EXC.lines[0..1].join]
     assert_equal(make_logs(t, *expected), d.events)
   end
 
