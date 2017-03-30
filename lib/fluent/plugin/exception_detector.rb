@@ -50,12 +50,12 @@ module Fluent
     end
 
     JAVA_RULES = [
-      rule(:start_state,
-           /(?:Exception|Error|Throwable|V8 errors stack trace)[:\r\n]/,
-           :java),
+      rule(:start_state, /(?:Exception|Error|Throwable|V8 errors stack trace)[:\r\n]/, :java),
+      rule(:start_state, /^ERROR /, :java_stack_begin),
+      rule(:java_stack_begin, /(?:Exception|Error|Throwable|V8 errors stack trace)[:\r\n]/, :java),
       rule(:java, /^[\t ]+(?:eval )?at /, :java),
       rule(:java, /^[\t ]*(?:Caused by|Suppressed):/, :java),
-      rule(:java, /^[\t ]*... \d+\ more/, :java)
+      rule(:java, /^[\t ]*... \d+\ (more|common frames omitted)/, :java)
     ].freeze
 
     PYTHON_RULES = [

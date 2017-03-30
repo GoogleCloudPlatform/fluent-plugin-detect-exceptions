@@ -36,6 +36,22 @@ Caused by: org.AnotherException
   at bar3
 END
 
+  JAVA_EXC_WITH_ERROR = <<END.freeze
+ERROR Something nasty
+Exception: foo
+  at bar
+END
+
+  JAVA_EXC_WITH_ERROR_CAUSE_MORE = <<END.freeze
+ERROR Something nasty
+SomeException: foo
+  at bar
+  ... 26 common frames omitted
+Caused by: org.AnotherException
+  at bar2
+  at bar3
+END
+
   PYTHON_EXC = <<END.freeze
 Traceback (most recent call last):
   File "/base/data/home/runtimes/python27/python27_lib/versions/third_party/webapp2-2.5.2/webapp2.py", line 1535, in __call__
@@ -92,6 +108,26 @@ END
     d = create_driver
     t = Time.now.to_i
     messages = [ARBITRARY_TEXT, JAVA_EXC, ARBITRARY_TEXT]
+    d.run do
+      feed_lines(d, t, *messages)
+    end
+    assert_equal(make_logs(t, *messages), d.events)
+  end
+
+  def test_exception_detection_with_error
+    d = create_driver
+    t = Time.now.to_i
+    messages = [ARBITRARY_TEXT, JAVA_EXC_WITH_ERROR, ARBITRARY_TEXT]
+    d.run do
+      feed_lines(d, t, *messages)
+    end
+    assert_equal(make_logs(t, *messages), d.events)
+  end
+
+  def test_exception_detection_with_error_and_cause
+    d = create_driver
+    t = Time.now.to_i
+    messages = [ARBITRARY_TEXT, JAVA_EXC_WITH_ERROR_CAUSE_MORE, ARBITRARY_TEXT]
     d.run do
       feed_lines(d, t, *messages)
     end
