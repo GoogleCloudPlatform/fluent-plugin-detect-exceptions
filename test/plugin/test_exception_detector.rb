@@ -404,4 +404,17 @@ END
     # Check that the trace is flushed after the first part.
     assert_equal([JAVA_EXC_PART1] + JAVA_EXC_PART2.lines, out)
   end
+
+  def test_join_separator
+    # Custom join separator is used to join accumulated output
+    join_separator = ';'
+    out = []
+    buffer = Fluent::TraceAccumulator.new(nil,
+                                          [:all],
+                                          join_separator: join_separator) do |_, m|
+      out << m
+    end
+    feed_lines(buffer, JAVA_EXC)
+    assert_equal(JAVA_EXC.lines.length - 1, out[0].count(join_separator))
+  end
 end

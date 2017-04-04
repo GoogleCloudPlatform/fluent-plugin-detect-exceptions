@@ -95,6 +95,9 @@ The plugin supports the following parameters:
           This parameter is only applicable to structured (JSON) log streams.
           Default: ''.
 
+[join_separator] String used when joining multiple lines of the stack trace.
+                 Default: ''.
+
 Example configuration:
 
     <match **>

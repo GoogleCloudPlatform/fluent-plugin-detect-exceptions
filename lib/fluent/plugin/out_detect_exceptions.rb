@@ -36,6 +36,8 @@ module Fluent
     config_param :max_bytes, :integer, default: 0
     desc 'Separate log streams by this field in the input JSON data.'
     config_param :stream, :string, default: ''
+    desc 'String used when joining multiple lines of the stack trace'
+    config_param :join_separator, :string, default: ''
 
     Fluent::Plugin.register_output('detect_exceptions', self)
 
@@ -93,7 +95,8 @@ module Fluent
           @accumulators[log_id] =
             Fluent::TraceAccumulator.new(@message, @languages,
                                          max_lines: @max_lines,
-                                         max_bytes: @max_bytes) do |t, r|
+                                         max_bytes: @max_bytes,
+                                         join_separator: @join_separator) do |t, r|
               router.emit(out_tag, t, r)
             end
         end
