@@ -194,10 +194,11 @@ module Fluent
     # The named parameters max_lines and max_bytes limit the maximum amount
     # of data to be buffered. The default value 0 indicates 'no limit'.
     def initialize(message_field, languages, max_lines: 0, max_bytes: 0,
-                   &emit_callback)
+                   join_separator: '', &emit_callback)
       @exception_detector = Fluent::ExceptionDetector.new(*languages)
       @max_lines = max_lines
       @max_bytes = max_bytes
+      @join_separator = join_separator
       @message_field = message_field
       @messages = []
       @buffer_start_time = Time.now
@@ -230,7 +231,7 @@ module Fluent
       when 1
         @emit.call(@first_timestamp, @first_record)
       else
-        combined_message = @messages.join
+        combined_message = @messages.join(@join_separator)
         if @message_field.nil?
           output_record = combined_message
         else
