@@ -39,11 +39,18 @@ module Fluent
 
     Fluent::Plugin.register_output('detect_exceptions', self)
 
+    ERROR_EMPTY_REMOVE_TAG_PREFIX =
+      'remove_tag_prefix must not be empty.'.freeze
+
     def configure(conf)
       super
 
       if multiline_flush_interval
         @check_flush_interval = [multiline_flush_interval * 0.1, 1].max
+      end
+
+      if remove_tag_prefix.empty?
+        raise ConfigError, ERROR_EMPTY_REMOVE_TAG_PREFIX
       end
 
       @languages = languages.map(&:to_sym)

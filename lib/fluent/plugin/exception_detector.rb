@@ -183,6 +183,8 @@ module Fluent
   class TraceAccumulator
     attr_reader :buffer_start_time
 
+    LINE_SEPARATOR = $RS || "\n"
+
     # If message_field is nil, the instance is set up to accumulate
     # records that are plain strings (i.e. the whole record is concatenated).
     # Otherwise, the instance accepts records that are dictionaries (usually
@@ -205,7 +207,6 @@ module Fluent
       @first_record = nil
       @first_timestamp = nil
       @emit = emit_callback
-      @line_separator = $RS || "\n"
     end
 
     def push(time_sec, record)
@@ -232,7 +233,7 @@ module Fluent
         @emit.call(@first_timestamp, @first_record)
       else
         combined_message = @messages.each_with_object([]) do |line, memo|
-          memo << @line_separator unless memo.empty? || memo[-1].end_with?("\n")
+          memo << LINE_SEPARATOR unless memo.empty? || memo[-1].end_with?("\n")
           memo << line
         end.join
         if @message_field.nil?

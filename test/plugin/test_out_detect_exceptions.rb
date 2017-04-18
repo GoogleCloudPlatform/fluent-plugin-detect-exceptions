@@ -204,4 +204,14 @@ END
                make_logs(t, 'something else', stream: 'java')
     assert_equal(expected, d.events)
   end
+
+  def test_remove_tag_prefix_must_not_be_empty
+    d = Fluent::Test::OutputTestDriver.new(Fluent::DetectExceptionsOutput,
+                                           DEFAULT_TAG)
+    exc = assert_raise(Fluent::ConfigError) do
+      d.configure('remove_tag_prefix')
+    end
+    assert_equal(Fluent::DetectExceptionsOutput::ERROR_EMPTY_REMOVE_TAG_PREFIX,
+                 exc.message)
+  end
 end
