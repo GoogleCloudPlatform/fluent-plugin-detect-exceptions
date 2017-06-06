@@ -37,11 +37,26 @@ Caused by: org.AnotherException
   at bar3
 END
 
+  PHP_EXC = <<END.freeze
+exception 'Exception' with message 'Custom exception' in /home/joe/work/test-php/test.php:5
+Stack trace:
+#0 /home/joe/work/test-php/test.php(9): func1()
+#1 /home/joe/work/test-php/test.php(13): func2()
+#2 {main}
+END
+
   PYTHON_EXC = <<END.freeze
 Traceback (most recent call last):
   File "/base/data/home/runtimes/python27/python27_lib/versions/third_party/webapp2-2.5.2/webapp2.py", line 1535, in __call__
     rv = self.handle_exception(request, response, e)
 Exception: ('spam', 'eggs')
+END
+
+  RUBY_EXC = <<END.freeze
+IndexError: index 1 outside of array bounds: 0...0
+  from (irb):4:in `fetch'
+  from (irb):4
+  from /Users/bmoyles/.rvm/rubies/ruby-2.2.6/bin/irb:11:in `<main>'
 END
 
   def create_driver(conf = CONFIG, tag = DEFAULT_TAG)
@@ -100,60 +115,76 @@ END
   end
 
   def test_ignore_exception_nested_in_json
-    cfg = 'languages python'
-    d = create_driver(cfg)
-    t = Time.now.to_i
+    test_cases = {
+      "php": PHP_EXC,
+      "python": PYTHON_EXC,
+      "ruby": RUBY_EXC
+    }
 
-    # Converting exception to a single line to simply the test case
-    single_line_exception = PYTHON_EXC.gsub("\n", "\\n")
+    test_cases.each do |language, exception|
+      cfg = "languages #{language}"
+      d = create_driver(cfg)
+      t = Time.now.to_i
 
-    # There is a nested exception within the body, we should ignore those!
-    lines = [
-      %({"timestamp": {"nanos": 998152494, "seconds": 1496420064}, "message": "#{single_line_exception}", "thread": 139658267147048, "severity": "ERROR"}\n),
-      %({"timestamp": {"nanos": 5990266, "seconds": 1496420065}, "message": "next line", "thread": 139658267147048, "severity": "INFO"}\n)
-    ]
+      # Converting exception to a single line to simply the test case
+      single_line_exception = PYTHON_EXC.gsub("\n", "\\n")
 
-    router_mock = flexmock('mytest')
-    lines.each_with_index do |line, count|
-      router_mock.should_receive(:emit).once.with(DEFAULT_TAG, Integer, {
-        "message" => line, 
-        "count" => count
-      })
-    end
+      # There is a nested exception within the body, we should ignore those!
+      lines = [
+        %({"timestamp": {"nanos": 998152494, "seconds": 1496420064}, "message": "#{single_line_exception}", "thread": 139658267147048, "severity": "ERROR"}\n),
+        %({"timestamp": {"nanos": 5990266, "seconds": 1496420065}, "message": "next line", "thread": 139658267147048, "severity": "INFO"}\n)
+      ]
 
-    d.instance.router = router_mock
+      router_mock = flexmock('mytest')
+      lines.each_with_index do |line, count|
+        router_mock.should_receive(:emit).once.with(DEFAULT_TAG, Integer, {
+          "message" => line, 
+          "count" => count
+        })
+      end
 
-    d.run do
-      feed_lines(d, t, lines.join)
+      d.instance.router = router_mock
+
+      d.run do
+        feed_lines(d, t, lines.join)
+      end
     end
   end
 
   def test_ignore_exception_nested_in_text
-    cfg = 'languages python'
-    d = create_driver(cfg)
-    t = Time.now.to_i
+    test_cases = {
+      "php": PHP_EXC,
+      "python": PYTHON_EXC,
+      "ruby": RUBY_EXC
+    }
 
-    # Converting exception to a single line to simply the test case
-    single_line_exception = PYTHON_EXC.gsub("\n", "\\n")
+    test_cases.each do |language, exception|
+      cfg = "languages #{language}"
+      d = create_driver(cfg)
+      t = Time.now.to_i
 
-    # There is a nested exception within the body, we should ignore those!
-    lines = [
-      %(prefixed: #{single_line_exception}\n),
-      %(next line\n)
-    ]
+      # Converting exception to a single line to simply the test case
+      single_line_exception = exception.gsub("\n", "\\n")
 
-    router_mock = flexmock('mytest')
-    lines.each_with_index do |line, count|
-      router_mock.should_receive(:emit).once.with(DEFAULT_TAG, Integer, {
-        "message" => line, 
-        "count" => count
-      })
-    end
+      # There is a nested exception within the body, we should ignore those!
+      lines = [
+        %(prefixed: #{single_line_exception}\n),
+        %(next line\n)
+      ]
 
-    d.instance.router = router_mock
+      router_mock = flexmock('mytest')
+      lines.each_with_index do |line, count|
+        router_mock.should_receive(:emit).once.with(DEFAULT_TAG, Integer, {
+          "message" => line, 
+          "count" => count
+        })
+      end
 
-    d.run do
-      feed_lines(d, t, lines.join)
+      d.instance.router = router_mock
+
+      d.run do
+        feed_lines(d, t, lines.join)
+      end
     end
   end
 
