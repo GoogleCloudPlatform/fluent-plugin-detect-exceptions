@@ -104,9 +104,12 @@ END
     d = create_driver(cfg)
     t = Time.now.to_i
 
+    # Converting exception to a single line to simply the test case
+    single_line_exception = PYTHON_EXC.gsub("\n", "\\n")
+
     # There is a nested exception within the body, we should ignore those!
     lines = [
-      %({"timestamp": {"nanos": 998152494, "seconds": 1496420064}, "message": "Traceback (most recent call last):\\n  File \"<stdin>\", line 1, in <module>\\n  File \"/Library/Python/2.7/site-packages/requests-2.17.3-py2.7.egg/requests/api.py\", line 72, in get\\n    return request('get', url, params=params, **kwargs)\\n  File \"/Library/Python/2.7/site-packages/requests-2.17.3-py2.7.egg/requests/api.py\", line 58, in request\\n    return session.request(method=method, url=url, **kwargs)\\n  File \"/Library/Python/2.7/site-packages/requests-2.17.3-py2.7.egg/requests/sessions.py\", line 513, in request\\n    resp = self.send(prep, **send_kwargs)\\n  File \"/Library/Python/2.7/site-packages/requests-2.17.3-py2.7.egg/requests/sessions.py\", line 617, in send\\n    adapter = self.get_adapter(url=request.url)\\n  File \"/Library/Python/2.7/site-packages/requests-2.17.3-py2.7.egg/requests/sessions.py\", line 708, in get_adapter\\n    raise InvalidSchema(\"No connection adapters were found for '%s'\" % url)\\nrequests.exceptions.InvalidSchema: No connection adapters were found for 'htttp://www.google.com'", "thread": 139658267147048, "severity": "ERROR"}\n),
+      %({"timestamp": {"nanos": 998152494, "seconds": 1496420064}, "message": "#{single_line_exception}", "thread": 139658267147048, "severity": "ERROR"}\n),
       %({"timestamp": {"nanos": 5990266, "seconds": 1496420065}, "message": "next line", "thread": 139658267147048, "severity": "INFO"}\n)
     ]
 
@@ -130,9 +133,12 @@ END
     d = create_driver(cfg)
     t = Time.now.to_i
 
+    # Converting exception to a single line to simply the test case
+    single_line_exception = PYTHON_EXC.gsub("\n", "\\n")
+
     # There is a nested exception within the body, we should ignore those!
     lines = [
-      %(prefixed: Traceback (most recent call last):\\n  File \"<stdin>\", line 1, in <module>\\n  File \"/Library/Python/2.7/site-packages/requests-2.17.3-py2.7.egg/requests/api.py\", line 72, in get\\n    return request('get', url, params=params, **kwargs)\\n  File \"/Library/Python/2.7/site-packages/requests-2.17.3-py2.7.egg/requests/api.py\", line 58, in request\\n    return session.request(method=method, url=url, **kwargs)\\n  File \"/Library/Python/2.7/site-packages/requests-2.17.3-py2.7.egg/requests/sessions.py\", line 513, in request\\n    resp = self.send(prep, **send_kwargs)\\n  File \"/Library/Python/2.7/site-packages/requests-2.17.3-py2.7.egg/requests/sessions.py\", line 617, in send\\n    adapter = self.get_adapter(url=request.url)\\n  File \"/Library/Python/2.7/site-packages/requests-2.17.3-py2.7.egg/requests/sessions.py\", line 708, in get_adapter\\n    raise InvalidSchema(\"No connection adapters were found for '%s'\" % url)\\nrequests.exceptions.InvalidSchema: No connection adapters were found for 'htttp://www.google.com'\n),
+      %(prefixed: #{single_line_exception}\n),
       %(next line\n)
     ]
 
