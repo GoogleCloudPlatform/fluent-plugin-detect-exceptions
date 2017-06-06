@@ -25,4 +25,5 @@ eos
   gem.add_development_dependency 'rake', '~> 10.3'
   gem.add_development_dependency 'rubocop', '= 0.42.0'
   gem.add_development_dependency 'test-unit', '~> 3.0'
+  gem.add_development_dependency 'flexmock', '~> 2.0'
 end

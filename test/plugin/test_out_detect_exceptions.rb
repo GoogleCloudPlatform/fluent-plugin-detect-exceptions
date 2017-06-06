@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+require 'flexmock/test_unit'
 require_relative '../helper'
 require 'fluent/plugin/out_detect_exceptions'
 
@@ -96,6 +97,54 @@ END
       feed_lines(d, t, *messages)
     end
     assert_equal(make_logs(t, *messages), d.events)
+  end
+
+  def test_ignore_exception_nested_in_json
+    cfg = 'languages python'
+    d = create_driver(cfg)
+    t = Time.now.to_i
+
+    # There is a nested exception within the body, we should ignore those!
+    lines = <<END
+{"timestamp": {"nanos": 998152494, "seconds": 1496420064}, "message": "Traceback (most recent call last):\\n  File \"<stdin>\", line 1, in <module>\\n  File \"/Library/Python/2.7/site-packages/requests-2.17.3-py2.7.egg/requests/api.py\", line 72, in get\\n    return request('get', url, params=params, **kwargs)\\n  File \"/Library/Python/2.7/site-packages/requests-2.17.3-py2.7.egg/requests/api.py\", line 58, in request\\n    return session.request(method=method, url=url, **kwargs)\\n  File \"/Library/Python/2.7/site-packages/requests-2.17.3-py2.7.egg/requests/sessions.py\", line 513, in request\\n    resp = self.send(prep, **send_kwargs)\\n  File \"/Library/Python/2.7/site-packages/requests-2.17.3-py2.7.egg/requests/sessions.py\", line 617, in send\\n    adapter = self.get_adapter(url=request.url)\\n  File \"/Library/Python/2.7/site-packages/requests-2.17.3-py2.7.egg/requests/sessions.py\", line 708, in get_adapter\\n    raise InvalidSchema(\"No connection adapters were found for '%s'\" % url)\\nrequests.exceptions.InvalidSchema: No connection adapters were found for 'htttp://www.google.com'", "thread": 139658267147048, "severity": "ERROR"}
+{"timestamp": {"nanos": 5990266, "seconds": 1496420065}, "message": "next line", "thread": 139658267147048, "severity": "INFO"}
+END
+
+    messages = [lines]
+
+    router_mock = flexmock('mytest')
+    router_mock.should_receive(:emit).once.with(DEFAULT_TAG, Integer, {"message"=>%[{"timestamp": {"nanos": 998152494, "seconds": 1496420064}, "message": "Traceback (most recent call last):\\n  File \"<stdin>\", line 1, in <module>\\n  File \"/Library/Python/2.7/site-packages/requests-2.17.3-py2.7.egg/requests/api.py\", line 72, in get\\n    return request('get', url, params=params, **kwargs)\\n  File \"/Library/Python/2.7/site-packages/requests-2.17.3-py2.7.egg/requests/api.py\", line 58, in request\\n    return session.request(method=method, url=url, **kwargs)\\n  File \"/Library/Python/2.7/site-packages/requests-2.17.3-py2.7.egg/requests/sessions.py\", line 513, in request\\n    resp = self.send(prep, **send_kwargs)\\n  File \"/Library/Python/2.7/site-packages/requests-2.17.3-py2.7.egg/requests/sessions.py\", line 617, in send\\n    adapter = self.get_adapter(url=request.url)\\n  File \"/Library/Python/2.7/site-packages/requests-2.17.3-py2.7.egg/requests/sessions.py\", line 708, in get_adapter\\n    raise InvalidSchema(\"No connection adapters were found for '%s'\" % url)\\nrequests.exceptions.InvalidSchema: No connection adapters were found for 'htttp://www.google.com'", "thread": 139658267147048, "severity": "ERROR"}\n], "count"=>0})
+    router_mock.should_receive(:emit).once.with(DEFAULT_TAG, Integer, {"message"=>%[{"timestamp": {"nanos": 5990266, "seconds": 1496420065}, "message": "next line", "thread": 139658267147048, "severity": "INFO"}\n], "count"=>1})
+
+    d.instance.router = router_mock
+
+    d.run do
+      feed_lines(d, t, *messages)
+    end
+  end
+
+  def test_ignore_exception_nested_in_text
+    cfg = 'languages python'
+    d = create_driver(cfg)
+    t = Time.now.to_i
+
+    # There is a nested exception within the body, we should ignore those!
+    lines = <<END
+prefixed: Traceback (most recent call last):\\n  File \"<stdin>\", line 1, in <module>\\n  File \"/Library/Python/2.7/site-packages/requests-2.17.3-py2.7.egg/requests/api.py\", line 72, in get\\n    return request('get', url, params=params, **kwargs)\\n  File \"/Library/Python/2.7/site-packages/requests-2.17.3-py2.7.egg/requests/api.py\", line 58, in request\\n    return session.request(method=method, url=url, **kwargs)\\n  File \"/Library/Python/2.7/site-packages/requests-2.17.3-py2.7.egg/requests/sessions.py\", line 513, in request\\n    resp = self.send(prep, **send_kwargs)\\n  File \"/Library/Python/2.7/site-packages/requests-2.17.3-py2.7.egg/requests/sessions.py\", line 617, in send\\n    adapter = self.get_adapter(url=request.url)\\n  File \"/Library/Python/2.7/site-packages/requests-2.17.3-py2.7.egg/requests/sessions.py\", line 708, in get_adapter\\n    raise InvalidSchema(\"No connection adapters were found for '%s'\" % url)\\nrequests.exceptions.InvalidSchema: No connection adapters were found for 'htttp://www.google.com'
+next line
+END
+
+    messages = [lines]
+
+    router_mock = flexmock('mytest')
+    router_mock.should_receive(:emit).once.with(DEFAULT_TAG, Integer, {"message"=>%[prefixed: Traceback (most recent call last):\\n  File \"<stdin>\", line 1, in <module>\\n  File \"/Library/Python/2.7/site-packages/requests-2.17.3-py2.7.egg/requests/api.py\", line 72, in get\\n    return request('get', url, params=params, **kwargs)\\n  File \"/Library/Python/2.7/site-packages/requests-2.17.3-py2.7.egg/requests/api.py\", line 58, in request\\n    return session.request(method=method, url=url, **kwargs)\\n  File \"/Library/Python/2.7/site-packages/requests-2.17.3-py2.7.egg/requests/sessions.py\", line 513, in request\\n    resp = self.send(prep, **send_kwargs)\\n  File \"/Library/Python/2.7/site-packages/requests-2.17.3-py2.7.egg/requests/sessions.py\", line 617, in send\\n    adapter = self.get_adapter(url=request.url)\\n  File \"/Library/Python/2.7/site-packages/requests-2.17.3-py2.7.egg/requests/sessions.py\", line 708, in get_adapter\\n    raise InvalidSchema(\"No connection adapters were found for '%s'\" % url)\\nrequests.exceptions.InvalidSchema: No connection adapters were found for 'htttp://www.google.com'\n], "count"=>0})
+    router_mock.should_receive(:emit).once.with(DEFAULT_TAG, Integer, {"message"=>%[next line\n], "count"=>1})
+
+    d.instance.router = router_mock
+
+    d.run do
+      feed_lines(d, t, *messages)
+    end
   end
 
   def test_single_language_config
