@@ -105,21 +105,23 @@ END
     t = Time.now.to_i
 
     # There is a nested exception within the body, we should ignore those!
-    lines = <<END
-{"timestamp": {"nanos": 998152494, "seconds": 1496420064}, "message": "Traceback (most recent call last):\\n  File \"<stdin>\", line 1, in <module>\\n  File \"/Library/Python/2.7/site-packages/requests-2.17.3-py2.7.egg/requests/api.py\", line 72, in get\\n    return request('get', url, params=params, **kwargs)\\n  File \"/Library/Python/2.7/site-packages/requests-2.17.3-py2.7.egg/requests/api.py\", line 58, in request\\n    return session.request(method=method, url=url, **kwargs)\\n  File \"/Library/Python/2.7/site-packages/requests-2.17.3-py2.7.egg/requests/sessions.py\", line 513, in request\\n    resp = self.send(prep, **send_kwargs)\\n  File \"/Library/Python/2.7/site-packages/requests-2.17.3-py2.7.egg/requests/sessions.py\", line 617, in send\\n    adapter = self.get_adapter(url=request.url)\\n  File \"/Library/Python/2.7/site-packages/requests-2.17.3-py2.7.egg/requests/sessions.py\", line 708, in get_adapter\\n    raise InvalidSchema(\"No connection adapters were found for '%s'\" % url)\\nrequests.exceptions.InvalidSchema: No connection adapters were found for 'htttp://www.google.com'", "thread": 139658267147048, "severity": "ERROR"}
-{"timestamp": {"nanos": 5990266, "seconds": 1496420065}, "message": "next line", "thread": 139658267147048, "severity": "INFO"}
-END
-
-    messages = [lines]
+    lines = [
+      %({"timestamp": {"nanos": 998152494, "seconds": 1496420064}, "message": "Traceback (most recent call last):\\n  File \"<stdin>\", line 1, in <module>\\n  File \"/Library/Python/2.7/site-packages/requests-2.17.3-py2.7.egg/requests/api.py\", line 72, in get\\n    return request('get', url, params=params, **kwargs)\\n  File \"/Library/Python/2.7/site-packages/requests-2.17.3-py2.7.egg/requests/api.py\", line 58, in request\\n    return session.request(method=method, url=url, **kwargs)\\n  File \"/Library/Python/2.7/site-packages/requests-2.17.3-py2.7.egg/requests/sessions.py\", line 513, in request\\n    resp = self.send(prep, **send_kwargs)\\n  File \"/Library/Python/2.7/site-packages/requests-2.17.3-py2.7.egg/requests/sessions.py\", line 617, in send\\n    adapter = self.get_adapter(url=request.url)\\n  File \"/Library/Python/2.7/site-packages/requests-2.17.3-py2.7.egg/requests/sessions.py\", line 708, in get_adapter\\n    raise InvalidSchema(\"No connection adapters were found for '%s'\" % url)\\nrequests.exceptions.InvalidSchema: No connection adapters were found for 'htttp://www.google.com'", "thread": 139658267147048, "severity": "ERROR"}\n),
+      %({"timestamp": {"nanos": 5990266, "seconds": 1496420065}, "message": "next line", "thread": 139658267147048, "severity": "INFO"}\n)
+    ]
 
     router_mock = flexmock('mytest')
-    router_mock.should_receive(:emit).once.with(DEFAULT_TAG, Integer, {"message"=>%[{"timestamp": {"nanos": 998152494, "seconds": 1496420064}, "message": "Traceback (most recent call last):\\n  File \"<stdin>\", line 1, in <module>\\n  File \"/Library/Python/2.7/site-packages/requests-2.17.3-py2.7.egg/requests/api.py\", line 72, in get\\n    return request('get', url, params=params, **kwargs)\\n  File \"/Library/Python/2.7/site-packages/requests-2.17.3-py2.7.egg/requests/api.py\", line 58, in request\\n    return session.request(method=method, url=url, **kwargs)\\n  File \"/Library/Python/2.7/site-packages/requests-2.17.3-py2.7.egg/requests/sessions.py\", line 513, in request\\n    resp = self.send(prep, **send_kwargs)\\n  File \"/Library/Python/2.7/site-packages/requests-2.17.3-py2.7.egg/requests/sessions.py\", line 617, in send\\n    adapter = self.get_adapter(url=request.url)\\n  File \"/Library/Python/2.7/site-packages/requests-2.17.3-py2.7.egg/requests/sessions.py\", line 708, in get_adapter\\n    raise InvalidSchema(\"No connection adapters were found for '%s'\" % url)\\nrequests.exceptions.InvalidSchema: No connection adapters were found for 'htttp://www.google.com'", "thread": 139658267147048, "severity": "ERROR"}\n], "count"=>0})
-    router_mock.should_receive(:emit).once.with(DEFAULT_TAG, Integer, {"message"=>%[{"timestamp": {"nanos": 5990266, "seconds": 1496420065}, "message": "next line", "thread": 139658267147048, "severity": "INFO"}\n], "count"=>1})
+    lines.each_with_index do |line, count|
+      router_mock.should_receive(:emit).once.with(DEFAULT_TAG, Integer, {
+        "message" => line, 
+        "count" => count
+      })
+    end
 
     d.instance.router = router_mock
 
     d.run do
-      feed_lines(d, t, *messages)
+      feed_lines(d, t, lines.join)
     end
   end
 
@@ -129,21 +131,23 @@ END
     t = Time.now.to_i
 
     # There is a nested exception within the body, we should ignore those!
-    lines = <<END
-prefixed: Traceback (most recent call last):\\n  File \"<stdin>\", line 1, in <module>\\n  File \"/Library/Python/2.7/site-packages/requests-2.17.3-py2.7.egg/requests/api.py\", line 72, in get\\n    return request('get', url, params=params, **kwargs)\\n  File \"/Library/Python/2.7/site-packages/requests-2.17.3-py2.7.egg/requests/api.py\", line 58, in request\\n    return session.request(method=method, url=url, **kwargs)\\n  File \"/Library/Python/2.7/site-packages/requests-2.17.3-py2.7.egg/requests/sessions.py\", line 513, in request\\n    resp = self.send(prep, **send_kwargs)\\n  File \"/Library/Python/2.7/site-packages/requests-2.17.3-py2.7.egg/requests/sessions.py\", line 617, in send\\n    adapter = self.get_adapter(url=request.url)\\n  File \"/Library/Python/2.7/site-packages/requests-2.17.3-py2.7.egg/requests/sessions.py\", line 708, in get_adapter\\n    raise InvalidSchema(\"No connection adapters were found for '%s'\" % url)\\nrequests.exceptions.InvalidSchema: No connection adapters were found for 'htttp://www.google.com'
-next line
-END
-
-    messages = [lines]
+    lines = [
+      %(prefixed: Traceback (most recent call last):\\n  File \"<stdin>\", line 1, in <module>\\n  File \"/Library/Python/2.7/site-packages/requests-2.17.3-py2.7.egg/requests/api.py\", line 72, in get\\n    return request('get', url, params=params, **kwargs)\\n  File \"/Library/Python/2.7/site-packages/requests-2.17.3-py2.7.egg/requests/api.py\", line 58, in request\\n    return session.request(method=method, url=url, **kwargs)\\n  File \"/Library/Python/2.7/site-packages/requests-2.17.3-py2.7.egg/requests/sessions.py\", line 513, in request\\n    resp = self.send(prep, **send_kwargs)\\n  File \"/Library/Python/2.7/site-packages/requests-2.17.3-py2.7.egg/requests/sessions.py\", line 617, in send\\n    adapter = self.get_adapter(url=request.url)\\n  File \"/Library/Python/2.7/site-packages/requests-2.17.3-py2.7.egg/requests/sessions.py\", line 708, in get_adapter\\n    raise InvalidSchema(\"No connection adapters were found for '%s'\" % url)\\nrequests.exceptions.InvalidSchema: No connection adapters were found for 'htttp://www.google.com'\n),
+      %(next line\n)
+    ]
 
     router_mock = flexmock('mytest')
-    router_mock.should_receive(:emit).once.with(DEFAULT_TAG, Integer, {"message"=>%[prefixed: Traceback (most recent call last):\\n  File \"<stdin>\", line 1, in <module>\\n  File \"/Library/Python/2.7/site-packages/requests-2.17.3-py2.7.egg/requests/api.py\", line 72, in get\\n    return request('get', url, params=params, **kwargs)\\n  File \"/Library/Python/2.7/site-packages/requests-2.17.3-py2.7.egg/requests/api.py\", line 58, in request\\n    return session.request(method=method, url=url, **kwargs)\\n  File \"/Library/Python/2.7/site-packages/requests-2.17.3-py2.7.egg/requests/sessions.py\", line 513, in request\\n    resp = self.send(prep, **send_kwargs)\\n  File \"/Library/Python/2.7/site-packages/requests-2.17.3-py2.7.egg/requests/sessions.py\", line 617, in send\\n    adapter = self.get_adapter(url=request.url)\\n  File \"/Library/Python/2.7/site-packages/requests-2.17.3-py2.7.egg/requests/sessions.py\", line 708, in get_adapter\\n    raise InvalidSchema(\"No connection adapters were found for '%s'\" % url)\\nrequests.exceptions.InvalidSchema: No connection adapters were found for 'htttp://www.google.com'\n], "count"=>0})
-    router_mock.should_receive(:emit).once.with(DEFAULT_TAG, Integer, {"message"=>%[next line\n], "count"=>1})
+    lines.each_with_index do |line, count|
+      router_mock.should_receive(:emit).once.with(DEFAULT_TAG, Integer, {
+        "message" => line, 
+        "count" => count
+      })
+    end
 
     d.instance.router = router_mock
 
     d.run do
-      feed_lines(d, t, *messages)
+      feed_lines(d, t, lines.join)
     end
   end
 
