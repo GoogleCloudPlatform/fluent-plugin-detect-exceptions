@@ -53,10 +53,8 @@ Exception: ('spam', 'eggs')
 END
 
   RUBY_EXC = <<END.freeze
-IndexError: index 1 outside of array bounds: 0...0
-  from (irb):4:in `fetch'
-  from (irb):4
-  from /Users/bmoyles/.rvm/rubies/ruby-2.2.6/bin/irb:11:in `<main>'
+example.rb:2:in `fetch': index 1 outside of array bounds: 0...0 (IndexError)
+  from example.rb:2:in `<main>'
 END
 
   def create_driver(conf = CONFIG, tag = DEFAULT_TAG)
