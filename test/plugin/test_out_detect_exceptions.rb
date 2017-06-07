@@ -124,7 +124,7 @@ END
       d = create_driver(cfg)
       t = Time.now.to_i
 
-      # Converting exception to a single line to simply the test case
+      # Convert exception to a single line to simplify the test case.
       single_line_exception = exception.gsub("\n", "\\n")
 
       # There is a nested exception within the body, we should ignore those!
@@ -138,7 +138,7 @@ END
         %(next line\n)
       ]
 
-      router_mock = flexmock('mytest')
+      router_mock = flexmock('router')
       lines.each_with_index do |line, count|
         router_mock.should_receive(:emit).once.with(DEFAULT_TAG, Integer, {
           "message" => line, 
