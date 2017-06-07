@@ -114,43 +114,6 @@ END
     assert_equal(make_logs(t, *messages), d.events)
   end
 
-  def test_ignore_exception_nested_in_json
-    test_cases = {
-      "php": PHP_EXC,
-      "python": PYTHON_EXC,
-      "ruby": RUBY_EXC
-    }
-
-    test_cases.each do |language, exception|
-      cfg = "languages #{language}"
-      d = create_driver(cfg)
-      t = Time.now.to_i
-
-      # Converting exception to a single line to simply the test case
-      single_line_exception = PYTHON_EXC.gsub("\n", "\\n")
-
-      # There is a nested exception within the body, we should ignore those!
-      lines = [
-        %({"timestamp": {"nanos": 998152494, "seconds": 1496420064}, "message": "#{single_line_exception}", "thread": 139658267147048, "severity": "ERROR"}\n),
-        %({"timestamp": {"nanos": 5990266, "seconds": 1496420065}, "message": "next line", "thread": 139658267147048, "severity": "INFO"}\n)
-      ]
-
-      router_mock = flexmock('mytest')
-      lines.each_with_index do |line, count|
-        router_mock.should_receive(:emit).once.with(DEFAULT_TAG, Integer, {
-          "message" => line, 
-          "count" => count
-        })
-      end
-
-      d.instance.router = router_mock
-
-      d.run do
-        feed_lines(d, t, lines.join)
-      end
-    end
-  end
-
   def test_ignore_exception_nested_in_text
     test_cases = {
       "php": PHP_EXC,
@@ -168,6 +131,11 @@ END
 
       # There is a nested exception within the body, we should ignore those!
       lines = [
+        # Json payload
+        %({"timestamp": {"nanos": 998152494, "seconds": 1496420064}, "message": "#{single_line_exception}", "thread": 139658267147048, "severity": "ERROR"}\n),
+        %({"timestamp": {"nanos": 5990266, "seconds": 1496420065}, "message": "next line", "thread": 139658267147048, "severity": "INFO"}\n),
+
+        # Text payload
         %(prefixed: #{single_line_exception}\n),
         %(next line\n)
       ]
