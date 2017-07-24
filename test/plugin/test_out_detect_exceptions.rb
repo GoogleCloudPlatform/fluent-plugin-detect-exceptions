@@ -53,8 +53,12 @@ Exception: ('spam', 'eggs')
 END
 
   RUBY_EXC = <<END.freeze
-example.rb:2:in `fetch': index 1 outside of array bounds: 0...0 (IndexError)
-  from example.rb:2:in `<main>'
+examble.rb:18:in `thrower': An error has occurred. (RuntimeError)
+  from examble.rb:14:in `caller'
+  from examble.rb:10:in `helper'
+  from examble.rb:6:in `writer'
+  from examble.rb:2:in `runner'
+  from examble.rb:21:in `<main>'
 END
 
   def create_driver(conf = CONFIG, tag = DEFAULT_TAG)
@@ -112,7 +116,7 @@ END
     assert_equal(make_logs(t, *messages), d.events)
   end
 
-  def test_ignore_exception_nested_in_text
+  def test_ignore_nested_exceptions
     test_cases = {
       "php": PHP_EXC,
       "python": PYTHON_EXC,
@@ -128,28 +132,25 @@ END
       single_line_exception = exception.gsub("\n", "\\n")
 
       # There is a nested exception within the body, we should ignore those!
-      lines = [
-        # Json payload
-        %({"timestamp": {"nanos": 998152494, "seconds": 1496420064}, "message": "#{single_line_exception}", "thread": 139658267147048, "severity": "ERROR"}\n),
-        %({"timestamp": {"nanos": 5990266, "seconds": 1496420065}, "message": "next line", "thread": 139658267147048, "severity": "INFO"}\n),
-
-        # Text payload
-        %(prefixed: #{single_line_exception}\n),
-        %(next line\n)
-      ]
+      json_line_with_exception = %({"timestamp": {"nanos": 998152494, "seconds": 1496420064}, "message": "#{single_line_exception}", "thread": 139658267147048, "severity": "ERROR"}\n)
+      json_line_without_exception = %({"timestamp": {"nanos": 5990266, "seconds": 1496420065}, "message": "next line", "thread": 139658267147048, "severity": "INFO"}\n)
 
       router_mock = flexmock('router')
-      lines.each_with_index do |line, count|
-        router_mock.should_receive(:emit).once.with(DEFAULT_TAG, Integer, {
-          "message" => line, 
-          "count" => count
-        })
-      end
+
+      # Validate that each line received is emitted separately as expected.
+      router_mock.should_receive(:emit).once.with(DEFAULT_TAG, Integer, {
+        "message" => json_line_with_exception, 
+        "count" => 0
+      })
+      router_mock.should_receive(:emit).once.with(DEFAULT_TAG, Integer, {
+        "message" => json_line_without_exception, 
+        "count" => 1
+      })
 
       d.instance.router = router_mock
 
       d.run do
-        feed_lines(d, t, lines.join)
+        feed_lines(d, t, json_line_with_exception + json_line_without_exception)
       end
     end
   end
