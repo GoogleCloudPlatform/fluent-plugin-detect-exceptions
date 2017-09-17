@@ -84,7 +84,9 @@ module Fluent
     ].freeze
 
     RUBY_RULES = [
-      rule(:start_state, /Error \(.*\):$/, :ruby),
+      rule(:start_state, /Error \(.*\):$/, :ruby_before_rails_trace),
+      rule(:ruby_before_rails_trace, /^  $/, :ruby),
+      rule(:ruby_before_rails_trace, /^[\t ]+.*?\.rb:\d+:in `/, :ruby),
       rule(:ruby, /^[\t ]+.*?\.rb:\d+:in `/, :ruby)
     ].freeze
 
