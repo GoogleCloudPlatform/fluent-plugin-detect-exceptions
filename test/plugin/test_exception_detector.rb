@@ -305,8 +305,8 @@ END
       m.each_line do |line|
         buffer.push(0, line)
       end
-      buffer.flush
     end
+    buffer.flush
   end
 
   Struct.new('TestBufferScenario', :desc, :languages, :input, :expected)
@@ -332,7 +332,15 @@ END
       buffer_scenario('all exceptions from non-configured languages',
                       [:ruby],
                       [JAVA_EXC, PYTHON_EXC, GO_EXC],
-                      JAVA_EXC.lines + PYTHON_EXC.lines + GO_EXC.lines)
+                      JAVA_EXC.lines + PYTHON_EXC.lines + GO_EXC.lines),
+      buffer_scenario('exception lines with missing line ending',
+                      [:all],
+                      (JAVA_EXC.lines +
+                       ARBITRARY_TEXT.lines +
+                       [PYTHON_EXC]).collect(&:chomp),
+                      [JAVA_EXC.chomp] +
+                      ARBITRARY_TEXT.lines.collect(&:chomp) +
+                      [PYTHON_EXC.chomp])
     ].each do |s|
       out = []
       buffer = Fluent::TraceAccumulator.new(nil,

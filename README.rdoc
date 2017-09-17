@@ -2,8 +2,9 @@
 
 fluent-plugin-detect-exceptions is an
 {output plugin for fluentd}[http://docs.fluentd.org/articles/output-plugin-overview]
-which scans a log stream text messages or JSON records for multi-line exception
-stack traces: If a consecutive sequence of log messages forms an exception stack
+which scans a log stream of text messages or JSON records containing single
+output lines for multi-line exception stack traces:
+If a consecutive sequence of single-line log messages forms an exception stack
 trace, the log messages are forwarded as a single, combined log message.
 Otherwise, the input log data is forwarded as is.
 
@@ -21,6 +22,9 @@ not reflected in the combined output. This plugin is intended to be used in
 cases where the content of log records that belong to a single exception stack
 are so similar (e.g. because they contain the timestamp of the log entry) that
 this loss of information is irrelevant.
+
+When combining exception lines, it is ensured that they end with a line
+separator.
 
 This is NOT an official Google product.
 
@@ -42,18 +46,21 @@ will also install and configure the gem.
 
 The plugin supports the following parameters:
 
+[remove_tag_prefix (required)]  The prefix to remove from the input tag when
+                    outputting a record. A prefix has to be a complete tag part.
+                    Example: If remove_tag_prefix is set to 'foo', the input
+                    tag foo.bar.baz is transformed to bar.baz and the input tag
+                    'foofoo.bar' is not modified.
+                    This must be non-empty to avoid infinite recursion in
+                    fluentd when processing the log entries that are re-emitted
+                    by the plugin.
+
 [message]  Name of the field in the JSON record that contains the
            single-line log messages that shall be scanned for exceptions.
            If this is set to '', the plugin will try 'message' and 'log',
            in that order.
            This parameter is only applicable to structured (JSON) log streams.
            Default: ''.
-
-[remove_tag_prefix]  The prefix to remove from the input tag when outputting
-                     a record. A prefix has to be a complete tag part.
-                     Example: If remove_tag_prefix is set to 'foo', the input
-                     tag foo.bar.baz is transformed to bar.baz and the input tag
-                     'foofoo.bar' is not modified. Default: empty string.
 
 [languages]  A list of language for which exception stack traces shall be
              detected. The values in the list can be separated by commas or
