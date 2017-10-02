@@ -12,8 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+require 'flexmock/test_unit'
 require_relative '../helper'
 require 'fluent/plugin/out_detect_exceptions'
+require 'json'
 
 class DetectExceptionsOutputTest < Test::Unit::TestCase
   def setup
@@ -36,11 +38,28 @@ Caused by: org.AnotherException
   at bar3
 END
 
+  PHP_EXC = <<END.freeze
+exception 'Exception' with message 'Custom exception' in /home/joe/work/test-php/test.php:5
+Stack trace:
+#0 /home/joe/work/test-php/test.php(9): func1()
+#1 /home/joe/work/test-php/test.php(13): func2()
+#2 {main}
+END
+
   PYTHON_EXC = <<END.freeze
 Traceback (most recent call last):
   File "/base/data/home/runtimes/python27/python27_lib/versions/third_party/webapp2-2.5.2/webapp2.py", line 1535, in __call__
     rv = self.handle_exception(request, response, e)
 Exception: ('spam', 'eggs')
+END
+
+  RUBY_EXC = <<END.freeze
+examble.rb:18:in `thrower': An error has occurred. (RuntimeError)
+  from examble.rb:14:in `caller'
+  from examble.rb:10:in `helper'
+  from examble.rb:6:in `writer'
+  from examble.rb:2:in `runner'
+  from examble.rb:21:in `<main>'
 END
 
   def create_driver(conf = CONFIG, tag = DEFAULT_TAG)
@@ -96,6 +115,62 @@ END
       feed_lines(d, t, *messages)
     end
     assert_equal(make_logs(t, *messages), d.events)
+  end
+
+  def test_ignore_nested_exceptions
+    test_cases = {
+      'php' => PHP_EXC,
+      'python' => PYTHON_EXC,
+      'ruby' => RUBY_EXC
+    }
+
+    test_cases.each do |language, exception|
+      cfg = "languages #{language}"
+      d = create_driver(cfg)
+      t = Time.now.to_i
+
+      # Convert exception to a single line to simplify the test case.
+      single_line_exception = exception.gsub("\n", '\\n')
+
+      # There is a nested exception within the body, we should ignore those!
+      json_line_with_exception = {
+        'timestamp' => {
+          'nanos' => 998_152_494,
+          'seconds' => 1_496_420_064
+        },
+        'message' => single_line_exception,
+        'thread' => 139_658_267_147_048,
+        'severity' => 'ERROR'
+      }.to_json + "\n"
+      json_line_without_exception = {
+        'timestamp' => {
+          'nanos' => 5_990_266,
+          'seconds' => 1_496_420_065
+        },
+        'message' => 'next line',
+        'thread' => 139_658_267_147_048,
+        'severity' => 'INFO'
+      }.to_json + "\n"
+
+      router_mock = flexmock('router')
+
+      # Validate that each line received is emitted separately as expected.
+      router_mock.should_receive(:emit)
+                 .once.with(DEFAULT_TAG, Integer,
+                            'message' => json_line_with_exception,
+                            'count' => 0)
+
+      router_mock.should_receive(:emit)
+                 .once.with(DEFAULT_TAG, Integer,
+                            'message' => json_line_without_exception,
+                            'count' => 1)
+
+      d.instance.router = router_mock
+
+      d.run do
+        feed_lines(d, t, json_line_with_exception + json_line_without_exception)
+      end
+    end
   end
 
   def test_single_language_config
@@ -183,7 +258,7 @@ END
     # exception. Then the rest is logged line-by-line.
     expected = [PYTHON_EXC.lines[0..1].join] + PYTHON_EXC.lines[2..-1] + \
                [JAVA_EXC.lines[0..1].join] + [JAVA_EXC.lines[2..3].join] + \
-               JAVA_EXC.lines[4.. -1]
+               JAVA_EXC.lines[4..-1]
     assert_equal(make_logs(t, *expected), d.events)
   end
 
