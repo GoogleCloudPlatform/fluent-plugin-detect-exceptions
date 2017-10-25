@@ -126,25 +126,92 @@ Stack trace:
 END
 
   GO_EXC = <<END.freeze
+panic: my panic
+
+goroutine 4 [running]:
+panic(0x45cb40, 0x47ad70)
+	/usr/local/go/src/runtime/panic.go:542 +0x46c fp=0xc42003f7b8 sp=0xc42003f710 pc=0x422f7c
+main.main.func1(0xc420024120)
+	foo.go:6 +0x39 fp=0xc42003f7d8 sp=0xc42003f7b8 pc=0x451339
+runtime.goexit()
+	/usr/local/go/src/runtime/asm_amd64.s:2337 +0x1 fp=0xc42003f7e0 sp=0xc42003f7d8 pc=0x44b4d1
+created by main.main
+	foo.go:5 +0x58
+
+goroutine 1 [chan receive]:
+runtime.gopark(0x4739b8, 0xc420024178, 0x46fcd7, 0xc, 0xc420028e17, 0x3)
+	/usr/local/go/src/runtime/proc.go:280 +0x12c fp=0xc420053e30 sp=0xc420053e00 pc=0x42503c
+runtime.goparkunlock(0xc420024178, 0x46fcd7, 0xc, 0x1000f010040c217, 0x3)
+	/usr/local/go/src/runtime/proc.go:286 +0x5e fp=0xc420053e70 sp=0xc420053e30 pc=0x42512e
+runtime.chanrecv(0xc420024120, 0x0, 0xc420053f01, 0x4512d8)
+	/usr/local/go/src/runtime/chan.go:506 +0x304 fp=0xc420053f20 sp=0xc420053e70 pc=0x4046b4
+runtime.chanrecv1(0xc420024120, 0x0)
+	/usr/local/go/src/runtime/chan.go:388 +0x2b fp=0xc420053f50 sp=0xc420053f20 pc=0x40439b
+main.main()
+	foo.go:9 +0x6f fp=0xc420053f80 sp=0xc420053f50 pc=0x4512ef
+runtime.main()
+	/usr/local/go/src/runtime/proc.go:185 +0x20d fp=0xc420053fe0 sp=0xc420053f80 pc=0x424bad
+runtime.goexit()
+	/usr/local/go/src/runtime/asm_amd64.s:2337 +0x1 fp=0xc420053fe8 sp=0xc420053fe0 pc=0x44b4d1
+
+goroutine 2 [force gc (idle)]:
+runtime.gopark(0x4739b8, 0x4ad720, 0x47001e, 0xf, 0x14, 0x1)
+	/usr/local/go/src/runtime/proc.go:280 +0x12c fp=0xc42003e768 sp=0xc42003e738 pc=0x42503c
+runtime.goparkunlock(0x4ad720, 0x47001e, 0xf, 0xc420000114, 0x1)
+	/usr/local/go/src/runtime/proc.go:286 +0x5e fp=0xc42003e7a8 sp=0xc42003e768 pc=0x42512e
+runtime.forcegchelper()
+	/usr/local/go/src/runtime/proc.go:238 +0xcc fp=0xc42003e7e0 sp=0xc42003e7a8 pc=0x424e5c
+runtime.goexit()
+	/usr/local/go/src/runtime/asm_amd64.s:2337 +0x1 fp=0xc42003e7e8 sp=0xc42003e7e0 pc=0x44b4d1
+created by runtime.init.4
+	/usr/local/go/src/runtime/proc.go:227 +0x35
+
+goroutine 3 [GC sweep wait]:
+runtime.gopark(0x4739b8, 0x4ad7e0, 0x46fdd2, 0xd, 0x419914, 0x1)
+	/usr/local/go/src/runtime/proc.go:280 +0x12c fp=0xc42003ef60 sp=0xc42003ef30 pc=0x42503c
+runtime.goparkunlock(0x4ad7e0, 0x46fdd2, 0xd, 0x14, 0x1)
+	/usr/local/go/src/runtime/proc.go:286 +0x5e fp=0xc42003efa0 sp=0xc42003ef60 pc=0x42512e
+runtime.bgsweep(0xc42001e150)
+	/usr/local/go/src/runtime/mgcsweep.go:52 +0xa3 fp=0xc42003efd8 sp=0xc42003efa0 pc=0x419973
+runtime.goexit()
+	/usr/local/go/src/runtime/asm_amd64.s:2337 +0x1 fp=0xc42003efe0 sp=0xc42003efd8 pc=0x44b4d1
+created by runtime.gcenable
+	/usr/local/go/src/runtime/mgc.go:216 +0x58
+END
+
+  GO_ON_GAE_EXC = <<END.freeze
 panic: runtime error: index out of range
 
 goroutine 12 [running]:
 main88989.memoryAccessException()
-  crash_example_go.go:58 +0x12a
+	crash_example_go.go:58 +0x12a
 main88989.handler(0x2afb7042a408, 0xc01042f880, 0xc0104d3450)
-  crash_example_go.go:36 +0x7ec
+	crash_example_go.go:36 +0x7ec
 net/http.HandlerFunc.ServeHTTP(0x13e5128, 0x2afb7042a408, 0xc01042f880, 0xc0104d3450)
-  go/src/net/http/server.go:1265 +0x56
+	go/src/net/http/server.go:1265 +0x56
 net/http.(*ServeMux).ServeHTTP(0xc01045cab0, 0x2afb7042a408, 0xc01042f880, 0xc0104d3450)
-  go/src/net/http/server.go:1541 +0x1b4
+	go/src/net/http/server.go:1541 +0x1b4
 appengine_internal.executeRequestSafely(0xc01042f880, 0xc0104d3450)
-  go/src/appengine_internal/api_prod.go:288 +0xb7
+	go/src/appengine_internal/api_prod.go:288 +0xb7
 appengine_internal.(*server).HandleRequest(0x15819b0, 0xc010401560, 0xc0104c8180, 0xc010431380, 0x0, 0x0)
-  go/src/appengine_internal/api_prod.go:222 +0x102b
+	go/src/appengine_internal/api_prod.go:222 +0x102b
 reflect.Value.call(0x1243fe0, 0x15819b0, 0x113, 0x12c8a20, 0x4, 0xc010485f78, 0x3, 0x3, 0x0, 0x0, ...)
-  /tmp/appengine/go/src/reflect/value.go:419 +0x10fd
+	/tmp/appengine/go/src/reflect/value.go:419 +0x10fd
 reflect.Value.Call(0x1243fe0, 0x15819b0, 0x113, 0xc010485f78, 0x3, 0x3, 0x0, 0x0, 0x0)
-  /tmp/ap"
+	/tmp/ap
+END
+
+  GO_SIGNAL_EXC = <<END.freeze
+panic: runtime error: invalid memory address or nil pointer dereference
+[signal SIGSEGV: segmentation violation code=0x1 addr=0x0 pc=0x7fd34f]
+
+goroutine 5 [running]:
+panics.nilPtrDereference()
+	panics/panics.go:33 +0x1f
+panics.Wait()
+	panics/panics.go:16 +0x3b
+created by main.main
+	server.go:20 +0x91
 END
 
   CSHARP_EXC = <<END.freeze
@@ -205,6 +272,8 @@ END
 
   ARBITRARY_TEXT = <<END.freeze
 This arbitrary text.
+It sounds tympanic: a word which means like a drum.
+
 I am glad it contains no exception.
 END
 
@@ -269,6 +338,8 @@ END
 
   def test_go
     check_exception(GO_EXC, false)
+    check_exception(GO_ON_GAE_EXC, false)
+    check_exception(GO_SIGNAL_EXC, false)
   end
 
   def test_ruby
@@ -285,6 +356,8 @@ END
     check_exception(PHP_ON_GAE_EXC, true)
     check_exception(CLIENT_JS_EXC, false)
     check_exception(GO_EXC, false)
+    check_exception(GO_ON_GAE_EXC, false)
+    check_exception(GO_SIGNAL_EXC, false)
     check_exception(CSHARP_EXC, false)
     check_exception(V8_JS_EXC, false)
     check_exception(RUBY_EXC, false)

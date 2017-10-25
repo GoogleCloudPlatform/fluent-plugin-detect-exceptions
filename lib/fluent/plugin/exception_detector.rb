@@ -75,11 +75,13 @@ module Fluent
     ].freeze
 
     GO_RULES = [
-      rule(:start_state, /panic: /, :go_before_goroutine),
-      rule(:go_before_goroutine, /^$/, :go_goroutine),
+      rule(:start_state, /\bpanic: /, :go_after_panic),
+      rule(:go_after_panic, /^$/, :go_goroutine),
+      rule(:go_after_panic, /^\[signal /, :go_after_signal),
+      rule(:go_after_signal, /^$/, :go_goroutine),
       rule(:go_goroutine, /^goroutine \d+ \[[^\]]+\]:$/, :go_frame_1),
-      rule(:go_frame_1, /(?:[^\s.():]+\.)*[^\s.():]\(/, :go_frame_2),
-      rule(:go_frame_1, /^$/, :go_before_goroutine),
+      rule(:go_frame_1, /^(?:[^\s.:]+\.)*[^\s.():]+\(|^created by /, :go_frame_2),
+      rule(:go_frame_1, /^$/, :go_goroutine),
       rule(:go_frame_2, /^\s/, :go_frame_1)
     ].freeze
 
