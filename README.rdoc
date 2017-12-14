@@ -55,6 +55,12 @@ The plugin supports the following parameters:
                      tag foo.bar.baz is transformed to bar.baz and the input tag
                      'foofoo.bar' is not modified. Default: empty string.
 
+[prepend_tag_prefix]  The prefix to add to the output tag when outputting
+                     a record.
+                     Example: If prepend_tag_prefix is set to 'foo', the input
+                     tag bar.baz is transformed to foo.bar.baz.
+                     Default: empty string.
+
 [languages]  A list of language for which exception stack traces shall be
              detected. The values in the list can be separated by commas or
              written as JSON list.

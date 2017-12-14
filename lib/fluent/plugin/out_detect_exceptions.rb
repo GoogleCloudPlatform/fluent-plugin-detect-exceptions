@@ -26,6 +26,8 @@ module Fluent
     config_param :message, :string, default: ''
     desc 'The prefix to be removed from the input tag when outputting a record.'
     config_param :remove_tag_prefix, :string, default: ''
+    desc 'The prefix to be added to the output tag when outputting a record.'
+    config_param :prepend_tag_prefix, :string, default: ''
     desc 'The interval of flushing the buffer for multiline format.'
     config_param :multiline_flush_interval, :time, default: nil
     desc 'Programming languages for which to detect exceptions. Default: all.'
@@ -90,6 +92,7 @@ module Fluent
         log_id.push(record.fetch(@stream, '')) unless @stream.empty?
         unless @accumulators.key?(log_id)
           out_tag = tag.sub(/^#{Regexp.escape(@remove_tag_prefix)}\./, '')
+          out_tag = "#{Regexp.escape(@prepend_tag_prefix)}.#{out_tag}" unless @prepend_tag_prefix.empty?
           @accumulators[log_id] =
             Fluent::TraceAccumulator.new(@message, @languages,
                                          max_lines: @max_lines,
