@@ -11,7 +11,7 @@ eos
   gem.homepage      = \
     'https://github.com/GoogleCloudPlatform/fluent-plugin-detect-exceptions'
   gem.license       = 'Apache-2.0'
-  gem.version       = '0.0.8'
+  gem.version       = '0.0.9'
   gem.authors       = ['Thomas Schickinger', 'Igor Peshansky']
   gem.email         = ['schickin@google.com', 'igorp@google.com']
   gem.required_ruby_version = Gem::Requirement.new('>= 2.0')
