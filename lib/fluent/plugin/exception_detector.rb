@@ -93,8 +93,15 @@ module Fluent
       rule(:ruby, /^[\t ]+.*?\.rb:\d+:in `/, :ruby)
     ].freeze
 
+    DART_RULES = [
+        rule(:start_state, /^Unhandled exception:$/, :dart_after_exception),
+        rule(:dart_after_exception, /^#\d*\s*.*?\(.*?\)$|^<asynchronous suspension>$/, :dart),
+        rule(:dart_after_exception, /^.*$/, :dart_after_exception),
+        rule(:dart, /^#\d*\s*.*?\(.*?\)$|^<asynchronous suspension>$/, :dart),
+    ].freeze
+
     ALL_RULES = (
-      JAVA_RULES + PYTHON_RULES + PHP_RULES + GO_RULES + RUBY_RULES).freeze
+      JAVA_RULES + PYTHON_RULES + PHP_RULES + GO_RULES + RUBY_RULES + DART_RULES).freeze
 
     RULES_BY_LANG = {
       java: JAVA_RULES,
@@ -107,6 +114,7 @@ module Fluent
       go: GO_RULES,
       rb: RUBY_RULES,
       ruby: RUBY_RULES,
+      dart: DART_RULES,
       all: ALL_RULES
     }.freeze
 
