@@ -270,6 +270,48 @@ END
   puma (3.10.0) lib/puma/thread_pool.rb:120:in `block in spawn_thread'
 END
 
+  DART_EXC = <<END.freeze
+Unhandled exception:
+some uncaught exception
+#0      handleFailure (file:///test/example/http/handling_an_httprequest_error.dart:16:3)
+#1      main (file:///test/example/http/handling_an_httprequest_error.dart:24:5)
+<asynchronous suspension>
+#2      _startIsolate.<anonymous closure> (dart:isolate-patch/isolate_patch.dart:265)
+#3      _RawReceivePortImpl._handleMessage (dart:isolate-patch/isolate_patch.dart:151)
+END
+
+  DART_COMPLEX_EXC = <<END.freeze
+Unhandled exception:
+'file:///test/express/test/server.dart': malformed type: line 31 pos 7: cannot resolve class 'TestClass' from '::'
+  new TestClass();
+      ^
+
+
+#0      _TypeError._throwNew (dart:core-patch/errors_patch.dart:82)
+#1      one (file:///test/express/test/server.dart:31:7)
+<asynchronous suspension>
+#2      main.<anonymous closure> (file:///test/express/test/server.dart:15:7)
+#3      _Route.managedRequestHandler.<anonymous closure> (package:express/_route.dart:34:23)
+#4      _Route.handle (package:express/_route.dart:27:23)
+#5      _Express.listen.<anonymous closure>.<anonymous closure>.<anonymous closure> (package:express/_express.dart:165:27)
+#6      _RootZone.runGuarded (dart:async/zone.dart:1296)
+#7      _BufferingStreamSubscription._sendDone.sendDone (dart:async/stream_impl.dart:384)
+#8      _BufferingStreamSubscription._sendDone (dart:async/stream_impl.dart:394)
+#9      _BufferingStreamSubscription._close (dart:async/stream_impl.dart:277)
+#10     _ForwardingStream._handleDone (dart:async/stream_pipe.dart:106)
+#11     _ForwardingStreamSubscription._handleDone (dart:async/stream_pipe.dart:172)
+#12     _RootZone.runGuarded (dart:async/zone.dart:1296)
+#13     _BufferingStreamSubscription._sendDone.sendDone (dart:async/stream_impl.dart:384)
+#14     _BufferingStreamSubscription._sendDone (dart:async/stream_impl.dart:394)
+#15     _DelayedDone.perform (dart:async/stream_impl.dart:598)
+#16     _StreamImplEvents.handleNext (dart:async/stream_impl.dart:695)
+#17     _PendingEvents.schedule.<anonymous closure> (dart:async/stream_impl.dart:655)
+#18     _microtaskLoop (dart:async/schedule_microtask.dart:41)
+#19     _startMicrotaskLoop (dart:async/schedule_microtask.dart:50)
+#20     _runPendingImmediateCallback (dart:isolate-patch/isolate_patch.dart:99)
+#21     _RawReceivePortImpl._handleMessage (dart:isolate-patch/isolate_patch.dart:152)
+END
+
   ARBITRARY_TEXT = <<END.freeze
 This arbitrary text.
 It sounds tympanic: a word which means like a drum.
@@ -347,6 +389,11 @@ END
     check_exception(RAILS_EXC, false)
   end
 
+  def test_dart
+    check_exception(DART_EXC, false)
+    check_exception(DART_COMPLEX_EXC, false)
+  end
+
   def test_mixed_languages
     check_exception(JAVA_EXC, false)
     check_exception(PYTHON_EXC, true)
@@ -361,6 +408,7 @@ END
     check_exception(CSHARP_EXC, false)
     check_exception(V8_JS_EXC, false)
     check_exception(RUBY_EXC, false)
+    check_exception(DART_EXC, false)
   end
 
   def test_reset
