@@ -409,6 +409,7 @@ END
     check_exception(V8_JS_EXC, false)
     check_exception(RUBY_EXC, false)
     check_exception(DART_EXC, false)
+    check_exception(DART_COMPLEX_EXC, false)
   end
 
   def test_reset
