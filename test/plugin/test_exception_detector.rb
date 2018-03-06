@@ -280,7 +280,7 @@ some uncaught exception
 #3      _RawReceivePortImpl._handleMessage (dart:isolate-patch/isolate_patch.dart:151)
 END
 
-  DART_COMPLEX_EXC = <<END.freeze
+  COMPLEX_DART_EXC = <<END.freeze
 Unhandled exception:
 'file:///test/express/test/server.dart': malformed type: line 31 pos 7: cannot resolve class 'TestClass' from '::'
   new TestClass();
@@ -391,7 +391,7 @@ END
 
   def test_dart
     check_exception(DART_EXC, false)
-    check_exception(DART_COMPLEX_EXC, false)
+    check_exception(COMPLEX_DART_EXC, false)
   end
 
   def test_mixed_languages
@@ -409,7 +409,7 @@ END
     check_exception(V8_JS_EXC, false)
     check_exception(RUBY_EXC, false)
     check_exception(DART_EXC, false)
-    check_exception(DART_COMPLEX_EXC, false)
+    check_exception(COMPLEX_DART_EXC, false)
   end
 
   def test_reset
