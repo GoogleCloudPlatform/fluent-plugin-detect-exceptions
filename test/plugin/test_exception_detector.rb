@@ -270,9 +270,29 @@ END
   puma (3.10.0) lib/puma/thread_pool.rb:120:in `block in spawn_thread'
 END
 
+  DART_ERR = <<END.freeze
+Unhandled exception:
+Instance of 'MyError'
+#0      main.<anonymous closure> (file:///Users/westoncooper/LN/fluent-plugin-detect-exceptions/test/errorTest.dart:15:20)
+#1      printError (file:///Users/westoncooper/LN/fluent-plugin-detect-exceptions/test/errorTest.dart:37:13)
+#2      main (file:///Users/westoncooper/LN/fluent-plugin-detect-exceptions/test/errorTest.dart:15:3)
+#3      _startIsolate.<anonymous closure> (dart:isolate-patch/isolate_patch.dart:265)
+#4      _RawReceivePortImpl._handleMessage (dart:isolate-patch/isolate_patch.dart:151)
+END
+
   DART_EXC = <<END.freeze
 Unhandled exception:
-some uncaught exception
+Exception: exception message
+#0      main.<anonymous closure> (file:///Users/westoncooper/LN/fluent-plugin-detect-exceptions/test/errorTest.dart:17:20)
+#1      printError (file:///Users/westoncooper/LN/fluent-plugin-detect-exceptions/test/errorTest.dart:37:13)
+#2      main (file:///Users/westoncooper/LN/fluent-plugin-detect-exceptions/test/errorTest.dart:17:3)
+#3      _startIsolate.<anonymous closure> (dart:isolate-patch/isolate_patch.dart:265)
+#4      _RawReceivePortImpl._handleMessage (dart:isolate-patch/isolate_patch.dart:151)
+END
+
+  DART_ASYNC_ERR = <<END.freeze
+Unhandled exception:
+Bad state: oops
 #0      handleFailure (file:///test/example/http/handling_an_httprequest_error.dart:16:3)
 #1      main (file:///test/example/http/handling_an_httprequest_error.dart:24:5)
 <asynchronous suspension>
@@ -280,38 +300,122 @@ some uncaught exception
 #3      _RawReceivePortImpl._handleMessage (dart:isolate-patch/isolate_patch.dart:151)
 END
 
-  COMPLEX_DART_EXC = <<END.freeze
+  DART_ZERO_ERR = <<END.freeze
 Unhandled exception:
-'file:///test/express/test/server.dart': malformed type: line 31 pos 7: cannot resolve class 'TestClass' from '::'
-  new TestClass();
-      ^
+IntegerDivisionByZeroException
+#0      main.<anonymous closure> (file:///Users/westoncooper/LN/fluent-plugin-detect-exceptions/test/errorTest.dart:27:20)
+#1      printError (file:///Users/westoncooper/LN/fluent-plugin-detect-exceptions/test/errorTest.dart:42:13)
+#2      main (file:///Users/westoncooper/LN/fluent-plugin-detect-exceptions/test/errorTest.dart:27:3)
+#3      _startIsolate.<anonymous closure> (dart:isolate-patch/isolate_patch.dart:265)
+#4      _RawReceivePortImpl._handleMessage (dart:isolate-patch/isolate_patch.dart:151)
+END
+
+  DART_ARGUMENT_ERR = <<END.freeze
+Unhandled exception:
+Invalid argument(s): invalid argument
+#0      main.<anonymous closure> (file:///Users/westoncooper/LN/fluent-plugin-detect-exceptions/test/errorTest.dart:23:20)
+#1      printError (file:///Users/westoncooper/LN/fluent-plugin-detect-exceptions/test/errorTest.dart:42:13)
+#2      main (file:///Users/westoncooper/LN/fluent-plugin-detect-exceptions/test/errorTest.dart:23:3)
+#3      _startIsolate.<anonymous closure> (dart:isolate-patch/isolate_patch.dart:265)
+#4      _RawReceivePortImpl._handleMessage (dart:isolate-patch/isolate_patch.dart:151)
+END
+
+  DART_RANGE_ERR = <<END.freeze
+Unhandled exception:
+RangeError (index): Invalid value: Valid value range is empty: 1
+#0      List.[] (dart:core-patch/growable_array.dart:151)
+#1      main.<anonymous closure> (file:///Users/westoncooper/LN/fluent-plugin-detect-exceptions/test/errorTest.dart:31:23)
+#2      printError (file:///Users/westoncooper/LN/fluent-plugin-detect-exceptions/test/errorTest.dart:42:13)
+#3      main (file:///Users/westoncooper/LN/fluent-plugin-detect-exceptions/test/errorTest.dart:29:3)
+#4      _startIsolate.<anonymous closure> (dart:isolate-patch/isolate_patch.dart:265)
+#5      _RawReceivePortImpl._handleMessage (dart:isolate-patch/isolate_patch.dart:151)
+END
+
+  DART_ASSERTION_ERR = <<END.freeze
+Unhandled exception:
+Assertion failed
+#0      main.<anonymous closure> (file:///Users/westoncooper/LN/fluent-plugin-detect-exceptions/test/errorTest.dart:9:20)
+#1      printError (file:///Users/westoncooper/LN/fluent-plugin-detect-exceptions/test/errorTest.dart:36:13)
+#2      main (file:///Users/westoncooper/LN/fluent-plugin-detect-exceptions/test/errorTest.dart:9:3)
+#3      _startIsolate.<anonymous closure> (dart:isolate-patch/isolate_patch.dart:265)
+#4      _RawReceivePortImpl._handleMessage (dart:isolate-patch/isolate_patch.dart:151)
+END
+
+  DART_ABSTRACT_CLASS_ERR = <<END.freeze
+Unhandled exception:
+Cannot instantiate abstract class LNClassName: _url 'null' line null
+#0      main.<anonymous closure> (file:///Users/westoncooper/LN/fluent-plugin-detect-exceptions/test/errorTest.dart:12:20)
+#1      printError (file:///Users/westoncooper/LN/fluent-plugin-detect-exceptions/test/errorTest.dart:36:13)
+#2      main (file:///Users/westoncooper/LN/fluent-plugin-detect-exceptions/test/errorTest.dart:12:3)
+#3      _startIsolate.<anonymous closure> (dart:isolate-patch/isolate_patch.dart:265)
+#4      _RawReceivePortImpl._handleMessage (dart:isolate-patch/isolate_patch.dart:151)
+END
+
+  DART_TYPE_ERR = <<END.freeze
+Unhandled exception:
+'file:///Users/westoncooper/LN/fluent-plugin-detect-exceptions/test/errorTest.dart': malformed type: line 7 pos 24: cannot resolve class 'NoType' from '::'
+  printError( () { new NoType(); } );
+                       ^
 
 
 #0      _TypeError._throwNew (dart:core-patch/errors_patch.dart:82)
-#1      one (file:///test/express/test/server.dart:31:7)
-<asynchronous suspension>
-#2      main.<anonymous closure> (file:///test/express/test/server.dart:15:7)
-#3      _Route.managedRequestHandler.<anonymous closure> (package:express/_route.dart:34:23)
-#4      _Route.handle (package:express/_route.dart:27:23)
-#5      _Express.listen.<anonymous closure>.<anonymous closure>.<anonymous closure> (package:express/_express.dart:165:27)
-#6      _RootZone.runGuarded (dart:async/zone.dart:1296)
-#7      _BufferingStreamSubscription._sendDone.sendDone (dart:async/stream_impl.dart:384)
-#8      _BufferingStreamSubscription._sendDone (dart:async/stream_impl.dart:394)
-#9      _BufferingStreamSubscription._close (dart:async/stream_impl.dart:277)
-#10     _ForwardingStream._handleDone (dart:async/stream_pipe.dart:106)
-#11     _ForwardingStreamSubscription._handleDone (dart:async/stream_pipe.dart:172)
-#12     _RootZone.runGuarded (dart:async/zone.dart:1296)
-#13     _BufferingStreamSubscription._sendDone.sendDone (dart:async/stream_impl.dart:384)
-#14     _BufferingStreamSubscription._sendDone (dart:async/stream_impl.dart:394)
-#15     _DelayedDone.perform (dart:async/stream_impl.dart:598)
-#16     _StreamImplEvents.handleNext (dart:async/stream_impl.dart:695)
-#17     _PendingEvents.schedule.<anonymous closure> (dart:async/stream_impl.dart:655)
-#18     _microtaskLoop (dart:async/schedule_microtask.dart:41)
-#19     _startMicrotaskLoop (dart:async/schedule_microtask.dart:50)
-#20     _runPendingImmediateCallback (dart:isolate-patch/isolate_patch.dart:99)
-#21     _RawReceivePortImpl._handleMessage (dart:isolate-patch/isolate_patch.dart:152)
+#1      main.<anonymous closure> (file:///Users/westoncooper/LN/fluent-plugin-detect-exceptions/test/errorTest.dart:7:24)
+#2      printError (file:///Users/westoncooper/LN/fluent-plugin-detect-exceptions/test/errorTest.dart:36:13)
+#3      main (file:///Users/westoncooper/LN/fluent-plugin-detect-exceptions/test/errorTest.dart:7:3)
+#4      _startIsolate.<anonymous closure> (dart:isolate-patch/isolate_patch.dart:265)
+#5      _RawReceivePortImpl._handleMessage (dart:isolate-patch/isolate_patch.dart:151)
 END
 
+  DART_FORMAT_A_ERR = <<END.freeze
+Unhandled exception:
+FormatException: format exception
+#0      main.<anonymous closure> (file:///Users/westoncooper/LN/fluent-plugin-detect-exceptions/test/errorTest.dart:25:20)
+#1      printError (file:///Users/westoncooper/LN/fluent-plugin-detect-exceptions/test/errorTest.dart:42:13)
+#2      main (file:///Users/westoncooper/LN/fluent-plugin-detect-exceptions/test/errorTest.dart:25:3)
+#3      _startIsolate.<anonymous closure> (dart:isolate-patch/isolate_patch.dart:265)
+#4      _RawReceivePortImpl._handleMessage (dart:isolate-patch/isolate_patch.dart:151)
+END
+
+  DART_FORMAT_B_ERR = <<END.freeze
+Unhandled exception:
+FormatException: Invalid base64 data (at line 3, character 8)
+this is not valid
+       ^
+
+#0      main.<anonymous closure> (file:///Users/westoncooper/LN/fluent-plugin-detect-exceptions/test/errorTest.dart:24:20)
+#1      printError (file:///Users/westoncooper/LN/fluent-plugin-detect-exceptions/test/errorTest.dart:42:13)
+#2      main (file:///Users/westoncooper/LN/fluent-plugin-detect-exceptions/test/errorTest.dart:24:3)
+#3      _startIsolate.<anonymous closure> (dart:isolate-patch/isolate_patch.dart:265)
+#4      _RawReceivePortImpl._handleMessage (dart:isolate-patch/isolate_patch.dart:151)
+END
+
+  DART_NO_METHOD_A_ERR = <<END.freeze
+Unhandled exception:
+NoSuchMethodError: No constructor 'TypeError' with matching arguments declared in class 'TypeError'.
+Receiver: Type: class 'TypeError'
+Tried calling: new TypeError("Invalid base64 data", "invalid", 36)
+Found: new TypeError()
+#0      NoSuchMethodError._throwNew (dart:core-patch/errors_patch.dart:196)
+#1      main.<anonymous closure> (file:///Users/westoncooper/LN/fluent-plugin-detect-exceptions/test/errorTest.dart:8:39)
+#2      printError (file:///Users/westoncooper/LN/fluent-plugin-detect-exceptions/test/errorTest.dart:36:13)
+#3      main (file:///Users/westoncooper/LN/fluent-plugin-detect-exceptions/test/errorTest.dart:8:3)
+#4      _startIsolate.<anonymous closure> (dart:isolate-patch/isolate_patch.dart:265)
+#5      _RawReceivePortImpl._handleMessage (dart:isolate-patch/isolate_patch.dart:151)
+END
+
+  DART_NO_METHOD_B_ERR = <<END.freeze
+Unhandled exception:
+NoSuchMethodError: No top-level method 'noMethod' declared.
+Receiver: top-level
+Tried calling: noMethod()
+#0      NoSuchMethodError._throwNew (dart:core-patch/errors_patch.dart:196)
+#1      main.<anonymous closure> (file:///Users/westoncooper/LN/fluent-plugin-detect-exceptions/test/errorTest.dart:10:20)
+#2      printError (file:///Users/westoncooper/LN/fluent-plugin-detect-exceptions/test/errorTest.dart:36:13)
+#3      main (file:///Users/westoncooper/LN/fluent-plugin-detect-exceptions/test/errorTest.dart:10:3)
+#4      _startIsolate.<anonymous closure> (dart:isolate-patch/isolate_patch.dart:265)
+#5      _RawReceivePortImpl._handleMessage (dart:isolate-patch/isolate_patch.dart:151)
+END
+  
   ARBITRARY_TEXT = <<END.freeze
 This arbitrary text.
 It sounds tympanic: a word which means like a drum.
@@ -390,8 +494,19 @@ END
   end
 
   def test_dart
+    check_exception(DART_ERR, false)
     check_exception(DART_EXC, false)
-    check_exception(COMPLEX_DART_EXC, false)
+    check_exception(DART_ASYNC_ERR, false)
+    check_exception(DART_ZERO_ERR, false)
+    check_exception(DART_ARGUMENT_ERR, false)
+    check_exception(DART_RANGE_ERR, false)
+    check_exception(DART_TYPE_ERR, false)
+    check_exception(DART_FORMAT_A_ERR, false)
+    check_exception(DART_FORMAT_B_ERR, false)
+    check_exception(DART_NO_METHOD_A_ERR, false)
+    check_exception(DART_NO_METHOD_B_ERR, false)
+    check_exception(DART_ASSERTION_ERR, false)
+    check_exception(DART_ABSTRACT_CLASS_ERR, false)
   end
 
   def test_mixed_languages
@@ -408,8 +523,19 @@ END
     check_exception(CSHARP_EXC, false)
     check_exception(V8_JS_EXC, false)
     check_exception(RUBY_EXC, false)
+    check_exception(DART_ERR, false)
     check_exception(DART_EXC, false)
-    check_exception(COMPLEX_DART_EXC, false)
+    check_exception(DART_ASYNC_ERR, false)
+    check_exception(DART_ZERO_ERR, false)
+    check_exception(DART_ARGUMENT_ERR, false)
+    check_exception(DART_RANGE_ERR, false)
+    check_exception(DART_TYPE_ERR, false)
+    check_exception(DART_FORMAT_A_ERR, false)
+    check_exception(DART_FORMAT_B_ERR, false)
+    check_exception(DART_NO_METHOD_A_ERR, false)
+    check_exception(DART_NO_METHOD_B_ERR, false)
+    check_exception(DART_ASSERTION_ERR, false)
+    check_exception(DART_ABSTRACT_CLASS_ERR, false)
   end
 
   def test_reset

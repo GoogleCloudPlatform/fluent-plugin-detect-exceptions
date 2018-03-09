@@ -94,11 +94,32 @@ module Fluent
     ].freeze
 
     DART_RULES = [
-      rule(:start_state, /^Unhandled exception:$/, :dart_after_exception),
-      rule(:dart_after_exception,
-           /^#\d*\s*.*?\(.*?\)$|^<asynchronous suspension>$/, :dart),
-      rule(:dart_after_exception, /^.*$/, :dart_after_exception),
-      rule(:dart, /^#\d*\s*.*?\(.*?\)$|^<asynchronous suspension>$/, :dart)
+      rule(:start_state, /^Unhandled exception:$/, :dart_exc),
+      rule(:dart_exc, /^Instance of/, :dart_stack),
+      rule(:dart_exc, /^Exception/, :dart_stack),
+      rule(:dart_exc, /^Bad state/, :dart_stack),
+      rule(:dart_exc, /^IntegerDivisionByZeroException/, :dart_stack),
+      rule(:dart_exc, /^Invalid argument/, :dart_stack),
+      rule(:dart_exc, /^RangeError/, :dart_stack),
+      rule(:dart_exc, /^Assertion failed/, :dart_stack),
+      rule(:dart_exc, /^Cannot instantiate/, :dart_stack),
+      rule(:dart_exc, /^'.+?':.+?$/, :dart_type_err_1),
+      rule(:dart_type_err_1, /^.+?$/, :dart_type_err_2),
+      rule(:dart_type_err_2, /^.*?\^.*?$/, :dart_type_err_3),
+      rule(:dart_type_err_3, /^$/, :dart_type_err_4),
+      rule(:dart_type_err_4, /^$/, :dart_stack),
+      rule(:dart_exc, /^FormatException/, :dart_format_err_1),
+      rule(:dart_format_err_1, /^#\d+\s+.+?\(.+?\)$/, :dart_stack),
+      rule(:dart_format_err_1, /^./, :dart_format_err_2),
+      rule(:dart_format_err_2, /^.*?\^/, :dart_format_err_3),
+      rule(:dart_format_err_3, /^$/, :dart_stack),
+      rule(:dart_exc, /^NoSuchMethodError:/, :dart_method_err_1),
+      rule(:dart_method_err_1, /^Receiver:/, :dart_method_err_2),
+      rule(:dart_method_err_2, /^Tried calling:/, :dart_method_err_3),
+      rule(:dart_method_err_3, /^Found:/, :dart_stack),
+      rule(:dart_method_err_3, /^#\d+\s+.+?\(.+?\)$/, :dart_stack),
+      rule(:dart_stack, /^#\d+\s+.+?\(.+?\)$/, :dart_stack),
+      rule(:dart_stack, /^<asynchronous suspension>$/, :dart_stack)
     ].freeze
 
     ALL_RULES = (
