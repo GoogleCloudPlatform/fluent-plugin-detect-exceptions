@@ -361,7 +361,7 @@ Reading static variable 'variable' during its initialization
 #4      _RawReceivePortImpl._handleMessage (dart:isolate-patch/isolate_patch.dart:151)
 END
 
-  DART_UNIMPL_ERR = <<END.freeze
+  DART_UNIMPLIED_ERR = <<END.freeze
 Unhandled exception:
 UnimplementedError: unimplemented
 #0      main.<anonymous closure> (file:///Users/westoncooper/LN/fluent-plugin-detect-exceptions/test/errorTest.dart:38:20)
@@ -407,6 +407,16 @@ Stack Overflow
 #0      main.<anonymous closure> (file:///Users/westoncooper/LN/fluent-plugin-detect-exceptions/test/errorTest.dart:33:20)
 #1      printError (file:///Users/westoncooper/LN/fluent-plugin-detect-exceptions/test/errorTest.dart:61:13)
 #2      main (file:///Users/westoncooper/LN/fluent-plugin-detect-exceptions/test/errorTest.dart:33:3)
+#3      _startIsolate.<anonymous closure> (dart:isolate-patch/isolate_patch.dart:265)
+#4      _RawReceivePortImpl._handleMessage (dart:isolate-patch/isolate_patch.dart:151)
+END
+
+  DART_FALLTHROUGH_ERR = <<END.freeze
+Unhandled exception:
+'null': Switch case fall-through at line null.
+#0      main.<anonymous closure> (file:///Users/westoncooper/LN/fluent-plugin-detect-exceptions/test/errorTest.dart:39:20)
+#1      printError (file:///Users/westoncooper/LN/fluent-plugin-detect-exceptions/test/errorTest.dart:51:13)
+#2      main (file:///Users/westoncooper/LN/fluent-plugin-detect-exceptions/test/errorTest.dart:39:3)
 #3      _startIsolate.<anonymous closure> (dart:isolate-patch/isolate_patch.dart:265)
 #4      _RawReceivePortImpl._handleMessage (dart:isolate-patch/isolate_patch.dart:151)
 END
@@ -561,11 +571,12 @@ END
     check_exception(DART_ARGUMENT_ERR, false)
     check_exception(DART_RANGE_ERR, false)
     check_exception(DART_READ_STATIC_ERR, false)
-    check_exception(DART_UNIMPL_ERR, false)
+    check_exception(DART_UNIMPLIED_ERR, false)
     check_exception(DART_UNSUPPORTED_ERR, false)
     check_exception(DART_CONCUR_MOD_ERR, false)
     check_exception(DART_MEMORY_ERR, false)
     check_exception(DART_STACK_ERR, false)
+    check_exception(DART_FALLTHROUGH_ERR, false)
     check_exception(DART_TYPE_ERR, false)
     check_exception(DART_FORMAT_A_ERR, false)
     check_exception(DART_FORMAT_B_ERR, false)
@@ -596,11 +607,12 @@ END
     check_exception(DART_ARGUMENT_ERR, false)
     check_exception(DART_RANGE_ERR, false)
     check_exception(DART_READ_STATIC_ERR, false)
-    check_exception(DART_UNIMPL_ERR, false)
+    check_exception(DART_UNIMPLIED_ERR, false)
     check_exception(DART_UNSUPPORTED_ERR, false)
     check_exception(DART_CONCUR_MOD_ERR, false)
     check_exception(DART_MEMORY_ERR, false)
     check_exception(DART_STACK_ERR, false)
+    check_exception(DART_FALLTHROUGH_ERR, false)
     check_exception(DART_TYPE_ERR, false)
     check_exception(DART_FORMAT_A_ERR, false)
     check_exception(DART_FORMAT_B_ERR, false)
