@@ -351,6 +351,66 @@ Cannot instantiate abstract class LNClassName: _url 'null' line null
 #4      _RawReceivePortImpl._handleMessage (dart:isolate-patch/isolate_patch.dart:151)
 END
 
+  DART_READ_STATIC_ERR = <<END.freeze
+Unhandled exception:
+Reading static variable 'variable' during its initialization
+#0      main.<anonymous closure> (file:///Users/westoncooper/LN/fluent-plugin-detect-exceptions/test/errorTest.dart:28:20)
+#1      printError (file:///Users/westoncooper/LN/fluent-plugin-detect-exceptions/test/errorTest.dart:43:13)
+#2      main (file:///Users/westoncooper/LN/fluent-plugin-detect-exceptions/test/errorTest.dart:28:3)
+#3      _startIsolate.<anonymous closure> (dart:isolate-patch/isolate_patch.dart:265)
+#4      _RawReceivePortImpl._handleMessage (dart:isolate-patch/isolate_patch.dart:151)
+END
+
+  DART_UNIMPL_ERR = <<END.freeze
+Unhandled exception:
+UnimplementedError: unimplemented
+#0      main.<anonymous closure> (file:///Users/westoncooper/LN/fluent-plugin-detect-exceptions/test/errorTest.dart:38:20)
+#1      printError (file:///Users/westoncooper/LN/fluent-plugin-detect-exceptions/test/errorTest.dart:61:13)
+#2      main (file:///Users/westoncooper/LN/fluent-plugin-detect-exceptions/test/errorTest.dart:38:3)
+#3      _startIsolate.<anonymous closure> (dart:isolate-patch/isolate_patch.dart:265)
+#4      _RawReceivePortImpl._handleMessage (dart:isolate-patch/isolate_patch.dart:151)
+END
+
+  DART_UNSUPPORTED_ERR = <<END.freeze
+Unhandled exception:
+Unsupported operation: unsupported
+#0      main.<anonymous closure> (file:///Users/westoncooper/LN/fluent-plugin-detect-exceptions/test/errorTest.dart:36:20)
+#1      printError (file:///Users/westoncooper/LN/fluent-plugin-detect-exceptions/test/errorTest.dart:61:13)
+#2      main (file:///Users/westoncooper/LN/fluent-plugin-detect-exceptions/test/errorTest.dart:36:3)
+#3      _startIsolate.<anonymous closure> (dart:isolate-patch/isolate_patch.dart:265)
+#4      _RawReceivePortImpl._handleMessage (dart:isolate-patch/isolate_patch.dart:151)
+END
+
+  DART_CONCUR_MOD_ERR = <<END.freeze
+Unhandled exception:
+Concurrent modification during iteration.
+#0      main.<anonymous closure> (file:///Users/westoncooper/LN/fluent-plugin-detect-exceptions/test/errorTest.dart:35:20)
+#1      printError (file:///Users/westoncooper/LN/fluent-plugin-detect-exceptions/test/errorTest.dart:61:13)
+#2      main (file:///Users/westoncooper/LN/fluent-plugin-detect-exceptions/test/errorTest.dart:35:3)
+#3      _startIsolate.<anonymous closure> (dart:isolate-patch/isolate_patch.dart:265)
+#4      _RawReceivePortImpl._handleMessage (dart:isolate-patch/isolate_patch.dart:151)
+END
+
+  DART_MEMORY_ERR = <<END.freeze
+Unhandled exception:
+Out of Memory
+#0      main.<anonymous closure> (file:///Users/westoncooper/LN/fluent-plugin-detect-exceptions/test/errorTest.dart:34:20)
+#1      printError (file:///Users/westoncooper/LN/fluent-plugin-detect-exceptions/test/errorTest.dart:61:13)
+#2      main (file:///Users/westoncooper/LN/fluent-plugin-detect-exceptions/test/errorTest.dart:34:3)
+#3      _startIsolate.<anonymous closure> (dart:isolate-patch/isolate_patch.dart:265)
+#4      _RawReceivePortImpl._handleMessage (dart:isolate-patch/isolate_patch.dart:151)
+END
+
+  DART_STACK_ERR = <<END.freeze
+Unhandled exception:
+Stack Overflow
+#0      main.<anonymous closure> (file:///Users/westoncooper/LN/fluent-plugin-detect-exceptions/test/errorTest.dart:33:20)
+#1      printError (file:///Users/westoncooper/LN/fluent-plugin-detect-exceptions/test/errorTest.dart:61:13)
+#2      main (file:///Users/westoncooper/LN/fluent-plugin-detect-exceptions/test/errorTest.dart:33:3)
+#3      _startIsolate.<anonymous closure> (dart:isolate-patch/isolate_patch.dart:265)
+#4      _RawReceivePortImpl._handleMessage (dart:isolate-patch/isolate_patch.dart:151)
+END
+
   DART_TYPE_ERR = <<END.freeze
 Unhandled exception:
 'file:///Users/westoncooper/LN/fluent-plugin-detect-exceptions/test/errorTest.dart': malformed type: line 7 pos 24: cannot resolve class 'NoType' from '::'
@@ -415,7 +475,7 @@ Tried calling: noMethod()
 #4      _startIsolate.<anonymous closure> (dart:isolate-patch/isolate_patch.dart:265)
 #5      _RawReceivePortImpl._handleMessage (dart:isolate-patch/isolate_patch.dart:151)
 END
-  
+
   ARBITRARY_TEXT = <<END.freeze
 This arbitrary text.
 It sounds tympanic: a word which means like a drum.
@@ -500,6 +560,12 @@ END
     check_exception(DART_ZERO_ERR, false)
     check_exception(DART_ARGUMENT_ERR, false)
     check_exception(DART_RANGE_ERR, false)
+    check_exception(DART_READ_STATIC_ERR, false)
+    check_exception(DART_UNIMPL_ERR, false)
+    check_exception(DART_UNSUPPORTED_ERR, false)
+    check_exception(DART_CONCUR_MOD_ERR, false)
+    check_exception(DART_MEMORY_ERR, false)
+    check_exception(DART_STACK_ERR, false)
     check_exception(DART_TYPE_ERR, false)
     check_exception(DART_FORMAT_A_ERR, false)
     check_exception(DART_FORMAT_B_ERR, false)
@@ -529,6 +595,12 @@ END
     check_exception(DART_ZERO_ERR, false)
     check_exception(DART_ARGUMENT_ERR, false)
     check_exception(DART_RANGE_ERR, false)
+    check_exception(DART_READ_STATIC_ERR, false)
+    check_exception(DART_UNIMPL_ERR, false)
+    check_exception(DART_UNSUPPORTED_ERR, false)
+    check_exception(DART_CONCUR_MOD_ERR, false)
+    check_exception(DART_MEMORY_ERR, false)
+    check_exception(DART_STACK_ERR, false)
     check_exception(DART_TYPE_ERR, false)
     check_exception(DART_FORMAT_A_ERR, false)
     check_exception(DART_FORMAT_B_ERR, false)
