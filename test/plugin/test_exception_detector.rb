@@ -273,9 +273,9 @@ END
   DART_ERR = <<END.freeze
 Unhandled exception:
 Instance of 'MyError'
-#0      main.<anonymous closure> (file:///Users/westoncooper/LN/fluent-plugin-detect-exceptions/test/errorTest.dart:15:20)
-#1      printError (file:///Users/westoncooper/LN/fluent-plugin-detect-exceptions/test/errorTest.dart:37:13)
-#2      main (file:///Users/westoncooper/LN/fluent-plugin-detect-exceptions/test/errorTest.dart:15:3)
+#0      main.<anonymous closure> (file:///path/to/code/dartFile.dart:15:20)
+#1      printError (file:///path/to/code/dartFile.dart:37:13)
+#2      main (file:///path/to/code/dartFile.dart:15:3)
 #3      _startIsolate.<anonymous closure> (dart:isolate-patch/isolate_patch.dart:265)
 #4      _RawReceivePortImpl._handleMessage (dart:isolate-patch/isolate_patch.dart:151)
 END
@@ -283,9 +283,9 @@ END
   DART_EXC = <<END.freeze
 Unhandled exception:
 Exception: exception message
-#0      main.<anonymous closure> (file:///Users/westoncooper/LN/fluent-plugin-detect-exceptions/test/errorTest.dart:17:20)
-#1      printError (file:///Users/westoncooper/LN/fluent-plugin-detect-exceptions/test/errorTest.dart:37:13)
-#2      main (file:///Users/westoncooper/LN/fluent-plugin-detect-exceptions/test/errorTest.dart:17:3)
+#0      main.<anonymous closure> (file:///path/to/code/dartFile.dart:17:20)
+#1      printError (file:///path/to/code/dartFile.dart:37:13)
+#2      main (file:///path/to/code/dartFile.dart:17:3)
 #3      _startIsolate.<anonymous closure> (dart:isolate-patch/isolate_patch.dart:265)
 #4      _RawReceivePortImpl._handleMessage (dart:isolate-patch/isolate_patch.dart:151)
 END
@@ -300,12 +300,12 @@ Bad state: oops
 #3      _RawReceivePortImpl._handleMessage (dart:isolate-patch/isolate_patch.dart:151)
 END
 
-  DART_ZERO_ERR = <<END.freeze
+  DART_DIVIDE_BY_ZERO_ERR = <<END.freeze
 Unhandled exception:
 IntegerDivisionByZeroException
-#0      main.<anonymous closure> (file:///Users/westoncooper/LN/fluent-plugin-detect-exceptions/test/errorTest.dart:27:20)
-#1      printError (file:///Users/westoncooper/LN/fluent-plugin-detect-exceptions/test/errorTest.dart:42:13)
-#2      main (file:///Users/westoncooper/LN/fluent-plugin-detect-exceptions/test/errorTest.dart:27:3)
+#0      main.<anonymous closure> (file:///path/to/code/dartFile.dart:27:20)
+#1      printError (file:///path/to/code/dartFile.dart:42:13)
+#2      main (file:///path/to/code/dartFile.dart:27:3)
 #3      _startIsolate.<anonymous closure> (dart:isolate-patch/isolate_patch.dart:265)
 #4      _RawReceivePortImpl._handleMessage (dart:isolate-patch/isolate_patch.dart:151)
 END
@@ -313,9 +313,9 @@ END
   DART_ARGUMENT_ERR = <<END.freeze
 Unhandled exception:
 Invalid argument(s): invalid argument
-#0      main.<anonymous closure> (file:///Users/westoncooper/LN/fluent-plugin-detect-exceptions/test/errorTest.dart:23:20)
-#1      printError (file:///Users/westoncooper/LN/fluent-plugin-detect-exceptions/test/errorTest.dart:42:13)
-#2      main (file:///Users/westoncooper/LN/fluent-plugin-detect-exceptions/test/errorTest.dart:23:3)
+#0      main.<anonymous closure> (file:///path/to/code/dartFile.dart:23:20)
+#1      printError (file:///path/to/code/dartFile.dart:42:13)
+#2      main (file:///path/to/code/dartFile.dart:23:3)
 #3      _startIsolate.<anonymous closure> (dart:isolate-patch/isolate_patch.dart:265)
 #4      _RawReceivePortImpl._handleMessage (dart:isolate-patch/isolate_patch.dart:151)
 END
@@ -324,9 +324,9 @@ END
 Unhandled exception:
 RangeError (index): Invalid value: Valid value range is empty: 1
 #0      List.[] (dart:core-patch/growable_array.dart:151)
-#1      main.<anonymous closure> (file:///Users/westoncooper/LN/fluent-plugin-detect-exceptions/test/errorTest.dart:31:23)
-#2      printError (file:///Users/westoncooper/LN/fluent-plugin-detect-exceptions/test/errorTest.dart:42:13)
-#3      main (file:///Users/westoncooper/LN/fluent-plugin-detect-exceptions/test/errorTest.dart:29:3)
+#1      main.<anonymous closure> (file:///path/to/code/dartFile.dart:31:23)
+#2      printError (file:///path/to/code/dartFile.dart:42:13)
+#3      main (file:///path/to/code/dartFile.dart:29:3)
 #4      _startIsolate.<anonymous closure> (dart:isolate-patch/isolate_patch.dart:265)
 #5      _RawReceivePortImpl._handleMessage (dart:isolate-patch/isolate_patch.dart:151)
 END
@@ -334,9 +334,9 @@ END
   DART_ASSERTION_ERR = <<END.freeze
 Unhandled exception:
 Assertion failed
-#0      main.<anonymous closure> (file:///Users/westoncooper/LN/fluent-plugin-detect-exceptions/test/errorTest.dart:9:20)
-#1      printError (file:///Users/westoncooper/LN/fluent-plugin-detect-exceptions/test/errorTest.dart:36:13)
-#2      main (file:///Users/westoncooper/LN/fluent-plugin-detect-exceptions/test/errorTest.dart:9:3)
+#0      main.<anonymous closure> (file:///path/to/code/dartFile.dart:9:20)
+#1      printError (file:///path/to/code/dartFile.dart:36:13)
+#2      main (file:///path/to/code/dartFile.dart:9:3)
 #3      _startIsolate.<anonymous closure> (dart:isolate-patch/isolate_patch.dart:265)
 #4      _RawReceivePortImpl._handleMessage (dart:isolate-patch/isolate_patch.dart:151)
 END
@@ -344,9 +344,9 @@ END
   DART_ABSTRACT_CLASS_ERR = <<END.freeze
 Unhandled exception:
 Cannot instantiate abstract class LNClassName: _url 'null' line null
-#0      main.<anonymous closure> (file:///Users/westoncooper/LN/fluent-plugin-detect-exceptions/test/errorTest.dart:12:20)
-#1      printError (file:///Users/westoncooper/LN/fluent-plugin-detect-exceptions/test/errorTest.dart:36:13)
-#2      main (file:///Users/westoncooper/LN/fluent-plugin-detect-exceptions/test/errorTest.dart:12:3)
+#0      main.<anonymous closure> (file:///path/to/code/dartFile.dart:12:20)
+#1      printError (file:///path/to/code/dartFile.dart:36:13)
+#2      main (file:///path/to/code/dartFile.dart:12:3)
 #3      _startIsolate.<anonymous closure> (dart:isolate-patch/isolate_patch.dart:265)
 #4      _RawReceivePortImpl._handleMessage (dart:isolate-patch/isolate_patch.dart:151)
 END
@@ -354,19 +354,19 @@ END
   DART_READ_STATIC_ERR = <<END.freeze
 Unhandled exception:
 Reading static variable 'variable' during its initialization
-#0      main.<anonymous closure> (file:///Users/westoncooper/LN/fluent-plugin-detect-exceptions/test/errorTest.dart:28:20)
-#1      printError (file:///Users/westoncooper/LN/fluent-plugin-detect-exceptions/test/errorTest.dart:43:13)
-#2      main (file:///Users/westoncooper/LN/fluent-plugin-detect-exceptions/test/errorTest.dart:28:3)
+#0      main.<anonymous closure> (file:///path/to/code/dartFile.dart:28:20)
+#1      printError (file:///path/to/code/dartFile.dart:43:13)
+#2      main (file:///path/to/code/dartFile.dart:28:3)
 #3      _startIsolate.<anonymous closure> (dart:isolate-patch/isolate_patch.dart:265)
 #4      _RawReceivePortImpl._handleMessage (dart:isolate-patch/isolate_patch.dart:151)
 END
 
-  DART_UNIMPLIED_ERR = <<END.freeze
+  DART_UNIMPLEMENTED_ERROR = <<END.freeze
 Unhandled exception:
 UnimplementedError: unimplemented
-#0      main.<anonymous closure> (file:///Users/westoncooper/LN/fluent-plugin-detect-exceptions/test/errorTest.dart:38:20)
-#1      printError (file:///Users/westoncooper/LN/fluent-plugin-detect-exceptions/test/errorTest.dart:61:13)
-#2      main (file:///Users/westoncooper/LN/fluent-plugin-detect-exceptions/test/errorTest.dart:38:3)
+#0      main.<anonymous closure> (file:///path/to/code/dartFile.dart:38:20)
+#1      printError (file:///path/to/code/dartFile.dart:61:13)
+#2      main (file:///path/to/code/dartFile.dart:38:3)
 #3      _startIsolate.<anonymous closure> (dart:isolate-patch/isolate_patch.dart:265)
 #4      _RawReceivePortImpl._handleMessage (dart:isolate-patch/isolate_patch.dart:151)
 END
@@ -374,39 +374,39 @@ END
   DART_UNSUPPORTED_ERR = <<END.freeze
 Unhandled exception:
 Unsupported operation: unsupported
-#0      main.<anonymous closure> (file:///Users/westoncooper/LN/fluent-plugin-detect-exceptions/test/errorTest.dart:36:20)
-#1      printError (file:///Users/westoncooper/LN/fluent-plugin-detect-exceptions/test/errorTest.dart:61:13)
-#2      main (file:///Users/westoncooper/LN/fluent-plugin-detect-exceptions/test/errorTest.dart:36:3)
+#0      main.<anonymous closure> (file:///path/to/code/dartFile.dart:36:20)
+#1      printError (file:///path/to/code/dartFile.dart:61:13)
+#2      main (file:///path/to/code/dartFile.dart:36:3)
 #3      _startIsolate.<anonymous closure> (dart:isolate-patch/isolate_patch.dart:265)
 #4      _RawReceivePortImpl._handleMessage (dart:isolate-patch/isolate_patch.dart:151)
 END
 
-  DART_CONCUR_MOD_ERR = <<END.freeze
+  DART_CONCURRENT_MODIFICATION_ERR = <<END.freeze
 Unhandled exception:
 Concurrent modification during iteration.
-#0      main.<anonymous closure> (file:///Users/westoncooper/LN/fluent-plugin-detect-exceptions/test/errorTest.dart:35:20)
-#1      printError (file:///Users/westoncooper/LN/fluent-plugin-detect-exceptions/test/errorTest.dart:61:13)
-#2      main (file:///Users/westoncooper/LN/fluent-plugin-detect-exceptions/test/errorTest.dart:35:3)
+#0      main.<anonymous closure> (file:///path/to/code/dartFile.dart:35:20)
+#1      printError (file:///path/to/code/dartFile.dart:61:13)
+#2      main (file:///path/to/code/dartFile.dart:35:3)
 #3      _startIsolate.<anonymous closure> (dart:isolate-patch/isolate_patch.dart:265)
 #4      _RawReceivePortImpl._handleMessage (dart:isolate-patch/isolate_patch.dart:151)
 END
 
-  DART_MEMORY_ERR = <<END.freeze
+  DART_OOM_ERR = <<END.freeze
 Unhandled exception:
 Out of Memory
-#0      main.<anonymous closure> (file:///Users/westoncooper/LN/fluent-plugin-detect-exceptions/test/errorTest.dart:34:20)
-#1      printError (file:///Users/westoncooper/LN/fluent-plugin-detect-exceptions/test/errorTest.dart:61:13)
-#2      main (file:///Users/westoncooper/LN/fluent-plugin-detect-exceptions/test/errorTest.dart:34:3)
+#0      main.<anonymous closure> (file:///path/to/code/dartFile.dart:34:20)
+#1      printError (file:///path/to/code/dartFile.dart:61:13)
+#2      main (file:///path/to/code/dartFile.dart:34:3)
 #3      _startIsolate.<anonymous closure> (dart:isolate-patch/isolate_patch.dart:265)
 #4      _RawReceivePortImpl._handleMessage (dart:isolate-patch/isolate_patch.dart:151)
 END
 
-  DART_STACK_ERR = <<END.freeze
+  DART_STACK_OVERFLOW_ERR = <<END.freeze
 Unhandled exception:
 Stack Overflow
-#0      main.<anonymous closure> (file:///Users/westoncooper/LN/fluent-plugin-detect-exceptions/test/errorTest.dart:33:20)
-#1      printError (file:///Users/westoncooper/LN/fluent-plugin-detect-exceptions/test/errorTest.dart:61:13)
-#2      main (file:///Users/westoncooper/LN/fluent-plugin-detect-exceptions/test/errorTest.dart:33:3)
+#0      main.<anonymous closure> (file:///path/to/code/dartFile.dart:33:20)
+#1      printError (file:///path/to/code/dartFile.dart:61:13)
+#2      main (file:///path/to/code/dartFile.dart:33:3)
 #3      _startIsolate.<anonymous closure> (dart:isolate-patch/isolate_patch.dart:265)
 #4      _RawReceivePortImpl._handleMessage (dart:isolate-patch/isolate_patch.dart:151)
 END
@@ -414,74 +414,74 @@ END
   DART_FALLTHROUGH_ERR = <<END.freeze
 Unhandled exception:
 'null': Switch case fall-through at line null.
-#0      main.<anonymous closure> (file:///Users/westoncooper/LN/fluent-plugin-detect-exceptions/test/errorTest.dart:39:20)
-#1      printError (file:///Users/westoncooper/LN/fluent-plugin-detect-exceptions/test/errorTest.dart:51:13)
-#2      main (file:///Users/westoncooper/LN/fluent-plugin-detect-exceptions/test/errorTest.dart:39:3)
+#0      main.<anonymous closure> (file:///path/to/code/dartFile.dart:39:20)
+#1      printError (file:///path/to/code/dartFile.dart:51:13)
+#2      main (file:///path/to/code/dartFile.dart:39:3)
 #3      _startIsolate.<anonymous closure> (dart:isolate-patch/isolate_patch.dart:265)
 #4      _RawReceivePortImpl._handleMessage (dart:isolate-patch/isolate_patch.dart:151)
 END
 
   DART_TYPE_ERR = <<END.freeze
 Unhandled exception:
-'file:///Users/westoncooper/LN/fluent-plugin-detect-exceptions/test/errorTest.dart': malformed type: line 7 pos 24: cannot resolve class 'NoType' from '::'
+'file:///path/to/code/dartFile.dart': malformed type: line 7 pos 24: cannot resolve class 'NoType' from '::'
   printError( () { new NoType(); } );
                        ^
 
 
 #0      _TypeError._throwNew (dart:core-patch/errors_patch.dart:82)
-#1      main.<anonymous closure> (file:///Users/westoncooper/LN/fluent-plugin-detect-exceptions/test/errorTest.dart:7:24)
-#2      printError (file:///Users/westoncooper/LN/fluent-plugin-detect-exceptions/test/errorTest.dart:36:13)
-#3      main (file:///Users/westoncooper/LN/fluent-plugin-detect-exceptions/test/errorTest.dart:7:3)
+#1      main.<anonymous closure> (file:///path/to/code/dartFile.dart:7:24)
+#2      printError (file:///path/to/code/dartFile.dart:36:13)
+#3      main (file:///path/to/code/dartFile.dart:7:3)
 #4      _startIsolate.<anonymous closure> (dart:isolate-patch/isolate_patch.dart:265)
 #5      _RawReceivePortImpl._handleMessage (dart:isolate-patch/isolate_patch.dart:151)
 END
 
-  DART_FORMAT_A_ERR = <<END.freeze
+  DART_FORMAT_ERR = <<END.freeze
 Unhandled exception:
 FormatException: format exception
-#0      main.<anonymous closure> (file:///Users/westoncooper/LN/fluent-plugin-detect-exceptions/test/errorTest.dart:25:20)
-#1      printError (file:///Users/westoncooper/LN/fluent-plugin-detect-exceptions/test/errorTest.dart:42:13)
-#2      main (file:///Users/westoncooper/LN/fluent-plugin-detect-exceptions/test/errorTest.dart:25:3)
+#0      main.<anonymous closure> (file:///path/to/code/dartFile.dart:25:20)
+#1      printError (file:///path/to/code/dartFile.dart:42:13)
+#2      main (file:///path/to/code/dartFile.dart:25:3)
 #3      _startIsolate.<anonymous closure> (dart:isolate-patch/isolate_patch.dart:265)
 #4      _RawReceivePortImpl._handleMessage (dart:isolate-patch/isolate_patch.dart:151)
 END
 
-  DART_FORMAT_B_ERR = <<END.freeze
+  DART_FORMAT_WITH_CODE_ERR = <<END.freeze
 Unhandled exception:
 FormatException: Invalid base64 data (at line 3, character 8)
 this is not valid
        ^
 
-#0      main.<anonymous closure> (file:///Users/westoncooper/LN/fluent-plugin-detect-exceptions/test/errorTest.dart:24:20)
-#1      printError (file:///Users/westoncooper/LN/fluent-plugin-detect-exceptions/test/errorTest.dart:42:13)
-#2      main (file:///Users/westoncooper/LN/fluent-plugin-detect-exceptions/test/errorTest.dart:24:3)
+#0      main.<anonymous closure> (file:///path/to/code/dartFile.dart:24:20)
+#1      printError (file:///path/to/code/dartFile.dart:42:13)
+#2      main (file:///path/to/code/dartFile.dart:24:3)
 #3      _startIsolate.<anonymous closure> (dart:isolate-patch/isolate_patch.dart:265)
 #4      _RawReceivePortImpl._handleMessage (dart:isolate-patch/isolate_patch.dart:151)
 END
 
-  DART_NO_METHOD_A_ERR = <<END.freeze
+  DART_NO_METHOD_ERR = <<END.freeze
 Unhandled exception:
 NoSuchMethodError: No constructor 'TypeError' with matching arguments declared in class 'TypeError'.
 Receiver: Type: class 'TypeError'
 Tried calling: new TypeError("Invalid base64 data", "invalid", 36)
 Found: new TypeError()
 #0      NoSuchMethodError._throwNew (dart:core-patch/errors_patch.dart:196)
-#1      main.<anonymous closure> (file:///Users/westoncooper/LN/fluent-plugin-detect-exceptions/test/errorTest.dart:8:39)
-#2      printError (file:///Users/westoncooper/LN/fluent-plugin-detect-exceptions/test/errorTest.dart:36:13)
-#3      main (file:///Users/westoncooper/LN/fluent-plugin-detect-exceptions/test/errorTest.dart:8:3)
+#1      main.<anonymous closure> (file:///path/to/code/dartFile.dart:8:39)
+#2      printError (file:///path/to/code/dartFile.dart:36:13)
+#3      main (file:///path/to/code/dartFile.dart:8:3)
 #4      _startIsolate.<anonymous closure> (dart:isolate-patch/isolate_patch.dart:265)
 #5      _RawReceivePortImpl._handleMessage (dart:isolate-patch/isolate_patch.dart:151)
 END
 
-  DART_NO_METHOD_B_ERR = <<END.freeze
+  DART_NO_METHOD_GLOBAL_ERR = <<END.freeze
 Unhandled exception:
 NoSuchMethodError: No top-level method 'noMethod' declared.
 Receiver: top-level
 Tried calling: noMethod()
 #0      NoSuchMethodError._throwNew (dart:core-patch/errors_patch.dart:196)
-#1      main.<anonymous closure> (file:///Users/westoncooper/LN/fluent-plugin-detect-exceptions/test/errorTest.dart:10:20)
-#2      printError (file:///Users/westoncooper/LN/fluent-plugin-detect-exceptions/test/errorTest.dart:36:13)
-#3      main (file:///Users/westoncooper/LN/fluent-plugin-detect-exceptions/test/errorTest.dart:10:3)
+#1      main.<anonymous closure> (file:///path/to/code/dartFile.dart:10:20)
+#2      printError (file:///path/to/code/dartFile.dart:36:13)
+#3      main (file:///path/to/code/dartFile.dart:10:3)
 #4      _startIsolate.<anonymous closure> (dart:isolate-patch/isolate_patch.dart:265)
 #5      _RawReceivePortImpl._handleMessage (dart:isolate-patch/isolate_patch.dart:151)
 END
@@ -567,21 +567,21 @@ END
     check_exception(DART_ERR, false)
     check_exception(DART_EXC, false)
     check_exception(DART_ASYNC_ERR, false)
-    check_exception(DART_ZERO_ERR, false)
+    check_exception(DART_DIVIDE_BY_ZERO_ERR, false)
     check_exception(DART_ARGUMENT_ERR, false)
     check_exception(DART_RANGE_ERR, false)
     check_exception(DART_READ_STATIC_ERR, false)
-    check_exception(DART_UNIMPLIED_ERR, false)
+    check_exception(DART_UNIMPLEMENTED_ERROR, false)
     check_exception(DART_UNSUPPORTED_ERR, false)
-    check_exception(DART_CONCUR_MOD_ERR, false)
-    check_exception(DART_MEMORY_ERR, false)
-    check_exception(DART_STACK_ERR, false)
+    check_exception(DART_CONCURRENT_MODIFICATION_ERR, false)
+    check_exception(DART_OOM_ERR, false)
+    check_exception(DART_STACK_OVERFLOW_ERR, false)
     check_exception(DART_FALLTHROUGH_ERR, false)
     check_exception(DART_TYPE_ERR, false)
-    check_exception(DART_FORMAT_A_ERR, false)
-    check_exception(DART_FORMAT_B_ERR, false)
-    check_exception(DART_NO_METHOD_A_ERR, false)
-    check_exception(DART_NO_METHOD_B_ERR, false)
+    check_exception(DART_FORMAT_ERR, false)
+    check_exception(DART_FORMAT_WITH_CODE_ERR, false)
+    check_exception(DART_NO_METHOD_ERR, false)
+    check_exception(DART_NO_METHOD_GLOBAL_ERR, false)
     check_exception(DART_ASSERTION_ERR, false)
     check_exception(DART_ABSTRACT_CLASS_ERR, false)
   end
@@ -603,21 +603,21 @@ END
     check_exception(DART_ERR, false)
     check_exception(DART_EXC, false)
     check_exception(DART_ASYNC_ERR, false)
-    check_exception(DART_ZERO_ERR, false)
+    check_exception(DART_DIVIDE_BY_ZERO_ERR, false)
     check_exception(DART_ARGUMENT_ERR, false)
     check_exception(DART_RANGE_ERR, false)
     check_exception(DART_READ_STATIC_ERR, false)
-    check_exception(DART_UNIMPLIED_ERR, false)
+    check_exception(DART_UNIMPLEMENTED_ERROR, false)
     check_exception(DART_UNSUPPORTED_ERR, false)
-    check_exception(DART_CONCUR_MOD_ERR, false)
-    check_exception(DART_MEMORY_ERR, false)
-    check_exception(DART_STACK_ERR, false)
+    check_exception(DART_CONCURRENT_MODIFICATION_ERR, false)
+    check_exception(DART_OOM_ERR, false)
+    check_exception(DART_STACK_OVERFLOW_ERR, false)
     check_exception(DART_FALLTHROUGH_ERR, false)
     check_exception(DART_TYPE_ERR, false)
-    check_exception(DART_FORMAT_A_ERR, false)
-    check_exception(DART_FORMAT_B_ERR, false)
-    check_exception(DART_NO_METHOD_A_ERR, false)
-    check_exception(DART_NO_METHOD_B_ERR, false)
+    check_exception(DART_FORMAT_ERR, false)
+    check_exception(DART_FORMAT_WITH_CODE_ERR, false)
+    check_exception(DART_NO_METHOD_ERR, false)
+    check_exception(DART_NO_METHOD_GLOBAL_ERR, false)
     check_exception(DART_ASSERTION_ERR, false)
     check_exception(DART_ABSTRACT_CLASS_ERR, false)
   end
