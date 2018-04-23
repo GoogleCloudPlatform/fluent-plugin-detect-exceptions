@@ -28,8 +28,7 @@ end
 desc 'Fix file permissions'
 task :fix_perms do
   files = [
-    'lib/fluent/plugin/exception_detector.rb',
-    'lib/fluent/plugin/out_detect_exceptions.rb'
+    'lib/fluent/plugin/*.rb'
   ].flat_map do |file|
     file.include?('*') ? Dir.glob(file) : [file]
   end
