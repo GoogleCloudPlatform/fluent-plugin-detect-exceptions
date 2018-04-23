@@ -24,15 +24,25 @@ Rake::TestTask.new(:test) do |test|
 end
 
 # Building the gem will use the local file mode, so ensure it's world-readable.
-desc 'Check plugin file permissions'
-task :check_perms do
-  plugin = 'lib/fluent/plugin/out_detect_exceptions.rb'
-  mode = File.stat(plugin).mode & 0o777
-  raise "Unexpected mode #{mode.to_s(8)} for #{plugin}" unless
-    mode & 0o444 == 0o444
+# https://github.com/GoogleCloudPlatform/fluent-plugin-detect-exceptions/issues/32
+desc 'Fix file permissions'
+task :fix_perms do
+  files = [
+    'lib/fluent/plugin/*.rb'
+  ].flat_map do |file|
+    file.include?('*') ? Dir.glob(file) : [file]
+  end
+
+  files.each do |file|
+    mode = File.stat(file).mode & 0o777
+    next unless mode & 0o444 != 0o444
+    puts "Changing mode of #{file} from #{mode.to_s(8)} to "\
+         "#{(mode | 0o444).to_s(8)}"
+    chmod mode | 0o444, file
+  end
 end
 
 desc 'Run unit tests and RuboCop to check for style violations'
-task all: [:test, :rubocop, :check_perms]
+task all: [:test, :rubocop, :fix_perms]
 
 task default: :all
