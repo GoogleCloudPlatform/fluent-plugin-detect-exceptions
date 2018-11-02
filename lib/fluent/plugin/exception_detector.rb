@@ -58,14 +58,6 @@ module Fluent
       rule(:java, /^[\t ]*... \d+\ more/, :java)
     ].freeze
 
-    KOTLIN_RULES = [
-      rule(:start_state,
-           /^kotlin/,
-           :kotlin),
-      rule(:kotlin, /^[\t ]+(?:eval )?at /, :kotlin),
-	  rule(:kotlin, /^[\t ]*(?:Caused by|Suppressed):/, :kotlin),
-    ].freeze
-
     NODEJS_RULES = [
       rule(:start_state,
            /^AssertionError/,
@@ -145,7 +137,7 @@ module Fluent
     ].freeze
 
     ALL_RULES = (
-      JAVA_RULES + NODEJS_RULES + PYTHON_RULES + PHP_RULES + GO_RULES + RUBY_RULES + DART_RULES + KOTLIN
+      JAVA_RULES + NODEJS_RULES + PYTHON_RULES + PHP_RULES + GO_RULES + RUBY_RULES + DART_RULES
     ).freeze
 
     RULES_BY_LANG = {
@@ -161,7 +153,6 @@ module Fluent
       rb: RUBY_RULES,
       ruby: RUBY_RULES,
       dart: DART_RULES,
-      kotlin: KOTLIN_RULES,
       all: ALL_RULES
     }.freeze
 
