@@ -12,35 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-require 'rubygems'
-require 'bundler'
-
-begin
-  Bundler.setup(:default, :development)
-rescue Bundler::BundlerError => e
-  $stderr.puts e.message
-  $stderr.puts 'Run `bundle install` to install missing gems'
-  exit e.status_code
-end
-
+require 'bundler/setup'
 require 'test/unit'
 
-$LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
-$LOAD_PATH.unshift(File.dirname(__FILE__))
+$LOAD_PATH.unshift(File.join(__dir__, '..', 'lib'))
+$LOAD_PATH.unshift(__dir__)
+
 require 'fluent/test'
-
-unless ENV.key?('VERBOSE')
-  nulllogger = Object.new
-  nulllogger.instance_eval do |_|
-    def respond_to_missing?
-      true
-    end
-
-    def method_missing(_method, *_args) # rubocop:disable Style/MethodMissing
-    end
-  end
-  # global $log variable is used by fluentd
-  $log = nulllogger # rubocop:disable Style/GlobalVars
-end
-
+require 'fluent/test/driver/output'
 require 'fluent/plugin/out_detect_exceptions'
