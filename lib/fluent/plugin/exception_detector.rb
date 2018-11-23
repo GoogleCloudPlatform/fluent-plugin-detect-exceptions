@@ -65,6 +65,13 @@ module Fluent
       rule(:nodejs, /^[\t ]+(?:eval )?at /, :nodejs),
     ].freeze
 
+    NODEJS_RULES_TEST = [
+      rule(:start_state,
+           /^ERROR/,
+           :nodejs_test),
+      rule(:nodejs_test, /^[\t ]+(?:eval )?at /, :nodejs_test),
+    ].freeze
+
     PYTHON_RULES = [
       rule(:start_state, /^Traceback \(most recent call last\):$/, :python),
       rule(:python, /^[\t ]+File /, :python_code),
@@ -137,7 +144,7 @@ module Fluent
     ].freeze
 
     ALL_RULES = (
-      JAVA_RULES + NODEJS_RULES + PYTHON_RULES + PHP_RULES + GO_RULES + RUBY_RULES + DART_RULES
+      JAVA_RULES + NODEJS_RULES + PYTHON_RULES + PHP_RULES + GO_RULES + RUBY_RULES + DART_RULES + NODEJS_RULES_TEST
     ).freeze
 
     RULES_BY_LANG = {
@@ -145,6 +152,7 @@ module Fluent
       javascript: JAVA_RULES,
       js: JAVA_RULES,
       nodejs: NODEJS_RULES,
+      nodejs_test: NODEJS_RULES_TEST,
       csharp: JAVA_RULES,
       py: PYTHON_RULES,
       python: PYTHON_RULES,
