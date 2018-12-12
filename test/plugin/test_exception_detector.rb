@@ -246,7 +246,7 @@ END
   # rubocop:disable TrailingWhitespace
   RAILS_EXC = <<END.freeze
  ActionController::RoutingError (No route matches [GET] "/settings"):
-  
+
   actionpack (5.1.4) lib/action_dispatch/middleware/debug_exceptions.rb:63:in `call'
   actionpack (5.1.4) lib/action_dispatch/middleware/show_exceptions.rb:31:in `call'
   railties (5.1.4) lib/rails/rack/logger.rb:36:in `call_app'
@@ -486,6 +486,18 @@ Tried calling: noMethod()
 #5      _RawReceivePortImpl._handleMessage (dart:isolate-patch/isolate_patch.dart:151)
 END
 
+  DOTNET_CONSOLE_LOGGER = <<END.freeze
+fail: Microsoft.EntityFrameworkCore.Database.Command[20102]
+      Failed executing DbCommand (1ms) [Parameters=[@__Identity_Id_0='?' (DbType = Int32), @__First_1='?' (DbType = Double), @__First_2='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
+      SELECT COUNT(*)::INT4
+      FROM "Orders" AS c
+      INNER JOIN "Products" AS "c.Product" ON c."ProductId" = "c.Product"."Id"
+      WHERE (((c."IsDisabled" = FALSE) OR ((c."IsDisabled" = TRUE) AND EXISTS (
+          SELECT 1
+          FROM "Marketers" AS s
+          WHERE ((s."ProfileId" = @__Identity_Id_0) AND ((s."Permissions" & 1) = 1)) AND ("c.Product"."Id" = s."ProductId")))) AND (c."Quantity" >= @__First_1)) AND (c."Total" >= @__First_2)
+END
+
   ARBITRARY_TEXT = <<END.freeze
 This arbitrary text.
 It sounds tympanic: a word which means like a drum.
@@ -543,6 +555,10 @@ END
     check_exception(CSHARP_EXC, false)
   end
 
+  def test_dotnet
+    check_exception(DOTNET_EXC, false)
+  end
+
   def test_python
     check_exception(PYTHON_EXC, true)
   end
@@ -598,6 +614,7 @@ END
     check_exception(GO_ON_GAE_EXC, false)
     check_exception(GO_SIGNAL_EXC, false)
     check_exception(CSHARP_EXC, false)
+    check_exception(DOTNET_EXC, false)
     check_exception(V8_JS_EXC, false)
     check_exception(RUBY_EXC, false)
     check_exception(DART_ERR, false)

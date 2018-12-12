@@ -129,8 +129,13 @@ module Fluent
       rule(:dart_stack, /^<asynchronous suspension>$/, :dart_stack)
     ].freeze
 
+    DOTNET_RULES = [
+      rule(:start_state, /^(trce|dbug|info|warn|fail|crit): /, :dotnet),
+      rule(:dotnet, /^\s/, :dotnet)
+    ].freeze
+
     ALL_RULES = (
-      JAVA_RULES + PYTHON_RULES + PHP_RULES + GO_RULES + RUBY_RULES + DART_RULES
+      JAVA_RULES + PYTHON_RULES + PHP_RULES + GO_RULES + RUBY_RULES + DART_RULES + DOTNET_RULES
     ).freeze
 
     RULES_BY_LANG = {
@@ -145,6 +150,7 @@ module Fluent
       rb: RUBY_RULES,
       ruby: RUBY_RULES,
       dart: DART_RULES,
+      dotnet: DOTNET_RULES,
       all: ALL_RULES
     }.freeze
 
