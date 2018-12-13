@@ -486,7 +486,7 @@ Tried calling: noMethod()
 #5      _RawReceivePortImpl._handleMessage (dart:isolate-patch/isolate_patch.dart:151)
 END
 
-  DOTNET_CONSOLE_LOGGER = <<END.freeze
+  DOTNET_EXC = <<END.freeze
 fail: Microsoft.EntityFrameworkCore.Database.Command[20102]
       Failed executing DbCommand (1ms) [Parameters=[@__Identity_Id_0='?' (DbType = Int32), @__First_1='?' (DbType = Double), @__First_2='?' (DbType = Int32)], CommandType='Text', CommandTimeout='30']
       SELECT COUNT(*)::INT4
