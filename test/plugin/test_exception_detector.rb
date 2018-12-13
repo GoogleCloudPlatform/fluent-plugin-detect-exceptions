@@ -246,7 +246,7 @@ END
   # rubocop:disable TrailingWhitespace
   RAILS_EXC = <<END.freeze
  ActionController::RoutingError (No route matches [GET] "/settings"):
-
+  
   actionpack (5.1.4) lib/action_dispatch/middleware/debug_exceptions.rb:63:in `call'
   actionpack (5.1.4) lib/action_dispatch/middleware/show_exceptions.rb:31:in `call'
   railties (5.1.4) lib/rails/rack/logger.rb:36:in `call_app'
