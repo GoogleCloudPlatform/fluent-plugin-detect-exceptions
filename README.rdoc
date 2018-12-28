@@ -105,6 +105,15 @@ Example configuration:
       multiline_flush_interval 0.1
     </match>
 
+== Extending language support
+
+Supporting a new language requires new detection rules in this gem and
+additional changes in the
+{Stackdriver Error Reporting}[https://cloud.google.com/error-reporting/]
+service. Please contact our product team by
+{filing a support case}[https://cloud.google.com/support-hub/#google-cloud-platform]
+if you'd like to see support for a new language.
+
 == Copyright
 
 Copyright:: Copyright 2016 Google Inc. All rights reserved.
