@@ -105,16 +105,14 @@ Example configuration:
       multiline_flush_interval 0.1
     </match>
 
-== Contribution Notes
+== Extending language support
 
-New language support requires adding new rules in this gem. e.g.:
-{Add Dart language support}[https://github.com/GoogleCloudPlatform/fluent-plugin-detect-exceptions/pull/30].
-But that alone only help bundle multi-line messages into one line. The
-{Stackdriver Error Reporting}[https://cloud.google.com/error-reporting/] backend
-will need to support this new exception as well for proper recognization down
-the pipeline. Please
-{file a support case}[https://cloud.google.com/support-hub/#google-cloud-platform]
-for such feature requests to initiate the discussion first.
+Supporting a new language requires new detection rules in this gem and
+additional changes in the
+{Stackdriver Error Reporting}[https://cloud.google.com/error-reporting/]
+service. Please contact our product team by
+{filing a support case}(https://cloud.google.com/support-hub/#google-cloud-platform)
+if you'd like to see support for a new language.
 
 == Copyright
 
