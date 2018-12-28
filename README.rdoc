@@ -105,11 +105,13 @@ Example configuration:
       multiline_flush_interval 0.1
     </match>
 
-== Notes
+== Contribution Notes
 
 New language support requires adding new rules in this gem. But that alone only
 help bundle multi-line messages into one line. Logging backend will need to
 support this new exception as well for proper recognization down the pipeline.
+Please [file a support case](https://cloud.google.com/support-hub/#google-cloud-platform)
+for such feature requests to initiate the discussion first.
 
 == Copyright
 
