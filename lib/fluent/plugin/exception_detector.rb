@@ -51,7 +51,7 @@ module Fluent
 
     JAVA_RULES = [
       rule(:start_state,
-           /(?:Exception|Error|Throwable|V8 errors stack trace)[:\r\n]/,
+           /(?:Exception|Error|INFO|Throwable|V8 errors stack trace|WARN)[:\r\n]/,
            :java),
       rule(:java, /^[\t ]+(?:eval )?at /, :java),
       rule(:java, /^[\t ]*(?:Caused by|Suppressed):/, :java),
