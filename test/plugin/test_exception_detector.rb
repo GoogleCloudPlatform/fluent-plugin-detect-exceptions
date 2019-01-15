@@ -214,6 +214,26 @@ created by main.main
 	server.go:20 +0x91
 END
 
+  GO_HTTP = <<END.freeze
+2019/01/15 07:48:05 http: panic serving [::1]:54143: test panic
+goroutine 24 [running]:
+net/http.(*conn).serve.func1(0xc00007eaa0)
+	/usr/local/go/src/net/http/server.go:1746 +0xd0
+panic(0x12472a0, 0x12ece10)
+	/usr/local/go/src/runtime/panic.go:513 +0x1b9
+main.doPanic(0x12f0ea0, 0xc00010e1c0, 0xc000104400)
+	/Users/ingvar/src/go/src/httppanic.go:8 +0x39
+net/http.HandlerFunc.ServeHTTP(0x12be2e8, 0x12f0ea0, 0xc00010e1c0, 0xc000104400)
+	/usr/local/go/src/net/http/server.go:1964 +0x44
+net/http.(*ServeMux).ServeHTTP(0x14a17a0, 0x12f0ea0, 0xc00010e1c0, 0xc000104400)
+	/usr/local/go/src/net/http/server.go:2361 +0x127
+net/http.serverHandler.ServeHTTP(0xc000085040, 0x12f0ea0, 0xc00010e1c0, 0xc000104400)
+	/usr/local/go/src/net/http/server.go:2741 +0xab
+net/http.(*conn).serve(0xc00007eaa0, 0x12f10a0, 0xc00008a780)
+	/usr/local/go/src/net/http/server.go:1847 +0x646
+created by net/http.(*Server).Serve
+	/usr/local/go/src/net/http/server.go:2851 +0x2f5
+END
   CSHARP_EXC = <<END.freeze
 System.Collections.Generic.KeyNotFoundException: The given key was not present in the dictionary.
   at System.Collections.Generic.Dictionary`2[System.String,System.Collections.Generic.Dictionary`2[System.Int32,System.Double]].get_Item (System.String key) [0x00000] in <filename unknown>:0
@@ -556,6 +576,7 @@ END
     check_exception(GO_EXC, false)
     check_exception(GO_ON_GAE_EXC, false)
     check_exception(GO_SIGNAL_EXC, false)
+    check_exception(GO_HTTP, false)
   end
 
   def test_ruby
