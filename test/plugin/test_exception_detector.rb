@@ -30,6 +30,70 @@ END
 
   JAVA_EXC = (JAVA_EXC_PART1 + JAVA_EXC_PART2).freeze
 
+  COMPLEX_JAVA_EXC_TABS = <<END.freeze
+javax.servlet.ServletException: Something bad happened
+  at com.example.myproject.OpenSessionInViewFilter.doFilter(OpenSessionInViewFilter.java:60)
+  at org.mortbay.jetty.servlet.ServletHandler$CachedChain.doFilter(ServletHandler.java:1157)
+  at com.example.myproject.ExceptionHandlerFilter.doFilter(ExceptionHandlerFilter.java:28)
+  at org.mortbay.jetty.servlet.ServletHandler$CachedChain.doFilter(ServletHandler.java:1157)
+  at com.example.myproject.OutputBufferFilter.doFilter(OutputBufferFilter.java:33)
+  at org.mortbay.jetty.servlet.ServletHandler$CachedChain.doFilter(ServletHandler.java:1157)
+  at org.mortbay.jetty.servlet.ServletHandler.handle(ServletHandler.java:388)
+  at org.mortbay.jetty.security.SecurityHandler.handle(SecurityHandler.java:216)
+  at org.mortbay.jetty.servlet.SessionHandler.handle(SessionHandler.java:182)
+  at org.mortbay.jetty.handler.ContextHandler.handle(ContextHandler.java:765)
+  at org.mortbay.jetty.webapp.WebAppContext.handle(WebAppContext.java:418)
+  at org.mortbay.jetty.handler.HandlerWrapper.handle(HandlerWrapper.java:152)
+  at org.mortbay.jetty.Server.handle(Server.java:326)
+  at org.mortbay.jetty.HttpConnection.handleRequest(HttpConnection.java:542)
+  at org.mortbay.jetty.HttpConnection$RequestHandler.content(HttpConnection.java:943)
+  at org.mortbay.jetty.HttpParser.parseNext(HttpParser.java:756)
+  at org.mortbay.jetty.HttpParser.parseAvailable(HttpParser.java:218)
+  at org.mortbay.jetty.HttpConnection.handle(HttpConnection.java:404)
+  at org.mortbay.jetty.bio.SocketConnector$Connection.run(SocketConnector.java:228)
+  at org.mortbay.thread.QueuedThreadPool$PoolThread.run(QueuedThreadPool.java:582)
+Caused by: com.example.myproject.MyProjectServletException
+  at com.example.myproject.MyServlet.doPost(MyServlet.java:169)
+  at javax.servlet.http.HttpServlet.service(HttpServlet.java:727)
+  at javax.servlet.http.HttpServlet.service(HttpServlet.java:820)
+  at org.mortbay.jetty.servlet.ServletHolder.handle(ServletHolder.java:511)
+  at org.mortbay.jetty.servlet.ServletHandler$CachedChain.doFilter(ServletHandler.java:1166)
+  at com.example.myproject.OpenSessionInViewFilter.doFilter(OpenSessionInViewFilter.java:30)
+  ... 27 more
+END
+
+  COMPLEX_JAVA_EXC_ESCAPED_TABS = <<END.freeze
+javax.servlet.ServletException: Something bad happened
+\\u0009at com.example.myproject.OpenSessionInViewFilter.doFilter(OpenSessionInViewFilter.java:60)
+\\u0009at org.mortbay.jetty.servlet.ServletHandler$CachedChain.doFilter(ServletHandler.java:1157)
+\\u0009at com.example.myproject.ExceptionHandlerFilter.doFilter(ExceptionHandlerFilter.java:28)
+\\u0009at org.mortbay.jetty.servlet.ServletHandler$CachedChain.doFilter(ServletHandler.java:1157)
+\\u0009at com.example.myproject.OutputBufferFilter.doFilter(OutputBufferFilter.java:33)
+\\u0009at org.mortbay.jetty.servlet.ServletHandler$CachedChain.doFilter(ServletHandler.java:1157)
+\\u0009at org.mortbay.jetty.servlet.ServletHandler.handle(ServletHandler.java:388)
+\\u0009at org.mortbay.jetty.security.SecurityHandler.handle(SecurityHandler.java:216)
+\\u0009at org.mortbay.jetty.servlet.SessionHandler.handle(SessionHandler.java:182)
+\\u0009at org.mortbay.jetty.handler.ContextHandler.handle(ContextHandler.java:765)
+\\u0009at org.mortbay.jetty.webapp.WebAppContext.handle(WebAppContext.java:418)
+\\u0009at org.mortbay.jetty.handler.HandlerWrapper.handle(HandlerWrapper.java:152)
+\\u0009at org.mortbay.jetty.Server.handle(Server.java:326)
+\\u0009at org.mortbay.jetty.HttpConnection.handleRequest(HttpConnection.java:542)
+\\u0009at org.mortbay.jetty.HttpConnection$RequestHandler.content(HttpConnection.java:943)
+\\u0009at org.mortbay.jetty.HttpParser.parseNext(HttpParser.java:756)
+\\u0009at org.mortbay.jetty.HttpParser.parseAvailable(HttpParser.java:218)
+\\u0009at org.mortbay.jetty.HttpConnection.handle(HttpConnection.java:404)
+\\u0009at org.mortbay.jetty.bio.SocketConnector$Connection.run(SocketConnector.java:228)
+\\u0009at org.mortbay.thread.QueuedThreadPool$PoolThread.run(QueuedThreadPool.java:582)
+Caused by: com.example.myproject.MyProjectServletException
+\\u0009at com.example.myproject.MyServlet.doPost(MyServlet.java:169)
+\\u0009at javax.servlet.http.HttpServlet.service(HttpServlet.java:727)
+\\u0009at javax.servlet.http.HttpServlet.service(HttpServlet.java:820)
+\\u0009at org.mortbay.jetty.servlet.ServletHolder.handle(ServletHolder.java:511)
+\\u0009at org.mortbay.jetty.servlet.ServletHandler$CachedChain.doFilter(ServletHandler.java:1166)
+\\u0009at com.example.myproject.OpenSessionInViewFilter.doFilter(OpenSessionInViewFilter.java:30)
+\\u0009... 27 more
+END
+
   COMPLEX_JAVA_EXC = <<END.freeze
 javax.servlet.ServletException: Something bad happened
     at com.example.myproject.OpenSessionInViewFilter.doFilter(OpenSessionInViewFilter.java:60)
@@ -531,6 +595,8 @@ END
   def test_java
     check_exception(JAVA_EXC, false)
     check_exception(COMPLEX_JAVA_EXC, false)
+    check_exception(COMPLEX_JAVA_EXC_TABS, false)
+    check_exception(COMPLEX_JAVA_EXC_ESCAPED_TABS, false)
   end
 
   def test_js
@@ -593,6 +659,8 @@ END
     check_exception(NODE_JS_EXC, false)
     check_exception(PHP_EXC, false)
     check_exception(PHP_ON_GAE_EXC, true)
+    check_exception(COMPLEX_JAVA_EXC_TABS, false)
+    check_exception(COMPLEX_JAVA_EXC_ESCAPED_TABS, false)
     check_exception(CLIENT_JS_EXC, false)
     check_exception(GO_EXC, false)
     check_exception(GO_ON_GAE_EXC, false)
