@@ -16,7 +16,7 @@ module Fluent
   Struct.new('Rule', :from_state, :pattern, :to_state)
 
   # Configuration of the state machine that detects exceptions.
-  module ExceptionDetectorConfig
+  module ExceptionDetectorConfig # rubocop:disable Metrics/ClassLength
     # Rule for a state transition: if pattern matches go to the given state.
     class RuleTarget
       attr_accessor :pattern, :to_state
