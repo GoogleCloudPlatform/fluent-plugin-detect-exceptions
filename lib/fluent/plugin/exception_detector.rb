@@ -61,7 +61,8 @@ module Fluent
       rule([:java_after_exception, :java], /^[\t ]+(?:eval )?at /, :java),
       rule([:java_after_exception, :java], /^[\t ]*(?:Caused by|Suppressed):/,
            :java_after_exception),
-      rule([:java_after_exception, :java], /^[\t ]*... \d+\ more/, :java)
+      rule([:java_after_exception, :java],
+           /^[\t ]*... \d+ (?:more|common frames omitted)$/, :java)
     ].freeze
 
     PYTHON_RULES = [

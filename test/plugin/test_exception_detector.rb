@@ -59,7 +59,7 @@ Caused by: com.example.myproject.MyProjectServletException
     at org.mortbay.jetty.servlet.ServletHolder.handle(ServletHolder.java:511)
     at org.mortbay.jetty.servlet.ServletHandler$CachedChain.doFilter(ServletHandler.java:1166)
     at com.example.myproject.OpenSessionInViewFilter.doFilter(OpenSessionInViewFilter.java:30)
-    ... 27 more
+    ... 27 common frames omitted
 END
 
   NESTED_JAVA_EXC = <<END.freeze
