@@ -13,7 +13,7 @@
 # limitations under the License.
 #
 module Fluent
-  Struct.new('Rule', :from_state, :pattern, :to_state)
+  Struct.new('Rule', :from_states, :pattern, :to_state)
 
   # Configuration of the state machine that detects exceptions.
   module ExceptionDetectorConfig
@@ -41,8 +41,9 @@ module Fluent
       end
     end
 
-    def self.rule(from_state, pattern, to_state)
-      Struct::Rule.new(from_state, pattern, to_state)
+    def self.rule(from_states, pattern, to_state)
+      from_states = [from_states] unless from_states.is_a?(Array)
+      Struct::Rule.new(from_states, pattern, to_state)
     end
 
     def self.supported
@@ -50,12 +51,16 @@ module Fluent
     end
 
     JAVA_RULES = [
-      rule(:start_state,
+      rule([:start_state, :java_start_exception],
            /(?:Exception|Error|Throwable|V8 errors stack trace)[:\r\n]/,
-           :java),
-      rule(:java, /^[\t ]+(?:eval )?at /, :java),
-      rule(:java, /^[\t ]*(?:Caused by|Suppressed):/, :java),
-      rule(:java, /^[\t ]*... \d+\ more/, :java)
+           :java_after_exception),
+      rule(:java_after_exception, /^[\t ]*nested exception is:[\t ]*$/,
+           :java_start_exception),
+      rule(:java_after_exception, /^$/, :java_after_exception),
+      rule([:java_after_exception, :java], /^[\t ]+(?:eval )?at /, :java),
+      rule([:java_after_exception, :java], /^[\t ]*(?:Caused by|Suppressed):/,
+           :java_after_exception),
+      rule([:java_after_exception, :java], /^[\t ]*... \d+\ more/, :java)
     ].freeze
 
     PYTHON_RULES = [
@@ -76,13 +81,12 @@ module Fluent
 
     GO_RULES = [
       rule(:start_state, /\bpanic: /, :go_after_panic),
-      rule(:go_after_panic, /^$/, :go_goroutine),
+      rule([:go_after_panic, :go_after_signal, :go_frame_1],
+           /^$/, :go_goroutine),
       rule(:go_after_panic, /^\[signal /, :go_after_signal),
-      rule(:go_after_signal, /^$/, :go_goroutine),
       rule(:go_goroutine, /^goroutine \d+ \[[^\]]+\]:$/, :go_frame_1),
       rule(:go_frame_1, /^(?:[^\s.:]+\.)*[^\s.():]+\(|^created by /,
            :go_frame_2),
-      rule(:go_frame_1, /^$/, :go_goroutine),
       rule(:go_frame_2, /^\s/, :go_frame_1)
     ].freeze
 
@@ -169,7 +173,9 @@ module Fluent
         rule_config.each do |r|
           target = ExceptionDetectorConfig::RuleTarget.new(r[:pattern],
                                                            r[:to_state])
-          @rules[r[:from_state]] << target
+          r[:from_states].each do |from_state|
+            @rules[from_state] << target
+          end
         end
       end
 

@@ -62,6 +62,34 @@ Caused by: com.example.myproject.MyProjectServletException
     ... 27 more
 END
 
+  NESTED_JAVA_EXC = <<END.freeze
+java.lang.RuntimeException: javax.mail.SendFailedException: Invalid Addresses;
+nested exception is:
+com.sun.mail.smtp.SMTPAddressFailedException: 550 5.7.1 <[REDACTED_EMAIL_ADDRESS]>... Relaying denied
+
+    at com.nethunt.crm.api.server.adminsync.AutomaticEmailFacade.sendWithSmtp(AutomaticEmailFacade.java:236)
+    at com.nethunt.crm.api.server.adminsync.AutomaticEmailFacade.sendSingleEmail(AutomaticEmailFacade.java:285)
+    at com.nethunt.crm.api.server.adminsync.AutomaticEmailFacade.lambda$sendSingleEmail$3(AutomaticEmailFacade.java:254)
+    at java.util.Optional.ifPresent(Optional.java:159)
+    at com.nethunt.crm.api.server.adminsync.AutomaticEmailFacade.sendSingleEmail(AutomaticEmailFacade.java:253)
+    at com.nethunt.crm.api.server.adminsync.AutomaticEmailFacade.sendSingleEmail(AutomaticEmailFacade.java:249)
+    at com.nethunt.crm.api.email.EmailSender.lambda$notifyPerson$0(EmailSender.java:80)
+    at com.nethunt.crm.api.util.ManagedExecutor.lambda$execute$0(ManagedExecutor.java:36)
+    at com.nethunt.crm.api.util.RequestContextActivator.lambda$withRequestContext$0(RequestContextActivator.java:36)
+    at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1149)
+    at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+    at java.lang.Thread.run(Thread.java:748)
+Caused by: javax.mail.SendFailedException: Invalid Addresses;
+nested exception is:
+com.sun.mail.smtp.SMTPAddressFailedException: 550 5.7.1 <[REDACTED_EMAIL_ADDRESS]>... Relaying denied
+
+    at com.sun.mail.smtp.SMTPTransport.rcptTo(SMTPTransport.java:2064)
+    at com.sun.mail.smtp.SMTPTransport.sendMessage(SMTPTransport.java:1286)
+    at com.nethunt.crm.api.server.adminsync.AutomaticEmailFacade.sendWithSmtp(AutomaticEmailFacade.java:229)
+    ... 12 more
+Caused by: com.sun.mail.smtp.SMTPAddressFailedException: 550 5.7.1 <[REDACTED_EMAIL_ADDRESS]>... Relaying denied
+END
+
   NODE_JS_EXC = <<END.freeze
 ReferenceError: myArray is not defined
   at next (/app/node_modules/express/lib/router/index.js:256:14)
@@ -531,6 +559,7 @@ END
   def test_java
     check_exception(JAVA_EXC, false)
     check_exception(COMPLEX_JAVA_EXC, false)
+    check_exception(NESTED_JAVA_EXC, false)
   end
 
   def test_js
