@@ -55,14 +55,14 @@ module Fluent
       rule([:start_state, :java_start_exception],
            /(?:Exception|Error|Throwable|V8 errors stack trace)[:\r\n]/,
            :java_after_exception),
-      rule(:java_after_exception, /^[\t ]*nested exception is:[\t ]*$/,
+      rule(:java_after_exception, /^[\t ]*nested exception is:[\t ]*/,
            :java_start_exception),
-      rule(:java_after_exception, /^$/, :java_after_exception),
+      rule(:java_after_exception, /^[\r\n]*$/, :java_after_exception),
       rule([:java_after_exception, :java], /^[\t ]+(?:eval )?at /, :java),
       rule([:java_after_exception, :java], /^[\t ]*(?:Caused by|Suppressed):/,
            :java_after_exception),
       rule([:java_after_exception, :java],
-           /^[\t ]*... \d+ (?:more|common frames omitted)$/, :java)
+           /^[\t ]*... \d+ (?:more|common frames omitted)/, :java)
     ].freeze
 
     PYTHON_RULES = [
