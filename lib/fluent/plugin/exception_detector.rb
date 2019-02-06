@@ -41,9 +41,10 @@ module Fluent
       end
     end
 
-    def self.rule(from_states, pattern, to_state)
-      from_states = [from_states] unless from_states.is_a?(Array)
-      Struct::Rule.new(from_states, pattern, to_state)
+    def self.rule(from_state_or_states, pattern, to_state)
+      from_state_or_states = [from_state_or_states] unless
+        from_state_or_states.is_a?(Array)
+      Struct::Rule.new(from_state_or_states, pattern, to_state)
     end
 
     def self.supported
