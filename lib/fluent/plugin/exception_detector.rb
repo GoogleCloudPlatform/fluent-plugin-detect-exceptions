@@ -58,6 +58,7 @@ module Fluent
       rule(:java_after_exception, /^[\t ]*nested exception is:[\t ]*/,
            :java_start_exception),
       rule(:java_after_exception, /^[\r\n]*$/, :java_after_exception),
+      rule(:java_after_exception, /^[\t ]+Position: /, :java_after_exception),
       rule([:java_after_exception, :java], /^[\t ]+(?:eval )?at /, :java),
       rule([:java_after_exception, :java], /^[\t ]*(?:Caused by|Suppressed):/,
            :java_after_exception),
