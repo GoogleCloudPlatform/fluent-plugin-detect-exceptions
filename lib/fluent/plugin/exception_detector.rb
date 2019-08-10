@@ -72,8 +72,8 @@ module Fluent
 
       # C# exception from async code
       rule([:java_after_exception, :java],
-           %r{^---\sEnd\sof\sstack\strace\sfrom\sprevious\s
-           location\swhere\sexception\swas\sthrown\s---}x,
+           /^---\sEnd\sof\sstack\strace\sfrom\sprevious\s
+           location\swhere\sexception\swas\sthrown\s---/x,
            :java),
 
       rule([:java_after_exception, :java], /^[\t ]*(?:Caused by|Suppressed):/,
