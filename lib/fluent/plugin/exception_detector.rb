@@ -59,27 +59,34 @@ module Fluent
            :java_start_exception),
       rule(:java_after_exception, /^[\r\n]*$/, :java_after_exception),
       rule([:java_after_exception, :java], /^[\t ]+(?:eval )?at /, :java),
-
-      # C# nested exception
-      rule([:java_after_exception, :java],
-           /^[\t ]+--- End of inner exception stack trace ---/,
-           :java),
-
-      # C# aggregate exception
-      rule([:java_after_exception, :java],
-           /^---> \(Inner Exception #[0-9]+\)/,
-           :java),
-
-      # C# exception from async code
-      rule([:java_after_exception, :java],
-           /^---\sEnd\sof\sstack\strace\sfrom\sprevious\s
-           location\swhere\sexception\swas\sthrown\s---/x,
-           :java),
-
       rule([:java_after_exception, :java], /^[\t ]*(?:Caused by|Suppressed):/,
            :java_after_exception),
       rule([:java_after_exception, :java],
            /^[\t ]*... \d+ (?:more|common frames omitted)/, :java)
+    ].freeze
+
+    CSHARP_RULES = [
+      rule([:start_state, :csharp_start_exception],
+           /(?:Exception)[:\r\n]/,
+           :csharp_after_exception),
+      rule(:csharp_after_exception, /^[\r\n]*$/, :csharp_after_exception),
+      rule([:csharp_after_exception, :csharp], /^[\t ]+at /, :csharp),
+
+      # C# nested exception
+      rule([:csharp],
+           /^[\t ]+--- End of inner exception stack trace ---/,
+           :csharp_after_exception),
+
+      # C# aggregate exception
+      rule([:csharp],
+           /^---> \(Inner Exception #[0-9]+\)/,
+           :csharp_after_exception),
+
+      # C# exception from async code
+      rule([:csharp],
+           /^---\sEnd\sof\sstack\strace\sfrom\sprevious\s
+           location\swhere\sexception\swas\sthrown\s---/x,
+           :csharp_after_exception)
     ].freeze
 
     PYTHON_RULES = [
@@ -153,14 +160,15 @@ module Fluent
     ].freeze
 
     ALL_RULES = (
-      JAVA_RULES + PYTHON_RULES + PHP_RULES + GO_RULES + RUBY_RULES + DART_RULES
+      JAVA_RULES + CSHARP_RULES + PYTHON_RULES + PHP_RULES +
+      GO_RULES + RUBY_RULES + DART_RULES
     ).freeze
 
     RULES_BY_LANG = {
       java: JAVA_RULES,
       javascript: JAVA_RULES,
       js: JAVA_RULES,
-      csharp: JAVA_RULES,
+      csharp: CSHARP_RULES,
       py: PYTHON_RULES,
       python: PYTHON_RULES,
       php: PHP_RULES,
@@ -178,7 +186,7 @@ module Fluent
   # multi-line stack traces.
   class ExceptionDetector
     def initialize(*languages)
-      @state = :start_state
+      reset
       @rules = Hash.new { |h, k| h[k] = [] }
 
       languages = [:all] if languages.empty?
@@ -212,8 +220,8 @@ module Fluent
       # defined transition for 'line', trigger another state transition because
       # 'line' may contain the beginning of another exception.
       transition(line) unless trace_seen_before
-      new_state = @state
-      trace_seen_after = new_state != :start_state
+      new_states = @states
+      trace_seen_after = new_states != Set[:start_state]
 
       case [trace_seen_before, trace_seen_after]
       when [true, true]
@@ -228,7 +236,7 @@ module Fluent
     end
 
     def reset
-      @state = :start_state
+      @states = Set[:start_state]
     end
 
     private
@@ -236,14 +244,30 @@ module Fluent
     # Executes a transition of the state machine for the given line.
     # Returns false if the line does not match any transition rule and the
     # state machine was reset to the initial state.
+    #
+    # The state machine may be in multiple distinct states at once to cope
+    # with the situation where the applicable rules aren't distinct enough
+    # to unambiguously determine a single state. The will occur, for example,
+    # for the start of a Java or C# exception, where the rules to transition
+    # to both the :java_start_exception and :csharp_start_exception would
+    # match.
     def transition(line)
-      @rules[@state].each do |r|
-        next unless line =~ r.pattern
-        @state = r.to_state
+      new_states = Set.new
+      @states.each do |s|
+        @rules[s].each do |r|
+          next unless line =~ r.pattern
+          new_states << r.to_state
+          break unless s == :start_state
+        end
+      end
+
+      if new_states.empty?
+        reset
+        return false
+      else
+        @states = new_states
         return true
       end
-      @state = :start_state
-      false
     end
   end
 
