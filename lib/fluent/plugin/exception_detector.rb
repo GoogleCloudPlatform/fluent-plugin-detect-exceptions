@@ -57,7 +57,7 @@ module Fluent
            :java_after_exception),
       rule(:java_after_exception, /^[\t ]*nested exception is:[\t ]*/,
            :java_start_exception),
-      rule(:java_after_exception, /^[\r\n]*$/, :java_after_exception),
+      rule([:java_after_exception, :java], /^[\r\n]*$/, :java_after_exception),
       rule([:java_after_exception, :java], /^[\t ]+(?:eval )?at /, :java),
 
       # C# nested exception
