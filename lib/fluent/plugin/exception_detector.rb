@@ -57,17 +57,12 @@ module Fluent
            :java_after_exception),
       rule(:java_after_exception, /^[\t ]*nested exception is:[\t ]*/,
            :java_start_exception),
-      rule([:java_after_exception, :java], /^[\r\n]*$/, :java_after_exception),
+      rule(:java_after_exception, /^[\r\n]*$/, :java_after_exception),
       rule([:java_after_exception, :java], /^[\t ]+(?:eval )?at /, :java),
 
       # C# nested exception
       rule([:java_after_exception, :java],
            /^[\t ]+--- End of inner exception stack trace ---/,
-           :java),
-
-      # C# aggregate exception
-      rule([:java_after_exception, :java],
-           /^---> \(Inner Exception #[0-9]+\)/,
            :java),
 
       # C# exception from async code
