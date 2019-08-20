@@ -59,6 +59,18 @@ module Fluent
            :java_start_exception),
       rule(:java_after_exception, /^[\r\n]*$/, :java_after_exception),
       rule([:java_after_exception, :java], /^[\t ]+(?:eval )?at /, :java),
+
+      rule([:java_after_exception, :java],
+           # C# nested exception.
+           /^[\t ]+--- End of inner exception stack trace ---$/,
+           :java),
+
+      rule([:java_after_exception, :java],
+           # C# exception from async code.
+           /^--- End of stack trace from previous (?x:
+           )location where exception was thrown ---$/,
+           :java),
+
       rule([:java_after_exception, :java], /^[\t ]*(?:Caused by|Suppressed):/,
            :java_after_exception),
       rule([:java_after_exception, :java],

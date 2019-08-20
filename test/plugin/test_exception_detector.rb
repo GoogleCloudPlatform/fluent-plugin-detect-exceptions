@@ -276,6 +276,33 @@ System.Collections.Generic.KeyNotFoundException: The given key was not present i
   at System.Threading.Thread.StartInternal () [0x00000] in <filename unknown>:0
 END
 
+  CSHARP_NESTED_EXC = <<END.freeze
+System.InvalidOperationException: This is the outer exception ---> System.InvalidOperationException: This is the inner exception
+  at ExampleApp.NestedExceptionExample.LowestLevelMethod() in c:/ExampleApp/ExampleApp/NestedExceptionExample.cs:line 33
+  at ExampleApp.NestedExceptionExample.ThirdLevelMethod() in c:/ExampleApp/ExampleApp/NestedExceptionExample.cs:line 28
+  at ExampleApp.NestedExceptionExample.SecondLevelMethod() in c:/ExampleApp/ExampleApp/NestedExceptionExample.cs:line 18
+  --- End of inner exception stack trace ---
+  at ExampleApp.NestedExceptionExample.SecondLevelMethod() in c:/ExampleApp/ExampleApp/NestedExceptionExample.cs:line 22
+  at ExampleApp.NestedExceptionExample.TopLevelMethod() in c:/ExampleApp/ExampleApp/NestedExceptionExample.cs:line 11
+  at ExampleApp.Program.Main(String[] args) in c:/ExampleApp/ExampleApp/Program.cs:line 11
+END
+
+  CSHARP_ASYNC_EXC = <<END.freeze
+System.InvalidOperationException: This is an exception
+   at ExampleApp2.AsyncExceptionExample.LowestLevelMethod() in c:/ExampleApp/ExampleApp/AsyncExceptionExample.cs:line 36
+   at ExampleApp2.AsyncExceptionExample.<ThirdLevelMethod>d__2.MoveNext() in c:/ExampleApp/ExampleApp/AsyncExceptionExample.cs:line 31
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.GetResult()
+   at ExampleApp2.AsyncExceptionExample.<SecondLevelMethod>d__1.MoveNext() in c:/ExampleApp/ExampleApp/AsyncExceptionExample.cs:line 25
+--- End of stack trace from previous location where exception was thrown ---
+   at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
+   at System.Runtime.CompilerServices.TaskAwaiter.GetResult()
+   at ExampleApp2.AsyncExceptionExample.<TopLevelMethod>d__0.MoveNext() in c:/ExampleApp/ExampleApp/AsyncExceptionExample.cs:line 14
+END
+
   RUBY_EXC = <<END.freeze
  NoMethodError (undefined method `resursivewordload' for #<BooksController:0x007f8dd9a0c738>):
   app/controllers/books_controller.rb:69:in `recursivewordload'
@@ -590,6 +617,8 @@ END
 
   def test_csharp
     check_exception(CSHARP_EXC, false)
+    check_exception(CSHARP_NESTED_EXC, false)
+    check_exception(CSHARP_ASYNC_EXC, false)
   end
 
   def test_python
@@ -648,6 +677,8 @@ END
     check_exception(GO_ON_GAE_EXC, false)
     check_exception(GO_SIGNAL_EXC, false)
     check_exception(CSHARP_EXC, false)
+    check_exception(CSHARP_NESTED_EXC, false)
+    check_exception(CSHARP_ASYNC_EXC, false)
     check_exception(V8_JS_EXC, false)
     check_exception(RUBY_EXC, false)
     check_exception(DART_ERR, false)
