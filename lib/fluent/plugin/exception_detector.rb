@@ -79,8 +79,7 @@ module Fluent
 
     PYTHON_RULES = [
       rule(:start_state, /^Traceback \(most recent call last\):$/, :python),
-      rule(:python, /^[\t ]+File /, :python_code),
-      rule(:python_code, /[^\t ]/, :python),
+      rule(:python, /^[\t ]+[\S]+.*/, :python),
       rule(:python, /^(?:[^\s.():]+\.)*[^\s.():]+:/, :start_state)
     ].freeze
 
