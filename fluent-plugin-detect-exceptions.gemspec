@@ -20,9 +20,9 @@ eos
   gem.test_files    = gem.files.grep(/^(test)/)
   gem.require_paths = ['lib']
 
-  gem.add_runtime_dependency 'fluentd', '>= 0.10'
+  gem.add_runtime_dependency 'fluentd', '>= 1.0', "< 2"
 
-  gem.add_development_dependency 'rake', '~> 10.3'
+  gem.add_development_dependency 'rake'
   gem.add_development_dependency 'rubocop', '= 0.42.0'
   gem.add_development_dependency 'test-unit', '~> 3.0'
   gem.add_development_dependency 'flexmock', '~> 2.0'

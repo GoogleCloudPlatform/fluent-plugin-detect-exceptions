@@ -16,12 +16,16 @@
 require 'fluent/plugin/exception_detector'
 require 'fluent/output'
 
-module Fluent
+module Fluent::Plugin
   # This output plugin consumes a log stream of JSON objects which contain
   # single-line log messages. If a consecutive sequence of log messages form
   # an exception stack trace, they forwarded as a single, combined JSON
   # object. Otherwise, the input log data is forwarded as is.
-  class DetectExceptionsOutput < Output
+  class DetectExceptionsOutput < Fluent::Plugin::Output
+    Fluent::Plugin.register_output('detect_exceptions', self)
+
+    helpers :compat_parameters, :thread, :event_emitter
+
     desc 'The field which contains the raw message text in the input JSON data.'
     config_param :message, :string, default: ''
     desc 'The prefix to be removed from the input tag when outputting a record.'
@@ -37,9 +41,8 @@ module Fluent
     desc 'Separate log streams by this field in the input JSON data.'
     config_param :stream, :string, default: ''
 
-    Fluent::Plugin.register_output('detect_exceptions', self)
-
     def configure(conf)
+      compat_parameters_convert(conf)
       super
 
       if multiline_flush_interval
@@ -58,7 +61,7 @@ module Fluent
       if multiline_flush_interval
         @flush_buffer_mutex = Mutex.new
         @stop_check = false
-        @thread = Thread.new(&method(:check_flush_loop))
+        thread_create(:detect_exceptions, &method(:check_flush_loop))
       end
     end
 
@@ -71,15 +74,13 @@ module Fluent
       # Before shutdown is not available in older fluentd versions.
       # Hence, we make sure that we flush the buffers here as well.
       flush_buffers
-      @thread.join if @multiline_flush_interval
       super
     end
 
-    def emit(tag, es, chain)
+    def process(tag, es)
       es.each do |time_sec, record|
         process_record(tag, time_sec, record)
       end
-      chain.next
     end
 
     private
