@@ -261,6 +261,7 @@ module Fluent
     def initialize(message_field, languages, max_lines: 0, max_bytes: 0,
                    &emit_callback)
       @exception_detector = Fluent::ExceptionDetector.new(*languages)
+      @has_exception = false
       @max_lines = max_lines
       @max_bytes = max_bytes
       @message_field = message_field
@@ -293,7 +294,7 @@ module Fluent
       when 0
         return
       when 1
-        @emit.call(@first_timestamp, @first_record)
+        @emit.call(@first_timestamp, @first_record, @has_exception)
       else
         combined_message = @messages.join
         if @message_field.nil?
@@ -302,7 +303,7 @@ module Fluent
           output_record = @first_record
           output_record[@message_field] = combined_message
         end
-        @emit.call(@first_timestamp, output_record)
+        @emit.call(@first_timestamp, output_record, @has_exception)
       end
       @messages = []
       @first_record = nil
@@ -333,22 +334,26 @@ module Fluent
       trigger_emit = detection_status == :no_trace ||
                      detection_status == :end_trace
       if @messages.empty? && trigger_emit
-        @emit.call(time_sec, record)
+        @emit.call(time_sec, record, detection_status == :end_trace)
         return
       end
 
       case detection_status
       when :inside_trace
+        @has_exception = true
         add(time_sec, record, message)
       when :end_trace
+        @has_exception = true
         add(time_sec, record, message)
         flush
       when :no_trace
         flush
+        @has_exception = false
         add(time_sec, record, message)
         flush
       when :start_trace
         flush
+        @has_exception = true
         add(time_sec, record, message)
       end
     end

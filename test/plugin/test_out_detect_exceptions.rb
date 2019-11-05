@@ -243,6 +243,30 @@ END
     assert_equal(['prefix.plus.rest.of.the.tag'], tags)
   end
 
+  def test_exception_tag_prefix
+    original_tag = 'log'
+    with_exception_tag = "exception.#{original_tag}"
+    cfg = 'exception_tag_prefix exception'
+    d = create_driver(cfg, original_tag)
+    expected = [original_tag, with_exception_tag, original_tag]
+    run_driver(d, ARBITRARY_TEXT, JAVA_EXC, ARBITRARY_TEXT)
+    assert_equal(d.emits.collect { |e| e[0] }, expected)
+  end
+
+  def test_exception_tag_prefix_remove_old
+    without_prefix = 'log'
+    original = "old.#{without_prefix}"
+    with_exception_tag = "exception.#{without_prefix}"
+    cfg = %(
+       exception_tag_prefix exception
+       remove_tag_prefix old
+    )
+    d = create_driver(cfg, original)
+    expected = [without_prefix, with_exception_tag, without_prefix]
+    run_driver(d, ARBITRARY_TEXT, JAVA_EXC, ARBITRARY_TEXT)
+    assert_equal(d.emits.collect { |e| e[0] }, expected)
+  end
+
   def test_flush_after_max_lines
     cfg = 'max_lines 2'
     d = create_driver(cfg)
