@@ -66,6 +66,12 @@ The plugin supports the following parameters:
                             forwarded. If not set, incomplete exceptions stacks
                             are not flushed.
 
+[force_live_breaks]  Force line breaks between each lines when comibining exception stacks.
+                     This is useful if your exception is formatted
+                     as a single line. i.e., logs retrieved from the docker's
+                     logging driver don't have any line break.
+                     Default: false.
+
 [max_lines]  Maximum number of lines in a detected exception stack trace.
              If this maximum number is exceeded, the exception stack trace
              that has been detected so far will be output as a single

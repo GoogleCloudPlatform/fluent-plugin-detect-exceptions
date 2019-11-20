@@ -256,20 +256,22 @@ module Fluent
     # message_field may contain the empty string. In this case, the
     # TraceAccumulator 'learns' the field name from the first record by checking
     # for some pre-defined common field names of text logs.
-    # The named parameters max_lines and max_bytes limit the maximum amount
+    # The option parameter can be used to pass the following parameters:
+    # force_line_breaks adds line breaks when combining exception stacks
+    # max_lines and max_bytes limit the maximum amount
     # of data to be buffered. The default value 0 indicates 'no limit'.
-    def initialize(message_field, languages, max_lines: 0, max_bytes: 0,
-                   &emit_callback)
+    def initialize(message_field, languages, **options, &emit_callback)
       @exception_detector = Fluent::ExceptionDetector.new(*languages)
-      @max_lines = max_lines
-      @max_bytes = max_bytes
       @message_field = message_field
+      @force_line_breaks = options[:force_line_breaks] || false
+      @max_lines = options[:max_lines]           || 0
+      @max_bytes = options[:max_bytes]           || 0
+      @emit = emit_callback
       @messages = []
       @buffer_start_time = Time.now
       @buffer_size = 0
       @first_record = nil
       @first_timestamp = nil
-      @emit = emit_callback
     end
 
     def push(time_sec, record)
@@ -360,8 +362,14 @@ module Fluent
         @buffer_start_time = Time.now
       end
       unless message.nil?
-        @messages << message
-        @buffer_size += message.length
+        message_with_line_break =
+          if @force_line_breaks && !@messages.empty? && !message.include?("\n")
+            "\n" + message
+          else
+            message
+          end
+        @messages << message_with_line_break
+        @buffer_size += message_with_line_break.length
       end
     end
   end

@@ -74,6 +74,17 @@ END
     log_entry
   end
 
+  def feed_lines_without_line_breaks(driver, t, *messages, stream: nil)
+    count = 0
+    messages.each do |m|
+      m.each_line do |line|
+        line.delete!("\n")
+        driver.emit(log_entry(line, count, stream), t + count)
+        count += 1
+      end
+    end
+  end
+
   def feed_lines(driver, t, *messages, stream: nil)
     count = 0
     messages.each do |m|
@@ -241,6 +252,34 @@ END
     assert_equal(['prefix.plus.rest.of.the.tag'], tags)
     tags = get_out_tags('does.not.occur', 'prefix.plus.rest.of.the.tag')
     assert_equal(['prefix.plus.rest.of.the.tag'], tags)
+  end
+
+  def test_force_line_breaks_false
+    cfg = 'force_line_breaks false'
+    d = create_driver(cfg)
+    t = Time.now.to_i
+    d.run do
+      feed_lines(d, t, JAVA_EXC)
+    end
+    expected = JAVA_EXC
+    assert_equal(make_logs(t, *expected), d.events)
+  end
+
+  def test_force_line_breaks_true
+    cfg = 'force_line_breaks true'
+    d = create_driver(cfg)
+    t = Time.now.to_i
+    d.run do
+      feed_lines_without_line_breaks(d, t, JAVA_EXC)
+    end
+    # Expected: the first two lines of the exception are buffered and combined.
+    # Then the max_lines setting kicks in and the rest of the Python exception
+    # is logged line-by-line (since it's not an exception stack in itself).
+    # For the following Java stack trace, the two lines of the first exception
+    # are buffered and combined. So are the first two lines of the second
+    # exception. Then the rest is logged line-by-line.
+    expected = JAVA_EXC.chomp
+    assert_equal(make_logs(t, *expected), d.events)
   end
 
   def test_flush_after_max_lines
