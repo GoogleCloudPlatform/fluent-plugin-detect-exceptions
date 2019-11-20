@@ -66,6 +66,13 @@ The plugin supports the following parameters:
                             forwarded. If not set, incomplete exceptions stacks
                             are not flushed.
 
+[add_line_break]  Force the addition of the line break '\n' operator between
+                  each line. This is usefull if you want to send the exception
+                  as one message but format it as a regular exception.
+                  If this is set to true, a line break will be added.
+                  added between each lines of the exception.
+                  Default: false.
+
 [max_lines]  Maximum number of lines in a detected exception stack trace.
              If this maximum number is exceeded, the exception stack trace
              that has been detected so far will be output as a single

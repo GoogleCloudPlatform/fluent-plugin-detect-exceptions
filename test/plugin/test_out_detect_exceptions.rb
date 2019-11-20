@@ -243,6 +243,34 @@ END
     assert_equal(['prefix.plus.rest.of.the.tag'], tags)
   end
 
+  def test_add_line_break_false
+    cfg = 'add_line_break true'
+    d = create_driver(cfg)
+    t = Time.now.to_i
+    d.run do
+      feed_lines(d, t, JAVA_EXC)
+    end
+    expected = JAVA_EXC
+    assert_equal(make_logs(t, *expected), d.events)
+  end
+
+  def test_add_line_break_true
+    cfg = 'add_line_break true'
+    d = create_driver(cfg)
+    t = Time.now.to_i
+    d.run do
+      feed_lines(d, t, JAVA_EXC)
+    end
+    # Expected: the first two lines of the exception are buffered and combined.
+    # Then the max_lines setting kicks in and the rest of the Python exception
+    # is logged line-by-line (since it's not an exception stack in itself).
+    # For the following Java stack trace, the two lines of the first exception
+    # are buffered and combined. So are the first two lines of the second
+    # exception. Then the rest is logged line-by-line.
+    expected = JAVA_EXC.lines.join("\n")
+    assert_equal(make_logs(t, *expected), d.events)
+  end
+
   def test_flush_after_max_lines
     cfg = 'max_lines 2'
     d = create_driver(cfg)

@@ -30,6 +30,8 @@ module Fluent
     config_param :multiline_flush_interval, :time, default: nil
     desc 'Programming languages for which to detect exceptions. Default: all.'
     config_param :languages, :array, value_type: :string, default: []
+    desc 'Force the application to add a line break between the raw message text. Default: false.'
+    config_param :add_line_break, :bool, default: false
     desc 'Maximum number of lines to flush (0 means no limit). Default: 1000.'
     config_param :max_lines, :integer, default: 1000
     desc 'Maximum number of bytes to flush (0 means no limit). Default: 0.'
@@ -92,6 +94,7 @@ module Fluent
           out_tag = tag.sub(/^#{Regexp.escape(@remove_tag_prefix)}\./, '')
           @accumulators[log_id] =
             Fluent::TraceAccumulator.new(@message, @languages,
+                                         add_line_break: @add_line_break,
                                          max_lines: @max_lines,
                                          max_bytes: @max_bytes) do |t, r|
               router.emit(out_tag, t, r)
