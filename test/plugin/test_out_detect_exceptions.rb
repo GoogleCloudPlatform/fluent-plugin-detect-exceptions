@@ -244,7 +244,7 @@ END
   end
 
   def test_add_line_break_false
-    cfg = 'add_line_break true'
+    cfg = 'add_line_break false'
     d = create_driver(cfg)
     t = Time.now.to_i
     d.run do

@@ -42,7 +42,8 @@ module Fluent
     end
 
     def self.rule(from_state_or_states, pattern, to_state)
-      from_state_or_states = [from_state_or_states] unless from_state_or_states.is_a?(Array)
+      from_state_or_states = [from_state_or_states] unless
+        from_state_or_states.is_a?(Array)
       Struct::Rule.new(from_state_or_states, pattern, to_state)
     end
 
@@ -51,120 +52,120 @@ module Fluent
     end
 
     JAVA_RULES = [
-        rule([:start_state, :java_start_exception],
-             /(?:Exception|Error|Throwable|V8 errors stack trace)[:\r\n]/,
-             :java_after_exception),
-        rule(:java_after_exception, /^[\t ]*nested exception is:[\t ]*/,
-             :java_start_exception),
-        rule(:java_after_exception, /^[\r\n]*$/, :java_after_exception),
-        rule([:java_after_exception, :java], /^[\t ]+(?:eval )?at /, :java),
+      rule([:start_state, :java_start_exception],
+           /(?:Exception|Error|Throwable|V8 errors stack trace)[:\r\n]/,
+           :java_after_exception),
+      rule(:java_after_exception, /^[\t ]*nested exception is:[\t ]*/,
+           :java_start_exception),
+      rule(:java_after_exception, /^[\r\n]*$/, :java_after_exception),
+      rule([:java_after_exception, :java], /^[\t ]+(?:eval )?at /, :java),
 
-        rule([:java_after_exception, :java],
-             # C# nested exception.
-             /^[\t ]+--- End of inner exception stack trace ---$/,
-             :java),
+      rule([:java_after_exception, :java],
+           # C# nested exception.
+           /^[\t ]+--- End of inner exception stack trace ---$/,
+           :java),
 
-        rule([:java_after_exception, :java],
-             # C# exception from async code.
-             /^--- End of stack trace from previous (?x:
+      rule([:java_after_exception, :java],
+           # C# exception from async code.
+           /^--- End of stack trace from previous (?x:
            )location where exception was thrown ---$/,
-             :java),
+           :java),
 
-        rule([:java_after_exception, :java], /^[\t ]*(?:Caused by|Suppressed):/,
-             :java_after_exception),
-        rule([:java_after_exception, :java],
-             /^[\t ]*... \d+ (?:more|common frames omitted)/, :java)
+      rule([:java_after_exception, :java], /^[\t ]*(?:Caused by|Suppressed):/,
+           :java_after_exception),
+      rule([:java_after_exception, :java],
+           /^[\t ]*... \d+ (?:more|common frames omitted)/, :java)
     ].freeze
 
     PYTHON_RULES = [
-        rule(:start_state, /^Traceback \(most recent call last\):$/, :python),
-        rule(:python, /^[\t ]+File /, :python_code),
-        rule(:python_code, /[^\t ]/, :python),
-        rule(:python, /^(?:[^\s.():]+\.)*[^\s.():]+:/, :start_state)
+      rule(:start_state, /^Traceback \(most recent call last\):$/, :python),
+      rule(:python, /^[\t ]+File /, :python_code),
+      rule(:python_code, /[^\t ]/, :python),
+      rule(:python, /^(?:[^\s.():]+\.)*[^\s.():]+:/, :start_state)
     ].freeze
 
     PHP_RULES = [
-        rule(:start_state, /
+      rule(:start_state, /
         (?:PHP\ (?:Notice|Parse\ error|Fatal\ error|Warning):)|
         (?:exception\ '[^']+'\ with\ message\ ')/x, :php_stack_begin),
-        rule(:php_stack_begin, /^Stack trace:/, :php_stack_frames),
-        rule(:php_stack_frames, /^#\d/, :php_stack_frames),
-        rule(:php_stack_frames, /^\s+thrown in /, :start_state)
+      rule(:php_stack_begin, /^Stack trace:/, :php_stack_frames),
+      rule(:php_stack_frames, /^#\d/, :php_stack_frames),
+      rule(:php_stack_frames, /^\s+thrown in /, :start_state)
     ].freeze
 
     GO_RULES = [
-        rule(:start_state, /\bpanic: /, :go_after_panic),
-        rule(:start_state, /http: panic serving/, :go_goroutine),
-        rule(:go_after_panic, /^$/, :go_goroutine),
-        rule([:go_after_panic, :go_after_signal, :go_frame_1],
-             /^$/, :go_goroutine),
-        rule(:go_after_panic, /^\[signal /, :go_after_signal),
-        rule(:go_goroutine, /^goroutine \d+ \[[^\]]+\]:$/, :go_frame_1),
-        rule(:go_frame_1, /^(?:[^\s.:]+\.)*[^\s.():]+\(|^created by /,
-             :go_frame_2),
-        rule(:go_frame_2, /^\s/, :go_frame_1)
+      rule(:start_state, /\bpanic: /, :go_after_panic),
+      rule(:start_state, /http: panic serving/, :go_goroutine),
+      rule(:go_after_panic, /^$/, :go_goroutine),
+      rule([:go_after_panic, :go_after_signal, :go_frame_1],
+           /^$/, :go_goroutine),
+      rule(:go_after_panic, /^\[signal /, :go_after_signal),
+      rule(:go_goroutine, /^goroutine \d+ \[[^\]]+\]:$/, :go_frame_1),
+      rule(:go_frame_1, /^(?:[^\s.:]+\.)*[^\s.():]+\(|^created by /,
+           :go_frame_2),
+      rule(:go_frame_2, /^\s/, :go_frame_1)
     ].freeze
 
     RUBY_RULES = [
-        rule(:start_state, /Error \(.*\):$/, :ruby_before_rails_trace),
-        rule(:ruby_before_rails_trace, /^  $/, :ruby),
-        rule(:ruby_before_rails_trace, /^[\t ]+.*?\.rb:\d+:in `/, :ruby),
-        rule(:ruby, /^[\t ]+.*?\.rb:\d+:in `/, :ruby)
+      rule(:start_state, /Error \(.*\):$/, :ruby_before_rails_trace),
+      rule(:ruby_before_rails_trace, /^  $/, :ruby),
+      rule(:ruby_before_rails_trace, /^[\t ]+.*?\.rb:\d+:in `/, :ruby),
+      rule(:ruby, /^[\t ]+.*?\.rb:\d+:in `/, :ruby)
     ].freeze
 
     DART_RULES = [
-        rule(:start_state, /^Unhandled exception:$/, :dart_exc),
-        rule(:dart_exc, /^Instance of/, :dart_stack),
-        rule(:dart_exc, /^Exception/, :dart_stack),
-        rule(:dart_exc, /^Bad state/, :dart_stack),
-        rule(:dart_exc, /^IntegerDivisionByZeroException/, :dart_stack),
-        rule(:dart_exc, /^Invalid argument/, :dart_stack),
-        rule(:dart_exc, /^RangeError/, :dart_stack),
-        rule(:dart_exc, /^Assertion failed/, :dart_stack),
-        rule(:dart_exc, /^Cannot instantiate/, :dart_stack),
-        rule(:dart_exc, /^Reading static variable/, :dart_stack),
-        rule(:dart_exc, /^UnimplementedError/, :dart_stack),
-        rule(:dart_exc, /^Unsupported operation/, :dart_stack),
-        rule(:dart_exc, /^Concurrent modification/, :dart_stack),
-        rule(:dart_exc, /^Out of Memory/, :dart_stack),
-        rule(:dart_exc, /^Stack Overflow/, :dart_stack),
-        rule(:dart_exc, /^'.+?':.+?$/, :dart_type_err_1),
-        rule(:dart_type_err_1, /^#\d+\s+.+?\(.+?\)$/, :dart_stack),
-        rule(:dart_type_err_1, /^.+?$/, :dart_type_err_2),
-        rule(:dart_type_err_2, /^.*?\^.*?$/, :dart_type_err_3),
-        rule(:dart_type_err_3, /^$/, :dart_type_err_4),
-        rule(:dart_type_err_4, /^$/, :dart_stack),
-        rule(:dart_exc, /^FormatException/, :dart_format_err_1),
-        rule(:dart_format_err_1, /^#\d+\s+.+?\(.+?\)$/, :dart_stack),
-        rule(:dart_format_err_1, /^./, :dart_format_err_2),
-        rule(:dart_format_err_2, /^.*?\^/, :dart_format_err_3),
-        rule(:dart_format_err_3, /^$/, :dart_stack),
-        rule(:dart_exc, /^NoSuchMethodError:/, :dart_method_err_1),
-        rule(:dart_method_err_1, /^Receiver:/, :dart_method_err_2),
-        rule(:dart_method_err_2, /^Tried calling:/, :dart_method_err_3),
-        rule(:dart_method_err_3, /^Found:/, :dart_stack),
-        rule(:dart_method_err_3, /^#\d+\s+.+?\(.+?\)$/, :dart_stack),
-        rule(:dart_stack, /^#\d+\s+.+?\(.+?\)$/, :dart_stack),
-        rule(:dart_stack, /^<asynchronous suspension>$/, :dart_stack)
+      rule(:start_state, /^Unhandled exception:$/, :dart_exc),
+      rule(:dart_exc, /^Instance of/, :dart_stack),
+      rule(:dart_exc, /^Exception/, :dart_stack),
+      rule(:dart_exc, /^Bad state/, :dart_stack),
+      rule(:dart_exc, /^IntegerDivisionByZeroException/, :dart_stack),
+      rule(:dart_exc, /^Invalid argument/, :dart_stack),
+      rule(:dart_exc, /^RangeError/, :dart_stack),
+      rule(:dart_exc, /^Assertion failed/, :dart_stack),
+      rule(:dart_exc, /^Cannot instantiate/, :dart_stack),
+      rule(:dart_exc, /^Reading static variable/, :dart_stack),
+      rule(:dart_exc, /^UnimplementedError/, :dart_stack),
+      rule(:dart_exc, /^Unsupported operation/, :dart_stack),
+      rule(:dart_exc, /^Concurrent modification/, :dart_stack),
+      rule(:dart_exc, /^Out of Memory/, :dart_stack),
+      rule(:dart_exc, /^Stack Overflow/, :dart_stack),
+      rule(:dart_exc, /^'.+?':.+?$/, :dart_type_err_1),
+      rule(:dart_type_err_1, /^#\d+\s+.+?\(.+?\)$/, :dart_stack),
+      rule(:dart_type_err_1, /^.+?$/, :dart_type_err_2),
+      rule(:dart_type_err_2, /^.*?\^.*?$/, :dart_type_err_3),
+      rule(:dart_type_err_3, /^$/, :dart_type_err_4),
+      rule(:dart_type_err_4, /^$/, :dart_stack),
+      rule(:dart_exc, /^FormatException/, :dart_format_err_1),
+      rule(:dart_format_err_1, /^#\d+\s+.+?\(.+?\)$/, :dart_stack),
+      rule(:dart_format_err_1, /^./, :dart_format_err_2),
+      rule(:dart_format_err_2, /^.*?\^/, :dart_format_err_3),
+      rule(:dart_format_err_3, /^$/, :dart_stack),
+      rule(:dart_exc, /^NoSuchMethodError:/, :dart_method_err_1),
+      rule(:dart_method_err_1, /^Receiver:/, :dart_method_err_2),
+      rule(:dart_method_err_2, /^Tried calling:/, :dart_method_err_3),
+      rule(:dart_method_err_3, /^Found:/, :dart_stack),
+      rule(:dart_method_err_3, /^#\d+\s+.+?\(.+?\)$/, :dart_stack),
+      rule(:dart_stack, /^#\d+\s+.+?\(.+?\)$/, :dart_stack),
+      rule(:dart_stack, /^<asynchronous suspension>$/, :dart_stack)
     ].freeze
 
     ALL_RULES = (
-    JAVA_RULES + PYTHON_RULES + PHP_RULES + GO_RULES + RUBY_RULES + DART_RULES
+      JAVA_RULES + PYTHON_RULES + PHP_RULES + GO_RULES + RUBY_RULES + DART_RULES
     ).freeze
 
     RULES_BY_LANG = {
-        java: JAVA_RULES,
-        javascript: JAVA_RULES,
-        js: JAVA_RULES,
-        csharp: JAVA_RULES,
-        py: PYTHON_RULES,
-        python: PYTHON_RULES,
-        php: PHP_RULES,
-        go: GO_RULES,
-        rb: RUBY_RULES,
-        ruby: RUBY_RULES,
-        dart: DART_RULES,
-        all: ALL_RULES
+      java: JAVA_RULES,
+      javascript: JAVA_RULES,
+      js: JAVA_RULES,
+      csharp: JAVA_RULES,
+      py: PYTHON_RULES,
+      python: PYTHON_RULES,
+      php: PHP_RULES,
+      go: GO_RULES,
+      rb: RUBY_RULES,
+      ruby: RUBY_RULES,
+      dart: DART_RULES,
+      all: ALL_RULES
     }.freeze
 
     DEFAULT_FIELDS = %w(message log).freeze
@@ -181,9 +182,9 @@ module Fluent
 
       languages.each do |lang|
         rule_config =
-            ExceptionDetectorConfig::RULES_BY_LANG.fetch(lang.downcase) do |_k|
-              raise ArgumentError, "Unknown language: #{lang}"
-            end
+          ExceptionDetectorConfig::RULES_BY_LANG.fetch(lang.downcase) do |_k|
+            raise ArgumentError, "Unknown language: #{lang}"
+          end
 
         rule_config.each do |r|
           target = ExceptionDetectorConfig::RuleTarget.new(r[:pattern],
@@ -258,8 +259,8 @@ module Fluent
     # The named parameter add_line_break forces linebreak between raw messages.
     # The named parameters max_lines and max_bytes limit the maximum amount
     # of data to be buffered. The default value 0 indicates 'no limit'.
-    def initialize(message_field, languages, add_line_break: false, max_lines: 0, max_bytes: 0,
-                   &emit_callback)
+    def initialize(message_field, languages, add_line_break: false, max_lines: 0,
+                   max_bytes: 0, &emit_callback)
       @exception_detector = Fluent::ExceptionDetector.new(*languages)
       @add_line_break = add_line_break
       @max_lines = max_lines
@@ -280,7 +281,7 @@ module Fluent
         detection_status = :no_trace
       else
         force_flush if @max_bytes > 0 &&
-            @buffer_size + message.length > @max_bytes
+                       @buffer_size + message.length > @max_bytes
         detection_status = @exception_detector.update(message)
       end
 
@@ -332,7 +333,7 @@ module Fluent
 
     def update_buffer(detection_status, time_sec, record, message)
       trigger_emit = detection_status == :no_trace ||
-          detection_status == :end_trace
+                     detection_status == :end_trace
       if @messages.empty? && trigger_emit
         @emit.call(time_sec, record)
         return
