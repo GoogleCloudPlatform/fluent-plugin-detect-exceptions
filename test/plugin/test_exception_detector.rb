@@ -142,6 +142,22 @@ Stack trace:
 #2 {main}
 END
 
+  PHP_XDEBUG_EXC = <<END.freeze
+PHP Notice:  Array to string conversion in /base/data/qux/model/Foo.php on line 132
+PHP Stack trace:
+PHP   1. {main}() /base/data/foo/admin/index.php:0
+PHP   2. require_once() /base/data/foo/admin/index.php:1
+PHP   3. Controller::Do() /base/data/bar/bootstrap.php:64
+PHP   4. FooBarController->exec() /base/data/bar/Controller.php:51
+PHP   5. FooBarController->{closure:/base/data/bar/Controller.php:130-132}() /base/data/bar/Controller.php:136
+PHP   6. Qux->do() /base/data/bar/Controller.php:131
+PHP   7. FooBarController->{closure:/base/data/bar/Controller.php:130-132}() /base/data/bar/qux/Qux.php:11
+PHP   8. Base->do() /base/data/bar/Controller.php:131
+PHP   9. FooBarController->{closure:/base/data/bar/Controller.php:111-114}() /base/data/bar/qux/Base.php:19
+PHP  10. FooBarController->do() /base/data/bar/Controller.php:113
+PHP  11. implode() /base/data/qux/model/Foo.php:132
+END
+
   PHP_ON_GAE_EXC = <<END.freeze
 PHP Fatal error:  Uncaught exception 'Exception' with message 'message' in /base/data/home/apps/s~crash-example-php/1.388306779641080894/errors.php:60
 Stack trace:
@@ -627,6 +643,7 @@ END
 
   def test_php
     check_exception(PHP_EXC, false)
+    check_exception(PHP_XDEBUG_EXC, false)
     check_exception(PHP_ON_GAE_EXC, true)
   end
 
