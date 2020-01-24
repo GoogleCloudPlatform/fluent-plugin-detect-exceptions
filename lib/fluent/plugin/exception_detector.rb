@@ -96,6 +96,7 @@ module Fluent
     GO_RULES = [
       rule(:start_state, /\bpanic: /, :go_after_panic),
       rule(:start_state, /http: panic serving/, :go_goroutine),
+      rule(:start_state, /^goroutine \d+ \[[^\]]+\]:$/, :go_frame_1),
       rule(:go_after_panic, /^$/, :go_goroutine),
       rule([:go_after_panic, :go_after_signal, :go_frame_1],
            /^$/, :go_goroutine),
