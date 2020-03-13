@@ -284,4 +284,26 @@ END
                make_logs(t, 'something else', stream: 'java')
     assert_equal(expected, d.events)
   end
+
+  def test_execption_tag_modification
+    cfg = <<-CFG
+    languages all
+
+    <exception>
+      remove_tag_prefix prefix
+      remove_tag_suffix suffix
+      add_tag_suffix new_suffix
+      add_tag_prefix new_prefix
+    </exception>
+    CFG
+
+    tag = 'prefix.test.suffix'
+
+    d = create_driver(cfg, tag)
+    run_driver(d, ARBITRARY_TEXT, JAVA_EXC, ARBITRARY_TEXT)
+
+    expected = [tag, 'new_prefix.test.new_suffix', tag]
+
+    d.emits.map.with_index { |e, i| assert_equal(e[0], expected[i]) }
+  end
 end
