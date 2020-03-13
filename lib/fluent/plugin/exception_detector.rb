@@ -302,7 +302,8 @@ module Fluent
           output_record = @first_record
           output_record[@message_field] = combined_message
         end
-        @emit.call(@first_timestamp, output_record)
+
+        @emit.call(@first_timestamp, output_record, true)
       end
       @messages = []
       @first_record = nil

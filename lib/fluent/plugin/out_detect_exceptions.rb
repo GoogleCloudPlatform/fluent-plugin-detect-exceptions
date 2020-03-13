@@ -37,6 +37,13 @@ module Fluent
     desc 'Separate log streams by this field in the input JSON data.'
     config_param :stream, :string, default: ''
 
+    config_section :exception, multi: false do
+      config_param :remove_tag_prefix, :string, default: nil
+      config_param :add_tag_prefix, :string, default: nil
+      config_param :remove_tag_suffix, :string, default: nil
+      config_param :add_tag_suffix, :string, default: nil
+    end
+
     Fluent::Plugin.register_output('detect_exceptions', self)
 
     def configure(conf)
@@ -90,16 +97,37 @@ module Fluent
         log_id.push(record.fetch(@stream, '')) unless @stream.empty?
         unless @accumulators.key?(log_id)
           out_tag = tag.sub(/^#{Regexp.escape(@remove_tag_prefix)}\./, '')
-          @accumulators[log_id] =
-            Fluent::TraceAccumulator.new(@message, @languages,
-                                         max_lines: @max_lines,
-                                         max_bytes: @max_bytes) do |t, r|
-              router.emit(out_tag, t, r)
-            end
+          @accumulators[log_id] = Fluent::TraceAccumulator.new(
+            @message, @languages,
+            max_lines: @max_lines,
+            max_bytes: @max_bytes
+          ) { |t, r, e = false| modify_and_emit(out_tag, t, r, e) }
         end
 
         @accumulators[log_id].push(time_sec, record)
       end
+    end
+
+    def modify_and_emit(tag, t, r, is_exception)
+      if is_exception && !@exception.nil?
+
+        if @exception.remove_tag_suffix
+          s = '.' + @exception.remove_tag_suffix
+          l = s.length
+          tag = tag[0...-l] if tag.end_with?(s) && tag.length > l
+        end
+
+        if @exception.remove_tag_prefix
+          s = @exception.remove_tag_prefix + '.'
+          l = s.length
+          tag = tag[l..-1] if tag.start_with?(s) && tag.length > l
+        end
+
+        tag.prepend(@exception.add_tag_prefix, '.') if @exception.add_tag_prefix
+        tag.concat('.', @exception.add_tag_suffix) if @exception.add_tag_suffix
+      end
+
+      router.emit(tag, t, r)
     end
 
     def flush_buffers
