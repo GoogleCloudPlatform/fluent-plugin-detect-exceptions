@@ -123,8 +123,11 @@ module Fluent
           tag = tag[l..-1] if tag.start_with?(s) && tag.length > l
         end
 
-        tag.prepend(@exception.add_tag_prefix, '.') if @exception.add_tag_prefix
-        tag.concat('.', @exception.add_tag_suffix) if @exception.add_tag_suffix
+        if @exception.add_tag_prefix
+          tag.prepend(@exception.add_tag_prefix + '.')
+        end
+
+        tag.concat('.' + @exception.add_tag_suffix) if @exception.add_tag_suffix
       end
 
       router.emit(tag, t, r)
