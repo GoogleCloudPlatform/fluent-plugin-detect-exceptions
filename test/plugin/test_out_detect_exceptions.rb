@@ -28,7 +28,7 @@ END
 
   DEFAULT_TAG = 'prefix.test.tag'.freeze
 
-  DEFAULT_STRIPPED_TAG = 'test.tag'.freeze
+  DEFAULT_TAG_STRIPPED = 'test.tag'.freeze
 
   ARBITRARY_TEXT = 'This line is not an exception.'.freeze
 
@@ -158,12 +158,12 @@ END
 
       # Validate that each line received is emitted separately as expected.
       router_mock.should_receive(:emit)
-                 .once.with(DEFAULT_STRIPPED_TAG, Integer,
+                 .once.with(DEFAULT_TAG_STRIPPED, Integer,
                             'message' => json_line_with_exception,
                             'count' => 0)
 
       router_mock.should_receive(:emit)
-                 .once.with(DEFAULT_STRIPPED_TAG, Integer,
+                 .once.with(DEFAULT_TAG_STRIPPED, Integer,
                             'message' => json_line_without_exception,
                             'count' => 1)
 
@@ -231,7 +231,7 @@ END
 
   def test_remove_tag_prefix_is_required
     cfg = ''
-    assert_raises(SystemExit) { create_driver(cfg) }
+    assert_raises(Fluent::ConfigError) { create_driver(cfg) }
   end
 
   def get_out_tags(remove_tag_prefix, original_tag)

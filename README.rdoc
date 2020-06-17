@@ -48,7 +48,7 @@ The plugin supports the following parameters:
                      a record. A prefix has to be a complete tag part.
                      Example: If remove_tag_prefix is set to 'foo', the input
                      tag foo.bar.baz is transformed to bar.baz and the input tag
-                     'foofoo.bar' is not modified. Default: empty string.
+                     'foofoo.bar' is not modified.
 
 === Optional
 
