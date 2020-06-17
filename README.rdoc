@@ -42,18 +42,22 @@ will also install and configure the gem.
 
 The plugin supports the following parameters:
 
-[message]  Name of the field in the JSON record that contains the
-           single-line log messages that shall be scanned for exceptions.
-           If this is set to '', the plugin will try 'message' and 'log',
-           in that order.
-           This parameter is only applicable to structured (JSON) log streams.
-           Default: ''.
+=== Required
 
 [remove_tag_prefix]  The prefix to remove from the input tag when outputting
                      a record. A prefix has to be a complete tag part.
                      Example: If remove_tag_prefix is set to 'foo', the input
                      tag foo.bar.baz is transformed to bar.baz and the input tag
                      'foofoo.bar' is not modified. Default: empty string.
+
+=== Optional
+
+[message]  Name of the field in the JSON record that contains the
+           single-line log messages that shall be scanned for exceptions.
+           If this is set to '', the plugin will try 'message' and 'log',
+           in that order.
+           This parameter is only applicable to structured (JSON) log streams.
+           Default: ''.
 
 [languages]  A list of language for which exception stack traces shall be
              detected. The values in the list can be separated by commas or

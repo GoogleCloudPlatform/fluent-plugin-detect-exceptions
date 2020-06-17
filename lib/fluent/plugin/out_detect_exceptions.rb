@@ -42,6 +42,10 @@ module Fluent
     def configure(conf)
       super
 
+      if @remove_tag_prefix.empty?
+        abort("'remove_tag_prefix' is a required config option.")
+      end
+
       if multiline_flush_interval
         @check_flush_interval = [multiline_flush_interval * 0.1, 1].max
       end
