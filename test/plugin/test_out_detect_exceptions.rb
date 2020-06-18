@@ -127,7 +127,9 @@ END
     }
 
     test_cases.each do |language, exception|
-      cfg = "#{CONFIG}\nlanguages #{language}"
+      cfg = %(
+#{CONFIG}
+languages #{language})
       d = create_driver(cfg)
       t = Time.now.to_i
 
@@ -176,7 +178,9 @@ END
   end
 
   def test_single_language_config
-    cfg = "#{CONFIG}\nlanguages java"
+    cfg = %(
+#{CONFIG}
+languages java)
     d = create_driver(cfg)
     t = Time.now.to_i
     d.run do
@@ -187,7 +191,9 @@ END
   end
 
   def test_multi_language_config
-    cfg = "#{CONFIG}\nlanguages python, java"
+    cfg = %(
+#{CONFIG}
+languages python, java)
     d = create_driver(cfg)
     t = Time.now.to_i
     d.run do
@@ -198,7 +204,9 @@ END
   end
 
   def test_split_exception_after_timeout
-    cfg = "#{CONFIG}\nmultiline_flush_interval 1"
+    cfg = %(
+#{CONFIG}
+multiline_flush_interval 1)
     d = create_driver(cfg)
     t1 = 0
     t2 = 0
@@ -231,7 +239,8 @@ END
 
   def test_remove_tag_prefix_is_required
     cfg = ''
-    assert_raises(Fluent::ConfigError) { create_driver(cfg) }
+    e = assert_raises(Fluent::ConfigError) { create_driver(cfg) }
+    assert_match(/remove_tag_prefix/, e.message)
   end
 
   def get_out_tags(remove_tag_prefix, original_tag)
@@ -251,7 +260,9 @@ END
   end
 
   def test_flush_after_max_lines
-    cfg = "#{CONFIG}\nmax_lines 2"
+    cfg = %(
+#{CONFIG}
+max_lines 2)
     d = create_driver(cfg)
     t = Time.now.to_i
     d.run do
@@ -270,7 +281,9 @@ END
   end
 
   def test_separate_streams
-    cfg = "#{CONFIG}\nstream stream"
+    cfg = %(
+#{CONFIG}
+stream stream)
     d = create_driver(cfg)
     t = Time.now.to_i
     d.run do
