@@ -99,6 +99,13 @@ The plugin supports the following parameters:
           This parameter is only applicable to structured (JSON) log streams.
           Default: ''.
 
+[exception] Optional set of configuration to modify tag of the *matched*
+            exception event
+            [remove_tag_prefix] Prefix to remove from the input tag
+            [remove_tag_suffix] Suffix to remove from the input tag
+            [add_tag_prefix]    Prefix to add to the input tag
+            [add_tag_suffix]    Suffix to add to the input tag 
+
 Example configuration:
 
     <match **>
@@ -107,6 +114,12 @@ Example configuration:
       message log
       languages java, python
       multiline_flush_interval 0.1
+
+      # optionally modify tag of the matched exception
+      <exception>
+        remove_tag_prefix app
+        add_tag_suffix crash
+      </exception>
     </match>
 
 == Extending language support
