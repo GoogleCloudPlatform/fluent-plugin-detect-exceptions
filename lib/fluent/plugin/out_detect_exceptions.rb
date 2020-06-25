@@ -30,6 +30,8 @@ module Fluent
     config_param :multiline_flush_interval, :time, default: nil
     desc 'Programming languages for which to detect exceptions. Default: all.'
     config_param :languages, :array, value_type: :string, default: []
+    desc 'Force live breaks when combining exception stacks. Default: false.'
+    config_param :force_line_breaks, :bool, default: false
     desc 'Maximum number of lines to flush (0 means no limit). Default: 1000.'
     config_param :max_lines, :integer, default: 1000
     desc 'Maximum number of bytes to flush (0 means no limit). Default: 0.'
@@ -91,9 +93,13 @@ module Fluent
         unless @accumulators.key?(log_id)
           out_tag = tag.sub(/^#{Regexp.escape(@remove_tag_prefix)}\./, '')
           @accumulators[log_id] =
-            Fluent::TraceAccumulator.new(@message, @languages,
-                                         max_lines: @max_lines,
-                                         max_bytes: @max_bytes) do |t, r|
+            Fluent::TraceAccumulator.new(
+              @message,
+              @languages,
+              force_line_breaks: @force_line_breaks,
+              max_lines: @max_lines,
+              max_bytes: @max_bytes
+            ) do |t, r|
               router.emit(out_tag, t, r)
             end
         end
