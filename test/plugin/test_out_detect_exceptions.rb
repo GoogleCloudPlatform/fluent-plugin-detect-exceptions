@@ -271,7 +271,9 @@ multiline_flush_interval 1)
   end
 
   def test_force_line_breaks_false
-    cfg = 'force_line_breaks false'
+    cfg = %(
+#{CONFIG}
+force_line_breaks true)
     d = create_driver(cfg)
     t = Time.now.to_i
     d.run do
@@ -282,7 +284,9 @@ multiline_flush_interval 1)
   end
 
   def test_force_line_breaks_true
-    cfg = 'force_line_breaks true'
+    cfg = %(
+#{CONFIG}
+force_line_breaks true)
     d = create_driver(cfg)
     t = Time.now.to_i
     d.run do
