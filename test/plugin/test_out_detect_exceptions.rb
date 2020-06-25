@@ -28,6 +28,8 @@ END
 
   DEFAULT_TAG = 'prefix.test.tag'.freeze
 
+  DEFAULT_TAG_STRIPPED = 'test.tag'.freeze
+
   ARBITRARY_TEXT = 'This line is not an exception.'.freeze
 
   JAVA_EXC = <<END.freeze
@@ -136,7 +138,9 @@ END
     }
 
     test_cases.each do |language, exception|
-      cfg = "languages #{language}"
+      cfg = %(
+#{CONFIG}
+languages #{language})
       d = create_driver(cfg)
       t = Time.now.to_i
 
@@ -167,12 +171,12 @@ END
 
       # Validate that each line received is emitted separately as expected.
       router_mock.should_receive(:emit)
-                 .once.with(DEFAULT_TAG, Integer,
+                 .once.with(DEFAULT_TAG_STRIPPED, Integer,
                             'message' => json_line_with_exception,
                             'count' => 0)
 
       router_mock.should_receive(:emit)
-                 .once.with(DEFAULT_TAG, Integer,
+                 .once.with(DEFAULT_TAG_STRIPPED, Integer,
                             'message' => json_line_without_exception,
                             'count' => 1)
 
@@ -185,7 +189,9 @@ END
   end
 
   def test_single_language_config
-    cfg = 'languages java'
+    cfg = %(
+#{CONFIG}
+languages java)
     d = create_driver(cfg)
     t = Time.now.to_i
     d.run do
@@ -196,7 +202,9 @@ END
   end
 
   def test_multi_language_config
-    cfg = 'languages python, java'
+    cfg = %(
+#{CONFIG}
+languages python, java)
     d = create_driver(cfg)
     t = Time.now.to_i
     d.run do
@@ -207,7 +215,9 @@ END
   end
 
   def test_split_exception_after_timeout
-    cfg = 'multiline_flush_interval 1'
+    cfg = %(
+#{CONFIG}
+multiline_flush_interval 1)
     d = create_driver(cfg)
     t1 = 0
     t2 = 0
@@ -236,6 +246,12 @@ END
       d.instance.before_shutdown
     end
     assert_equal(make_logs(t1, JAVA_EXC + "  at x\n  at y\n"), d.events)
+  end
+
+  def test_remove_tag_prefix_is_required
+    cfg = ''
+    e = assert_raises(Fluent::ConfigError) { create_driver(cfg) }
+    assert_match(/remove_tag_prefix/, e.message)
   end
 
   def get_out_tags(remove_tag_prefix, original_tag)
@@ -283,7 +299,9 @@ END
   end
 
   def test_flush_after_max_lines
-    cfg = 'max_lines 2'
+    cfg = %(
+#{CONFIG}
+max_lines 2)
     d = create_driver(cfg)
     t = Time.now.to_i
     d.run do
@@ -302,7 +320,9 @@ END
   end
 
   def test_separate_streams
-    cfg = 'stream stream'
+    cfg = %(
+#{CONFIG}
+stream stream)
     d = create_driver(cfg)
     t = Time.now.to_i
     d.run do
