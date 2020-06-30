@@ -89,6 +89,8 @@ module Fluent
         (?:PHP\ (?:Notice|Parse\ error|Fatal\ error|Warning):)|
         (?:exception\ '[^']+'\ with\ message\ ')/x, :php_stack_begin),
       rule(:php_stack_begin, /^Stack trace:/, :php_stack_frames),
+      rule(:php_stack_begin, /^PHP Stack trace:/, :php_xdebug_stack_frames),
+      rule(:php_xdebug_stack_frames, /^PHP +\d+\./, :php_xdebug_stack_frames),
       rule(:php_stack_frames, /^#\d/, :php_stack_frames),
       rule(:php_stack_frames, /^\s+thrown in /, :start_state)
     ].freeze
