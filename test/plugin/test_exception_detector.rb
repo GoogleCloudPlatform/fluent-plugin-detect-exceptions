@@ -134,6 +134,24 @@ Traceback (most recent call last):
 Exception: ('spam', 'eggs')
 END
 
+  PYTHON_DOUBLE_FILE_EXC = <<END.freeze
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.6/site-packages/flask/app.py", line 2292, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/usr/local/lib/python3.6/site-packages/flask/app.py", line 1815, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/usr/local/lib/python3.6/site-packages/sqlalchemy/sql/operators.py", line 1219, in in_op
+    return a.in_(b)
+  File "/usr/local/lib/python3.6/site-packages/sqlalchemy/sql/operators.py", line 593, in in_
+    return self.operate(in_op, other)
+  File "<string>", line 1, in <lambda>
+  File "/usr/local/lib/python3.6/site-packages/sqlalchemy/sql/type_api.py", line 66, in operate
+    return o[0](self.expr, op, *(other + o[1:]), **kwargs)
+  File "/usr/local/lib/python3.6/site-packages/sqlalchemy/sql/default_comparator.py", line 194, in _in_impl
+    for o in seq_or_selectable:
+TypeError: 'NoneType' object is not iterable
+END
+
   PHP_EXC = <<END.freeze
 exception 'Exception' with message 'Custom exception' in /home/joe/work/test-php/test.php:5
 Stack trace:
@@ -623,6 +641,7 @@ END
 
   def test_python
     check_exception(PYTHON_EXC, true)
+    check_exception(PYTHON_DOUBLE_FILE_EXC, true)
   end
 
   def test_php
@@ -668,6 +687,7 @@ END
   def test_mixed_languages
     check_exception(JAVA_EXC, false)
     check_exception(PYTHON_EXC, true)
+    check_exception(PYTHON_DOUBLE_FILE_EXC, true)
     check_exception(COMPLEX_JAVA_EXC, false)
     check_exception(NODE_JS_EXC, false)
     check_exception(PHP_EXC, false)
