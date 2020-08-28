@@ -561,6 +561,33 @@ Tried calling: noMethod()
 #5      _RawReceivePortImpl._handleMessage (dart:isolate-patch/isolate_patch.dart:151)
 END
 
+  UNITY_ERR = <<END.freeze
+Caught fatal signal - signo:5 code:-6 errno:0 addr:0x1
+Obtained 22 stack frames.
+#0  0x007f94d638168f in DebugStringToFile(DebugStringToFileData const&)
+#1  0x007f94d5c87aee in DiagnosticsUtils_Bindings::ForceCrash(DiagnosticsUtils_Bindings::ForcedCrashCategory, ScriptingExceptionPtr*)
+#2  0x007f94d5dde998 in Utils_CUSTOM_ForceCrash(DiagnosticsUtils_Bindings::ForcedCrashCategory)
+#3  0x0000004160b80d in (wrapper managed-to-native) UnityEngine.Diagnostics.Utils:ForceCrash (UnityEngine.Diagnostics.ForcedCrashCategory)
+#4  0x0000004144fa02 in System.Runtime.CompilerServices.AsyncMethodBuilderCore/MoveNextRunner:InvokeMoveNext (object)
+#5  0x00000041292063 in System.Threading.ExecutionContext:Run (System.Threading.ExecutionContext,System.Threading.ContextCallback,object,bool)
+#6  0x000000414f21f9 in System.Threading.Tasks.SynchronizationContextAwaitTaskContinuation/<>c:<.cctor>b__7_0 (object)
+#7  0x000000414ece0b in UnityEngine.UnitySynchronizationContext:Exec ()
+#8  0x000000414ec723 in UnityEngine.UnitySynchronizationContext:ExecuteTasks ()
+#9  0x007f94d3582505 in mono_print_method_from_ip
+#10 0x007f94d36f15c3 in mono_perfcounter_foreach
+#11 0x007f94d36f2470 in mono_runtime_invoke
+#12 0x007f94d5ceb292 in scripting_method_invoke(ScriptingMethodPtr, ScriptingObjectPtr, ScriptingArguments&, ScriptingExceptionPtr*, bool)
+#13 0x007f94d5ce92df in ScriptingInvocation::Invoke(ScriptingExceptionPtr*, bool)
+#14 0x007f94d4ee5a87 in Scripting::UnityEngine::UnitySynchronizationContextProxy::ExecuteTasks(ScriptingExceptionPtr*)
+#15 0x007f94d5aa602f in InitPlayerLoopCallbacks()::UpdateScriptRunDelayedTasksRegistrator::Forward()
+#16 0x007f94d5a993ee in ExecutePlayerLoop(NativePlayerLoopSystem*)
+#17 0x007f94d5a9945a in ExecutePlayerLoop(NativePlayerLoopSystem*)
+#18 0x007f94d5a999d2 in PlayerLoop()
+#19 0x007f94d5d57f7e in PlayerMain(int, char**)
+#20 0x007f94d46e009b in __libc_start_main
+#21 0x00555a30fc8689 in _start
+END
+
   ARBITRARY_TEXT = <<END.freeze
 This arbitrary text.
 It sounds tympanic: a word which means like a drum.
@@ -601,6 +628,10 @@ END
     check_multiline(detector, :no_trace, :no_trace, 'This is not an exception.')
     check_multiline(detector, :inside_trace, after_exc, exception)
     check_multiline(detector, before_second_exc, after_exc, exception)
+  end
+
+  def test_unity
+    check_exception(UNITY_ERR, true)
   end
 
   def test_java
