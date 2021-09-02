@@ -59,7 +59,8 @@ module Fluent
            :java_start_exception),
       rule(:java_after_exception, /^[\r\n]*$/, :java_after_exception),
       rule([:java_after_exception, :java], /^[\t ]+(?:eval )?at /, :java),
-      rule([:java_after_exception, :java], /^[\t ]+(?:eval )?|_ checkpoint /, :java),
+      rule([:java_after_exception, :java], /^[\t ]+(?:eval )?|_ checkpoint /,
+           :java),
 
       rule([:java_after_exception, :java],
            # C# nested exception.
@@ -74,8 +75,10 @@ module Fluent
 
       rule([:java_after_exception, :java], /^[\t ]*(?:Caused by|Suppressed):/,
            :java_after_exception),
-      rule([:java_after_exception, :java], /^(?:Error has been observed at the following site\(s\)|Stack trace):/,
+      rule([:java_after_exception, :java],
+           /^(?:Error has been observed at the following site\(s\)):/,
            :java),
+      rule([:java_after_exception, :java], /^(?:Stack trace):/, :java),
       rule([:java_after_exception, :java],
            /^[\t ]*... \d+ (?:more|common frames omitted)/, :java)
     ].freeze
