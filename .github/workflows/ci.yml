@@ -25,7 +25,8 @@ jobs:
           working-directory: ${{ runner.temp }}
       - run: |
           bundle exec rake
-      # TODO: notifications:
+      # TODO: migrate Travis settings below:
+      # notifications:
       #   email:
       #     recipients:
       #       - google-fluentd-notifications+travis@google.com
