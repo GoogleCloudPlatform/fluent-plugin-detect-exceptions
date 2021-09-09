@@ -90,6 +90,28 @@ com.sun.mail.smtp.SMTPAddressFailedException: 550 5.7.1 <[REDACTED_EMAIL_ADDRESS
 Caused by: com.sun.mail.smtp.SMTPAddressFailedException: 550 5.7.1 <[REDACTED_EMAIL_ADDRESS]>... Relaying denied
 END
 
+  REACTOR_JAVA_EXC = <<END.freeze
+org.springframework.web.reactive.function.client.WebClientRequestException: finishConnect(..) failed: Connection refused: localhost:8080; nested exception is io.netty.channel.AbstractChannel$AnnotatedConnectException: finishConnect(..) failed: Connection refused: localhost:8080
+  at org.springframework.web.reactive.function.client.ExchangeFunctions$DefaultExchangeFunction.lambda$wrapException$9(ExchangeFunctions.java:141)
+  Suppressed: reactor.core.publisher.FluxOnAssembly$OnAssemblyException:
+Error has been observed at the following site(s):
+  |_ checkpoint ⇢ Request to GET localhost:8080
+Stack trace:
+    at org.springframework.web.reactive.function.client.ExchangeFunctions$DefaultExchangeFunction.lambda$wrapException$9(ExchangeFunctions.java:141)
+    at reactor.core.publisher.MonoErrorSupplied.subscribe(MonoErrorSupplied.java:70)
+    at reactor.core.publisher.Mono.subscribe(Mono.java:4150)
+    at reactor.core.publisher.FluxOnErrorResume$ResumeSubscriber.onError(FluxOnErrorResume.java:103)
+    at org.springframework.cloud.sleuth.instrument.reactor.ScopePassingSpanSubscriber.onError(ScopePassingSpanSubscriber.java:95)
+    at reactor.core.publisher.FluxPeek$PeekSubscriber.onError(FluxPeek.java:221)
+    at java.lang.Thread.run(Thread.java:834)
+Caused by: io.netty.channel.AbstractChannel$AnnotatedConnectException: finishConnect(..) failed: Connection refused: localhost:8080
+Caused by: java.net.ConnectException: finishConnect(..) failed: Connection refused
+  at io.netty.channel.unix.Errors.newConnectException0(Errors.java:155)
+  at io.netty.channel.unix.Errors.handleConnectErrno(Errors.java:128)
+  at io.netty.channel.unix.Socket.finishConnect(Socket.java:278)
+  at java.lang.Thread.run(Thread.java:834)
+END
+
   NODE_JS_EXC = <<END.freeze
 ReferenceError: myArray is not defined
   at next (/app/node_modules/express/lib/router/index.js:256:14)
@@ -607,6 +629,7 @@ END
     check_exception(JAVA_EXC, false)
     check_exception(COMPLEX_JAVA_EXC, false)
     check_exception(NESTED_JAVA_EXC, false)
+    check_exception(REACTOR_JAVA_EXC, false)
   end
 
   def test_js
