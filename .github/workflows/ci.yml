@@ -1,0 +1,35 @@
+on: [push, pull_request]
+name: Test
+jobs:
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        rvm:
+          - 2.6
+          - 2.5
+          - 2.4
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: true
+      - uses: ruby/setup-ruby@v1
+        env:
+          BUNDLE_GEMFILE: ${{ github.workspace }}/Gemfile
+        with:
+          ruby-version: ${{ matrix.rvm }}
+          bundler-cache: true
+          # Run bundle install outside the workspace to keep gems out of the
+          # repo checkout.
+          working-directory: ${{ runner.temp }}
+      - run: |
+          bundle exec rake
+      # TODO: migrate Travis settings below:
+      # notifications:
+      #   email:
+      #     recipients:
+      #       - google-fluentd-notifications+travis@google.com
+      #     on_success: change
+      #     on_failure: change
+
