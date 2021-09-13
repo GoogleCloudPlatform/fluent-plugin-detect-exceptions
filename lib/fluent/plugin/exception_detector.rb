@@ -53,7 +53,7 @@ module Fluent
 
     JAVA_RULES = [
       rule([:start_state, :java_start_exception],
-           /(?:Exception|Error|Throwable|V8 errors stack trace)[:\r\n]/,
+           /(?:(Exception|Error|Throwable|V8 errors stack trace)[:\r\n]|java[x]?\..*(Exception|Error))/,
            :java_after_exception),
       rule(:java_after_exception, /^[\t ]*nested exception is:[\t ]*/,
            :java_start_exception),

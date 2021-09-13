@@ -16,6 +16,13 @@ require_relative '../helper'
 require 'fluent/plugin/exception_detector'
 
 class ExceptionDetectorTest < Test::Unit::TestCase
+  JAVA_EXC_LANG = <<END.freeze
+    Exception in thread "main" java.lang.NullPointerException
+           at com.example.myproject.Book.getTitle(Book.java:16)
+           at com.example.myproject.Author.getBookTitles(Author.java:25)
+           at com.example.myproject.Bootstrap.main(Bootstrap.java:14)
+END
+
   JAVA_EXC_PART1 = <<END.freeze
 Jul 09, 2015 3:23:29 PM com.google.devtools.search.cloud.feeder.MakeLog: RuntimeException: Run from this message!
   at com.my.app.Object.do$a1(MakeLog.java:50)
@@ -607,6 +614,7 @@ END
     check_exception(JAVA_EXC, false)
     check_exception(COMPLEX_JAVA_EXC, false)
     check_exception(NESTED_JAVA_EXC, false)
+    check_exception(JAVA_EXC_LANG, false)
   end
 
   def test_js
