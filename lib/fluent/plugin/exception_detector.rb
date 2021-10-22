@@ -149,8 +149,17 @@ module Fluent
       rule(:dart_stack, /^<asynchronous suspension>$/, :dart_stack)
     ].freeze
 
+    UNITY_RULES = [
+      rule(:start_state, /^Caught fatal signal.*$/, :unity_stack_begin),
+      rule(:unity_stack_begin, /^Obtained \d+ stack frames.*$/,
+           :unity_stack_frames),
+      rule(:unity_stack_frames, /^#\d.*in _start$/, :start_state),
+      rule(:unity_stack_frames, /^#\d/, :unity_stack_frames)
+    ].freeze
+
     ALL_RULES = (
-      JAVA_RULES + PYTHON_RULES + PHP_RULES + GO_RULES + RUBY_RULES + DART_RULES
+      JAVA_RULES + PYTHON_RULES + PHP_RULES + GO_RULES + RUBY_RULES +
+      DART_RULES + UNITY_RULES
     ).freeze
 
     RULES_BY_LANG = {
@@ -165,6 +174,7 @@ module Fluent
       rb: RUBY_RULES,
       ruby: RUBY_RULES,
       dart: DART_RULES,
+      unity: UNITY_RULES,
       all: ALL_RULES
     }.freeze
 
