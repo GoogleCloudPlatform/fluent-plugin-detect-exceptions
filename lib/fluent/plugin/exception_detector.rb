@@ -16,7 +16,7 @@ module Fluent
   Struct.new('Rule', :from_states, :pattern, :to_state)
 
   # Configuration of the state machine that detects exceptions.
-  module ExceptionDetectorConfig
+  module ExceptionDetectorConfig # rubocop:disable Metrics/ModuleLength
     # Rule for a state transition: if pattern matches go to the given state.
     class RuleTarget
       attr_accessor :pattern, :to_state
@@ -106,11 +106,57 @@ module Fluent
       rule(:go_frame_2, /^\s/, :go_frame_1)
     ].freeze
 
-    RUBY_RULES = [
+    RUBY_ERROR_RULES = [
       rule(:start_state, /Error \(.*\):$/, :ruby_before_rails_trace),
       rule(:ruby_before_rails_trace, /^  $/, :ruby),
       rule(:ruby_before_rails_trace, /^[\t ]+.*?\.rb:\d+:in `/, :ruby),
       rule(:ruby, /^[\t ]+.*?\.rb:\d+:in `/, :ruby)
+    ].freeze
+
+    RUBY_SEGFAULT_RULES = [
+      rule(:start_state,
+           /:\d+:\s\[BUG\] Segmentation fault/, :ruby_description),
+      rule(:ruby_description, /^ruby\n*/, :ruby_description_end),
+      rule(:ruby_description_end, /\n$/, :ruby_control_frame_begin),
+      rule(:ruby_control_frame_begin,
+           /^-- Control frame information --/, :ruby_control_frames),
+      rule(:ruby_control_frames, /^c:/, :ruby_control_frames),
+      rule(:ruby_control_frames, /^\n$/, :ruby_level_backtrace_frame_start),
+      rule(:ruby_level_backtrace_frame_start,
+           /-- Ruby level backtrace information --/,
+           :ruby_level_backtrace_frames),
+      rule(:ruby_level_backtrace_frames, /:\d+:in /,
+           :ruby_level_backtrace_frames),
+      rule(:ruby_level_backtrace_frames, /^\n$/, :ruby_level_backtrace_end),
+      rule(:ruby_level_backtrace_end,
+           /^-- Machine register context --/, :ruby_machine_registers),
+      rule(:ruby_machine_registers, /: /, :ruby_machine_registers),
+      rule(:ruby_machine_registers, /^\n$/, :ruby_machine_registers_end),
+      rule(:ruby_machine_registers_end,
+           /^-- C level backtrace information --/,
+           :ruby_c_level_backtrace_frames),
+      rule(:ruby_c_level_backtrace_frames, /\[.*\]/,
+           :ruby_c_level_backtrace_frames),
+      rule(:ruby_c_level_backtrace_frames, /^\n$/,
+           :ruby_c_level_backtrace_end),
+      rule(:ruby_c_level_backtrace_end,
+           /^-- Other runtime information/, :ruby_other_runtime_info),
+      rule(:ruby_other_runtime_info, /^\n$/, :ruby_other_runtime_info),
+      rule(:ruby_other_runtime_info, /^* Loaded script:/, :ruby_loaded_script),
+      rule(:ruby_loaded_script, /^\n$/, :ruby_loaded_features),
+      rule(:ruby_loaded_features, /^* Loaded features:/, :ruby_loaded_features),
+      rule(:ruby_loaded_features, /^\n$/, :ruby_loaded_features_frames),
+      rule(:ruby_loaded_features_frames,
+           /\d/, :ruby_loaded_features_frames),
+      rule(:ruby_loaded_features_frames,
+           /^\n$/, :ruby_process_memory_map),
+      rule(:ruby_process_memory_map,
+           /^* Process memory map:/, :ruby_process_memory_map),
+      rule(:ruby_process_memory_map,
+           /^\n$/, :ruby_process_memory_map_frames),
+      rule(:ruby_process_memory_map_frames,
+           /\-/, :ruby_process_memory_map_frames),
+      rule(:ruby_process_memory_map_frames, /^\n$/, :start_state)
     ].freeze
 
     DART_RULES = [
@@ -148,6 +194,10 @@ module Fluent
       rule(:dart_stack, /^#\d+\s+.+?\(.+?\)$/, :dart_stack),
       rule(:dart_stack, /^<asynchronous suspension>$/, :dart_stack)
     ].freeze
+
+    RUBY_RULES = (
+      RUBY_ERROR_RULES + RUBY_SEGFAULT_RULES
+    ).freeze
 
     ALL_RULES = (
       JAVA_RULES + PYTHON_RULES + PHP_RULES + GO_RULES + RUBY_RULES + DART_RULES

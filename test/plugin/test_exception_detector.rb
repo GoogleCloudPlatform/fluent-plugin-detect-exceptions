@@ -317,6 +317,271 @@ END
   config/error_reporting_logger.rb:62:in `tagged'
 END
 
+  RUBY_SEGFAULT_EXC = <<END.freeze
+/builds/gitlab-org/gitlab/vendor/ruby/2.7.0/gems/gitaly-14.6.0.pre.rc1/ruby/proto/gitaly/repository-service_pb.rb:362: [BUG] Segmentation fault at 0x0000000000000089
+ruby 2.7.5p203 (2021-11-24 revision f69aeb8314) [x86_64-linux]
+
+-- Control frame information -----------------------------------------------
+c:0048 p:---- s:0264 e:000263 CFUNC  :lookup
+c:0047 p:1416 s:0259 e:000258 CLASS  /builds/gitlab-org/gitlab/vendor/ruby/2.7.0/gems/gitaly-14.6.0.pre.rc1/ruby/proto/gitaly/repository-service_pb.rb:362
+c:0046 p:0049 s:0256 e:000255 TOP    /builds/gitlab-org/gitlab/vendor/ruby/2.7.0/gems/gitaly-14.6.0.pre.rc1/ruby/proto/gitaly/repository-service_pb.rb:318 [FINISH]
+c:0045 p:---- s:0253 e:000252 CFUNC  :require
+c:0044 p:0007 s:0248 e:000247 BLOCK  /builds/gitlab-org/gitlab/vendor/ruby/2.7.0/gems/activesupport-6.1.4.4/lib/active_support/dependencies.rb:332
+c:0043 p:0068 s:0245 e:000244 METHOD /builds/gitlab-org/gitlab/vendor/ruby/2.7.0/gems/activesupport-6.1.4.4/lib/active_support/dependencies.rb:299
+c:0042 p:0010 s:0238 e:000237 METHOD /builds/gitlab-org/gitlab/vendor/ruby/2.7.0/gems/activesupport-6.1.4.4/lib/active_support/dependencies.rb:332
+c:0041 p:0011 s:0232 e:000231 TOP    /builds/gitlab-org/gitlab/vendor/ruby/2.7.0/gems/gitaly-14.6.0.pre.rc1/ruby/proto/gitaly/repository-service_services_pb.rb:5 [FINISH]
+c:0040 p:---- s:0229 e:000228 CFUNC  :require
+c:0039 p:0007 s:0224 e:000223 BLOCK  /builds/gitlab-org/gitlab/vendor/ruby/2.7.0/gems/activesupport-6.1.4.4/lib/active_support/dependencies.rb:332
+c:0038 p:0068 s:0221 e:000220 METHOD /builds/gitlab-org/gitlab/vendor/ruby/2.7.0/gems/activesupport-6.1.4.4/lib/active_support/dependencies.rb:299
+c:0037 p:0010 s:0214 e:000213 METHOD /builds/gitlab-org/gitlab/vendor/ruby/2.7.0/gems/activesupport-6.1.4.4/lib/active_support/dependencies.rb:332
+c:0036 p:0109 s:0208 e:000207 TOP    /builds/gitlab-org/gitlab/vendor/ruby/2.7.0/gems/gitaly-14.6.0.pre.rc1/ruby/proto/gitaly.rb:32 [FINISH]
+c:0035 p:---- s:0205 e:000204 CFUNC  :require
+c:0034 p:0032 s:0200 e:000199 BLOCK  /usr/local/lib/ruby/2.7.0/bundler/runtime.rb:74 [FINISH]
+c:0033 p:---- s:0195 e:000194 CFUNC  :each
+c:0032 p:0042 s:0191 e:000190 BLOCK  /usr/local/lib/ruby/2.7.0/bundler/runtime.rb:69 [FINISH]
+c:0031 p:---- s:0184 e:000183 CFUNC  :each
+c:0030 p:0026 s:0180 e:000179 METHOD /usr/local/lib/ruby/2.7.0/bundler/runtime.rb:58
+c:0029 p:0013 s:0175 e:000174 METHOD /usr/local/lib/ruby/2.7.0/bundler.rb:174
+c:0028 p:0016 s:0170 e:000169 BLOCK  /builds/gitlab-org/gitlab/vendor/ruby/2.7.0/gems/derailed_benchmarks-1.8.1/bin/derailed:53
+c:0027 p:0006 s:0167 e:000166 METHOD /builds/gitlab-org/gitlab/vendor/ruby/2.7.0/gems/memory_profiler-0.9.14/lib/memory_profiler/reporter.rb:74
+c:0026 p:0015 s:0162 e:000161 METHOD /builds/gitlab-org/gitlab/vendor/ruby/2.7.0/gems/memory_profiler-0.9.14/lib/memory_profiler/reporter.rb:33
+c:0025 p:0021 s:0156 e:000155 METHOD /builds/gitlab-org/gitlab/vendor/ruby/2.7.0/gems/memory_profiler-0.9.14/lib/memory_profiler.rb:15
+c:0024 p:0062 s:0150 e:000149 BLOCK  /builds/gitlab-org/gitlab/vendor/ruby/2.7.0/gems/derailed_benchmarks-1.8.1/bin/derailed:52 [FINISH]
+c:0023 p:0054 s:0145 e:000144 METHOD /builds/gitlab-org/gitlab/vendor/ruby/2.7.0/gems/thor-1.1.0/lib/thor/command.rb:27
+c:0022 p:0040 s:0137 e:000136 METHOD /builds/gitlab-org/gitlab/vendor/ruby/2.7.0/gems/thor-1.1.0/lib/thor/invocation.rb:127
+c:0021 p:0235 s:0130 e:000129 METHOD /builds/gitlab-org/gitlab/vendor/ruby/2.7.0/gems/thor-1.1.0/lib/thor.rb:392
+c:0020 p:0062 s:0117 e:000116 METHOD /builds/gitlab-org/gitlab/vendor/ruby/2.7.0/gems/thor-1.1.0/lib/thor/base.rb:485
+c:0019 p:0144 s:0110 e:000109 TOP    /builds/gitlab-org/gitlab/vendor/ruby/2.7.0/gems/derailed_benchmarks-1.8.1/bin/derailed:93 [FINISH]
+c:0018 p:---- s:0106 e:000105 CFUNC  :load
+c:0017 p:0112 s:0101 e:000100 TOP    /builds/gitlab-org/gitlab/vendor/ruby/2.7.0/bin/derailed:23 [FINISH]
+c:0016 p:---- s:0096 e:000095 CFUNC  :load
+c:0015 p:0107 s:0091 e:000090 METHOD /usr/local/lib/ruby/2.7.0/bundler/cli/exec.rb:63
+c:0014 p:0071 s:0083 e:000082 METHOD /usr/local/lib/ruby/2.7.0/bundler/cli/exec.rb:28
+c:0013 p:0024 s:0078 e:000077 METHOD /usr/local/lib/ruby/2.7.0/bundler/cli.rb:476
+c:0012 p:0054 s:0073 e:000072 METHOD /usr/local/lib/ruby/2.7.0/bundler/vendor/thor/lib/thor/command.rb:27
+c:0011 p:0040 s:0065 e:000064 METHOD /usr/local/lib/ruby/2.7.0/bundler/vendor/thor/lib/thor/invocation.rb:127
+c:0010 p:0239 s:0058 e:000057 METHOD /usr/local/lib/ruby/2.7.0/bundler/vendor/thor/lib/thor.rb:399
+c:0009 p:0008 s:0045 e:000044 METHOD /usr/local/lib/ruby/2.7.0/bundler/cli.rb:30
+c:0008 p:0066 s:0040 e:000039 METHOD /usr/local/lib/ruby/2.7.0/bundler/vendor/thor/lib/thor/base.rb:476
+c:0007 p:0008 s:0033 e:000032 METHOD /usr/local/lib/ruby/2.7.0/bundler/cli.rb:24
+c:0006 p:0109 s:0028 e:000027 BLOCK  /usr/local/lib/ruby/gems/2.7.0/gems/bundler-2.1.4/libexec/bundle:46
+c:0005 p:0002 s:0022 e:000021 METHOD /usr/local/lib/ruby/2.7.0/bundler/friendly_errors.rb:123
+c:0004 p:0111 s:0017 E:001058 TOP    /usr/local/lib/ruby/gems/2.7.0/gems/bundler-2.1.4/libexec/bundle:34 [FINISH]
+c:0003 p:---- s:0013 e:000012 CFUNC  :load
+c:0002 p:0112 s:0008 E:002460 EVAL   /usr/local/bin/bundle:23 [FINISH]
+c:0001 p:0000 s:0003 E:0023a0 (none) [FINISH]
+
+-- Ruby level backtrace information ----------------------------------------
+/usr/local/bin/bundle:23:in `<main>'
+/usr/local/bin/bundle:23:in `load'
+/usr/local/lib/ruby/gems/2.7.0/gems/bundler-2.1.4/libexec/bundle:34:in `<top (required)>'
+/usr/local/lib/ruby/2.7.0/bundler/friendly_errors.rb:123:in `with_friendly_errors'
+/usr/local/lib/ruby/gems/2.7.0/gems/bundler-2.1.4/libexec/bundle:46:in `block in <top (required)>'
+/usr/local/lib/ruby/2.7.0/bundler/cli.rb:24:in `start'
+/usr/local/lib/ruby/2.7.0/bundler/vendor/thor/lib/thor/base.rb:476:in `start'
+/usr/local/lib/ruby/2.7.0/bundler/cli.rb:30:in `dispatch'
+/usr/local/lib/ruby/2.7.0/bundler/vendor/thor/lib/thor.rb:399:in `dispatch'
+/usr/local/lib/ruby/2.7.0/bundler/vendor/thor/lib/thor/invocation.rb:127:in `invoke_command'
+/usr/local/lib/ruby/2.7.0/bundler/vendor/thor/lib/thor/command.rb:27:in `run'
+/usr/local/lib/ruby/2.7.0/bundler/cli.rb:476:in `exec'
+/usr/local/lib/ruby/2.7.0/bundler/cli/exec.rb:28:in `run'
+/usr/local/lib/ruby/2.7.0/bundler/cli/exec.rb:63:in `kernel_load'
+/usr/local/lib/ruby/2.7.0/bundler/cli/exec.rb:63:in `load'
+/builds/gitlab-org/gitlab/vendor/ruby/2.7.0/bin/derailed:23:in `<top (required)>'
+/builds/gitlab-org/gitlab/vendor/ruby/2.7.0/bin/derailed:23:in `load'
+/builds/gitlab-org/gitlab/vendor/ruby/2.7.0/gems/derailed_benchmarks-1.8.1/bin/derailed:93:in `<top (required)>'
+/builds/gitlab-org/gitlab/vendor/ruby/2.7.0/gems/thor-1.1.0/lib/thor/base.rb:485:in `start'
+/builds/gitlab-org/gitlab/vendor/ruby/2.7.0/gems/thor-1.1.0/lib/thor.rb:392:in `dispatch'
+/builds/gitlab-org/gitlab/vendor/ruby/2.7.0/gems/thor-1.1.0/lib/thor/invocation.rb:127:in `invoke_command'
+/builds/gitlab-org/gitlab/vendor/ruby/2.7.0/gems/thor-1.1.0/lib/thor/command.rb:27:in `run'
+/builds/gitlab-org/gitlab/vendor/ruby/2.7.0/gems/derailed_benchmarks-1.8.1/bin/derailed:52:in `block in <class:DerailedBenchmarkCLI>'
+/builds/gitlab-org/gitlab/vendor/ruby/2.7.0/gems/memory_profiler-0.9.14/lib/memory_profiler.rb:15:in `report'
+/builds/gitlab-org/gitlab/vendor/ruby/2.7.0/gems/memory_profiler-0.9.14/lib/memory_profiler/reporter.rb:33:in `report'
+/builds/gitlab-org/gitlab/vendor/ruby/2.7.0/gems/memory_profiler-0.9.14/lib/memory_profiler/reporter.rb:74:in `run'
+/builds/gitlab-org/gitlab/vendor/ruby/2.7.0/gems/derailed_benchmarks-1.8.1/bin/derailed:53:in `block (2 levels) in <class:DerailedBenchmarkCLI>'
+/usr/local/lib/ruby/2.7.0/bundler.rb:174:in `require'
+/usr/local/lib/ruby/2.7.0/bundler/runtime.rb:58:in `require'
+/usr/local/lib/ruby/2.7.0/bundler/runtime.rb:58:in `each'
+/usr/local/lib/ruby/2.7.0/bundler/runtime.rb:69:in `block in require'
+/usr/local/lib/ruby/2.7.0/bundler/runtime.rb:69:in `each'
+/usr/local/lib/ruby/2.7.0/bundler/runtime.rb:74:in `block (2 levels) in require'
+/usr/local/lib/ruby/2.7.0/bundler/runtime.rb:74:in `require'
+/builds/gitlab-org/gitlab/vendor/ruby/2.7.0/gems/gitaly-14.6.0.pre.rc1/ruby/proto/gitaly.rb:32:in `<top (required)>'
+/builds/gitlab-org/gitlab/vendor/ruby/2.7.0/gems/activesupport-6.1.4.4/lib/active_support/dependencies.rb:332:in `require'
+/builds/gitlab-org/gitlab/vendor/ruby/2.7.0/gems/activesupport-6.1.4.4/lib/active_support/dependencies.rb:299:in `load_dependency'
+/builds/gitlab-org/gitlab/vendor/ruby/2.7.0/gems/activesupport-6.1.4.4/lib/active_support/dependencies.rb:332:in `block in require'
+/builds/gitlab-org/gitlab/vendor/ruby/2.7.0/gems/activesupport-6.1.4.4/lib/active_support/dependencies.rb:332:in `require'
+/builds/gitlab-org/gitlab/vendor/ruby/2.7.0/gems/gitaly-14.6.0.pre.rc1/ruby/proto/gitaly/repository-service_services_pb.rb:5:in `<top (required)>'
+/builds/gitlab-org/gitlab/vendor/ruby/2.7.0/gems/activesupport-6.1.4.4/lib/active_support/dependencies.rb:332:in `require'
+/builds/gitlab-org/gitlab/vendor/ruby/2.7.0/gems/activesupport-6.1.4.4/lib/active_support/dependencies.rb:299:in `load_dependency'
+/builds/gitlab-org/gitlab/vendor/ruby/2.7.0/gems/activesupport-6.1.4.4/lib/active_support/dependencies.rb:332:in `block in require'
+/builds/gitlab-org/gitlab/vendor/ruby/2.7.0/gems/activesupport-6.1.4.4/lib/active_support/dependencies.rb:332:in `require'
+/builds/gitlab-org/gitlab/vendor/ruby/2.7.0/gems/gitaly-14.6.0.pre.rc1/ruby/proto/gitaly/repository-service_pb.rb:318:in `<top (required)>'
+/builds/gitlab-org/gitlab/vendor/ruby/2.7.0/gems/gitaly-14.6.0.pre.rc1/ruby/proto/gitaly/repository-service_pb.rb:362:in `<module:Gitaly>'
+/builds/gitlab-org/gitlab/vendor/ruby/2.7.0/gems/gitaly-14.6.0.pre.rc1/ruby/proto/gitaly/repository-service_pb.rb:362:in `lookup'
+
+-- Machine register context ------------------------------------------------
+ RIP: 0x00007fd8f45f40a2 RBP: 0x00007fd8f3655000 RSP: 0x00007fff198dd030
+ RAX: 0x0000000000000003 RBX: 0x00007fd8da7a2790 RCX: 0x0000000000000089
+ RDX: 0x000000000000003d RDI: 0x00007fd8f3655000 RSI: 0xcccccccccccccccd
+  R8: 0x0000000000000001  R9: 0x0000000000000000 R10: 0x00007fd8e238b680
+ R11: 0x0000000000000082 R12: 0x000000000008ff3a R13: 0xcccccccccccccccd
+ R14: 0x000000000000000d R15: 0x0003f134e098c94f EFL: 0x0000000000010202
+
+-- C level backtrace information -------------------------------------------
+/usr/local/lib/libruby.so.2.7(rb_vm_bugreport+0x555) [0x7fd8f4799605] vm_dump.c:755
+[0x7fd8f45d6d17]
+/usr/local/lib/libruby.so.2.7(sigsegv+0x4b) [0x7fd8f4704d2b] signal.c:946
+/lib/x86_64-linux-gnu/libpthread.so.0(__restore_rt+0x0) [0x7fd8f42db730]
+[0x7fd8f45f40a2]
+/usr/local/lib/libruby.so.2.7(gc_marks_rest+0x80) [0x7fd8f45f9380] gc.c:5526
+/usr/local/lib/libruby.so.2.7(gc_rest+0x7a) [0x7fd8f45fa09a] gc.c:7382
+/usr/local/lib/libruby.so.2.7(garbage_collect_with_gvl+0x98) [0x7fd8f45fb7a8] gc.c:7514
+/usr/local/lib/libruby.so.2.7(objspace_malloc_fixup+0x17) [0x7fd8f45ff449] gc.c:9854
+/usr/local/lib/libruby.so.2.7(rb_st_init_table_with_size+0x89) [0x7fd8f470eac9] st.c:620
+/usr/local/lib/libruby.so.2.7(rebuild_table+0x1df) [0x7fd8f470ed5f] st.c:801
+/usr/local/lib/libruby.so.2.7(rb_st_insert+0x1d8) [0x7fd8f470f398] st.c:1163
+/usr/local/lib/ruby/2.7.0/x86_64-linux/objspace.so(newobj_i+0x206) [0x7fd8f2c37276] object_tracing.c:112
+/usr/local/lib/libruby.so.2.7(tp_call_trace+0x29) [0x7fd8f4799ff9] vm_trace.c:1111
+/usr/local/lib/libruby.so.2.7(exec_hooks_body+0x86) [0x7fd8f479a6b6] vm_trace.c:301
+[0x7fd8f479c29d]
+[0x7fd8f45ee2f3]
+[0x7fd8f45fcdc7]
+/builds/gitlab-org/gitlab/vendor/ruby/2.7.0/gems/google-protobuf-3.19.1-x86_64-linux/lib/google/2.7/protobuf_c.so(0x7fd8d98943c9) [0x7fd8d98943c9]
+/usr/local/lib/libruby.so.2.7(rb_class_new_instance+0x36) [0x7fd8f467f1c6] object.c:2099
+/builds/gitlab-org/gitlab/vendor/ruby/2.7.0/gems/google-protobuf-3.19.1-x86_64-linux/lib/google/2.7/protobuf_c.so(0x7fd8d9895f84) [0x7fd8d9895f84]
+[0x7fd8f47785c9]
+[0x7fd8f479117c]
+/usr/local/lib/libruby.so.2.7(vm_call_method+0x55) [0x7fd8f4791915] vm_insnhelper.c:3026
+[0x7fd8f4783ae2]
+[0x7fd8f47895fc]
+[0x7fd8f46359a5]
+/usr/local/lib/libruby.so.2.7(rb_require_string+0x23) [0x7fd8f4636113] load.c:1148
+[0x7fd8f47785c9]
+[0x7fd8f479117c]
+/usr/local/lib/libruby.so.2.7(vm_call_method+0x55) [0x7fd8f4791915] vm_insnhelper.c:3026
+[0x7fd8f478569a]
+[0x7fd8f47895fc]
+[0x7fd8f46359a5]
+/usr/local/lib/libruby.so.2.7(rb_require_string+0x23) [0x7fd8f4636113] load.c:1148
+[0x7fd8f47785c9]
+[0x7fd8f479117c]
+/usr/local/lib/libruby.so.2.7(vm_call_method+0x55) [0x7fd8f4791915] vm_insnhelper.c:3026
+[0x7fd8f478569a]
+[0x7fd8f47895fc]
+[0x7fd8f46359a5]
+/usr/local/lib/libruby.so.2.7(rb_require_string+0x23) [0x7fd8f4636113] load.c:1148
+[0x7fd8f47785c9]
+[0x7fd8f4783ae2]
+[0x7fd8f47895fc]
+/usr/local/lib/libruby.so.2.7(rb_yield+0x253) [0x7fd8f47953e3] vm.c:1044
+/usr/local/lib/libruby.so.2.7(rb_ary_each+0x3c) [0x7fd8f45491ac] array.c:2135
+[0x7fd8f47785c9]
+[0x7fd8f4783ba0]
+[0x7fd8f47895fc]
+/usr/local/lib/libruby.so.2.7(rb_yield+0x253) [0x7fd8f47953e3] vm.c:1044
+/usr/local/lib/libruby.so.2.7(rb_ary_each+0x3c) [0x7fd8f45491ac] array.c:2135
+[0x7fd8f47785c9]
+[0x7fd8f479117c]
+/usr/local/lib/libruby.so.2.7(vm_call_method+0x55) [0x7fd8f4791915] vm_insnhelper.c:3026
+[0x7fd8f4783ba0]
+[0x7fd8f47895fc]
+[0x7fd8f478a468]
+[0x7fd8f4783ae2]
+[0x7fd8f4789db5]
+/usr/local/lib/libruby.so.2.7(rb_ec_exec_node+0xaa) [0x7fd8f45db70a] eval.c:278
+/usr/local/lib/libruby.so.2.7(ruby_run_node+0x49) [0x7fd8f45e0999] eval.c:336
+/usr/local/bin/ruby(main+0x5b) [0x55bc6cf0910b] ./main.c:50
+
+-- Other runtime information -----------------------------------------------
+
+* Loaded script: /builds/gitlab-org/gitlab/vendor/ruby/2.7.0/bin/derailed
+
+* Loaded features:
+
+    0 enumerator.so
+    1 thread.rb
+    2 rational.so
+    3 complex.so
+    4 ruby2_keywords.rb
+    5 /usr/local/lib/ruby/2.7.0/x86_64-linux/enc/encdb.so
+    6 /usr/local/lib/ruby/2.7.0/x86_64-linux/enc/trans/transdb.so
+    7 /usr/local/lib/ruby/2.7.0/x86_64-linux/rbconfig.rb
+    8 /usr/local/lib/ruby/2.7.0/rubygems/compatibility.rb
+    9 /usr/local/lib/ruby/2.7.0/rubygems/defaults.rb
+   10 /usr/local/lib/ruby/2.7.0/rubygems/deprecate.rb
+   11 /usr/local/lib/ruby/2.7.0/rubygems/errors.rb
+   12 /usr/local/lib/ruby/2.7.0/rubygems/version.rb
+   13 /usr/local/lib/ruby/2.7.0/rubygems/requirement.rb
+   14 /usr/local/lib/ruby/2.7.0/rubygems/platform.rb
+   15 /usr/local/lib/ruby/2.7.0/rubygems/basic_specification.rb
+   16 /usr/local/lib/ruby/2.7.0/rubygems/stub_specification.rb
+   17 /usr/local/lib/ruby/2.7.0/rubygems/util.rb
+   18 /usr/local/lib/ruby/2.7.0/rubygems/text.rb
+   19 /usr/local/lib/ruby/2.7.0/rubygems/user_interaction.rb
+   20 /usr/local/lib/ruby/2.7.0/rubygems/specification_policy.rb
+   21 /usr/local/lib/ruby/2.7.0/rubygems/util/list.rb
+   22 /usr/local/lib/ruby/2.7.0/rubygems/specification.rb
+   23 /usr/local/lib/ruby/2.7.0/rubygems/exceptions.rb
+   24 /usr/local/lib/ruby/2.7.0/rubygems/bundler_version_finder.rb
+   25 /usr/local/lib/ruby/2.7.0/rubygems/dependency.rb
+   26 /usr/local/lib/ruby/2.7.0/rubygems/core_ext/kernel_gem.rb
+   27 /usr/local/lib/ruby/2.7.0/x86_64-linux/monitor.so
+   28 /usr/local/lib/ruby/2.7.0/monitor.rb
+   29 /usr/local/lib/ruby/2.7.0/rubygems/core_ext/kernel_require.rb
+   30 /usr/local/lib/ruby/2.7.0/rubygems/core_ext/kernel_warn.rb
+   31 /usr/local/lib/ruby/2.7.0/rubygems.rb
+   32 /usr/local/lib/ruby/2.7.0/rubygems/path_support.rb
+   33 /usr/local/lib/ruby/2.7.0/did_you_mean/version.rb
+   34 /usr/local/lib/ruby/2.7.0/did_you_mean/core_ext/name_error.rb
+   35 /usr/local/lib/ruby/2.7.0/did_you_mean/levenshtein.rb
+   36 /usr/local/lib/ruby/2.7.0/did_you_mean/jaro_winkler.rb
+   37 /usr/local/lib/ruby/2.7.0/did_you_mean/spell_checker.rb
+   38 /usr/local/lib/ruby/2.7.0/did_you_mean/spell_checkers/name_error_checkers/class_name_checker.rb
+   39 /usr/local/lib/ruby/2.7.0/did_you_mean/spell_checkers/name_error_checkers/variable_name_checker.rb
+   40 /usr/local/lib/ruby/2.7.0/did_you_mean/spell_checkers/name_error_checkers.rb
+   41 /usr/local/lib/ruby/2.7.0/did_you_mean/spell_checkers/method_name_checker.rb
+   42 /usr/local/lib/ruby/2.7.0/did_you_mean/spell_checkers/key_error_checker.rb
+   43 /usr/local/lib/ruby/2.7.0/did_you_mean/spell_checkers/null_checker.rb
+   44 /usr/local/lib/ruby/2.7.0/did_you_mean/formatters/plain_formatter.rb
+   45 /usr/local/lib/ruby/2.7.0/did_you_mean/tree_spell_checker.rb
+   46 /usr/local/lib/ruby/2.7.0/did_you_mean.rb
+   47 /usr/local/lib/ruby/2.7.0/tsort.rb
+   48 /usr/local/lib/ruby/2.7.0/rubygems/request_set/gem_dependency_api.rb
+   49 /usr/local/lib/ruby/2.7.0/rubygems/request_set/lockfile/parser.rb
+   50 /usr/local/lib/ruby/2.7.0/rubygems/request_set/lockfile/tokenizer.rb
+   51 /usr/local/lib/ruby/2.7.0/rubygems/request_set/lockfile.rb
+   52 /usr/local/lib/ruby/2.7.0/rubygems/request_set.rb
+   53 /usr/local/lib/ruby/2.7.0/rubygems/resolver/molinillo/lib/molinillo/gem_metadata.rb
+   54 /usr/local/lib/ruby/2.7.0/rubygems/resolver/molinillo/lib/molinillo/errors.rb
+   55 /usr/local/lib/ruby/2.7.0/set.rb
+   56 /usr/local/lib/ruby/2.7.0/rubygems/resolver/molinillo/lib/molinillo/dependency_graph/action.rb
+   57 /usr/local/lib/ruby/2.7.0/rubygems/resolver/molinillo/lib/molinillo/dependency_graph/add_edge_no_circular.rb
+
+* Process memory map:
+
+55bc6cf08000-55bc6cf09000 r--p 00000000 08:01 2234292                    /usr/local/bin/ruby
+55bc6cf09000-55bc6cf0a000 r-xp 00001000 08:01 2234292                    /usr/local/bin/ruby
+55bc6cf0a000-55bc6cf0b000 r--p 00002000 08:01 2234292                    /usr/local/bin/ruby
+55bc6cf0b000-55bc6cf0c000 r--p 00002000 08:01 2234292                    /usr/local/bin/ruby
+55bc6cf0c000-55bc6cf0d000 rw-p 00003000 08:01 2234292                    /usr/local/bin/ruby
+7fd8cdb83000-7fd8cdd41000 r--s 00000000 08:01 2089303                    /lib/x86_64-linux-gnu/libc-2.28.so
+7fd8cdd41000-7fd8cdd72000 r--s 00000000 08:01 1068321                    /builds/gitlab-org/gitlab/vendor/ruby/2.7.0/gems/google-protobuf-3.19.1-x86_64-linux/lib/google/2.7/protobuf_c.so
+7fd8cdd72000-7fd8cdda9000 r--s 00000000 08:01 2351143                    /usr/local/lib/ruby/2.7.0/x86_64-linux/objspace.so
+7fd8cdda9000-7fd8cddcd000 r--s 00000000 08:01 2089362                    /lib/x86_64-linux-gnu/libpthread-2.28.so
+7fd8cddcd000-7fd8ce760000 r--s 00000000 08:01 2234335                    /usr/local/lib/libruby.so.2.7.5
+7fd8ce760000-7fd8ce791000 r--s 00000000 08:01 2234292                    /usr/local/bin/ruby
+7fd8ce791000-7fd8d5f91000 rw-p 00000000 00:00 0
+7fd8d5f91000-7fd8d5ff0000 r--p 00000000 08:01 1069884                    /builds/gitlab-org/gitlab/vendor/ruby/2.7.0/gems/grpc-1.42.0-x86_64-linux/src/ruby/lib/grpc/2.7/grpc_c.so
+7fd8d5ff0000-7fd8d6411000 r-xp 0005f000 08:01 1069884                    /builds/gitlab-org/gitlab/vendor/ruby/2.7.0/gems/grpc-1.42.0-x86_64-linux/src/ruby/lib/grpc/2.7/grpc_c.so
+7fd8d6411000-7fd8d6592000 r--p 00480000 08:01 1069884                    /builds/gitlab-org/gitlab/vendor/ruby/2.7.0/gems/grpc-1.42.0-x86_64-linux/src/ruby/lib/grpc/2.7/grpc_c.so
+7fd8d6592000-7fd8d6593000 ---p 00601000 08:01 1069884                    /builds/gitlab-org/gitlab/vendor/ruby/2.7.0/gems/grpc-1.42.0-x86_64-linux/src/ruby/lib/grpc/2.7/grpc_c.so
+7fd8d6593000-7fd8d65be000 r--p 00601000 08:01 1069884                    /builds/gitlab-org/gitlab/vendor/ruby/2.7.0/gems/grpc-1.42.0-x86_64-linux/src/ruby/lib/grpc/2.7/grpc_c.so
+7fd8d65be000-7fd8d65c4000 rw-p 0062c000 08:01 1069884                    /builds/gitlab-org/gitlab/vendor/ruby/2.7.0/gems/grpc-1.42.0-x86_64-linux/src/ruby/lib/grpc/2.7/grpc_c.so
+7fd8d65c4000-7fd8d65d3000 rw-p 00000000 00:00 0
+
+END
+
   # The whitespace on the second line is significant.
   # rubocop:disable TrailingWhitespace
   RAILS_EXC = <<END.freeze
@@ -639,6 +904,7 @@ END
 
   def test_ruby
     check_exception(RUBY_EXC, false)
+    check_exception(RUBY_SEGFAULT_EXC, true)
     check_exception(RAILS_EXC, false)
   end
 
