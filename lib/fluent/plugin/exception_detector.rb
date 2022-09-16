@@ -94,7 +94,7 @@ module Fluent
     ].freeze
 
     GO_RULES = [
-      rule(:start_state, /\bpanic: /, :go_after_panic),
+      rule([:start_state, :go_after_panic], /\bpanic: /, :go_after_panic),
       rule(:start_state, /http: panic serving/, :go_goroutine),
       rule(:go_after_panic, /^$/, :go_goroutine),
       rule([:go_after_panic, :go_after_signal, :go_frame_1],
