@@ -262,6 +262,30 @@ net/http.(*conn).serve(0xc00007eaa0, 0x12f10a0, 0xc00008a780)
 created by net/http.(*Server).Serve
 	/usr/local/go/src/net/http/server.go:2851 +0x2f5
 END
+
+  GO_RECOVERED = <<END.freeze
+panic: foo [recovered]
+	panic: foo [recovered]
+	panic: foo [recovered]
+	panic: foo
+
+goroutine 1 [running]:
+main.recoverAndPanic()
+	/tmp/sandbox1820875720/prog.go:12 +0x34
+panic({0x459120, 0x476600})
+	/usr/local/go-faketime/src/runtime/panic.go:838 +0x207
+main.recoverAndPanic()
+	/tmp/sandbox1820875720/prog.go:12 +0x34
+panic({0x459120, 0x476600})
+	/usr/local/go-faketime/src/runtime/panic.go:838 +0x207
+main.recoverAndPanic()
+	/tmp/sandbox1820875720/prog.go:12 +0x34
+panic({0x459120, 0x476600})
+	/usr/local/go-faketime/src/runtime/panic.go:838 +0x207
+main.main()
+	/tmp/sandbox1820875720/prog.go:7 +0x5d
+END
+
   CSHARP_EXC = <<END.freeze
 System.Collections.Generic.KeyNotFoundException: The given key was not present in the dictionary.
   at System.Collections.Generic.Dictionary`2[System.String,System.Collections.Generic.Dictionary`2[System.Int32,System.Double]].get_Item (System.String key) [0x00000] in <filename unknown>:0
@@ -635,6 +659,7 @@ END
     check_exception(GO_ON_GAE_EXC, false)
     check_exception(GO_SIGNAL_EXC, false)
     check_exception(GO_HTTP, false)
+    check_exception(GO_RECOVERED, false)
   end
 
   def test_ruby
