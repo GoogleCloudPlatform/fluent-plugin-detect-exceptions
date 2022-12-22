@@ -437,7 +437,7 @@ c:0001 p:0000 s:0003 E:0023a0 (none) [FINISH]
 /usr/local/lib/libruby.so.2.7(gc_marks_rest+0x80) [0x7fd8f45f9380] gc.c:5526
 /usr/local/lib/libruby.so.2.7(gc_rest+0x7a) [0x7fd8f45fa09a] gc.c:7382
 /usr/local/lib/libruby.so.2.7(garbage_collect_with_gvl+0x98) [0x7fd8f45fb7a8] gc.c:7514
-/usr/local/lib/libruby.so.2.7(objspace_malloc_fixup+0x17) [0x7fd8f45ff449] gc.c:9854
+/usr/local/lib/libruby.so.2.7(objspace_malloc_fixup+0x17) gc.c:9854
 /usr/local/lib/libruby.so.2.7(rb_st_init_table_with_size+0x89) [0x7fd8f470eac9] st.c:620
 /usr/local/lib/libruby.so.2.7(rebuild_table+0x1df) [0x7fd8f470ed5f] st.c:801
 /usr/local/lib/libruby.so.2.7(rb_st_insert+0x1d8) [0x7fd8f470f398] st.c:1163

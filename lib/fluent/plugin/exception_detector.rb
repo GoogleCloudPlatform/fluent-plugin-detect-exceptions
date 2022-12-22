@@ -137,6 +137,8 @@ module Fluent
            :ruby_c_level_backtrace_frames),
       rule(:ruby_c_level_backtrace_frames, /\[.*\]/,
            :ruby_c_level_backtrace_frames),
+      rule(:ruby_c_level_backtrace_frames, / .*:\d+$/,
+           :ruby_c_level_backtrace_frames),
       rule(:ruby_c_level_backtrace_frames, /^\n$/,
            :ruby_c_level_backtrace_end),
       rule(:ruby_c_level_backtrace_end,
