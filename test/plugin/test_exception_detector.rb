@@ -905,6 +905,7 @@ END
   def test_ruby
     check_exception(RUBY_EXC, false)
     check_exception(RUBY_SEGFAULT_EXC, true)
+    check_exception(strip_blank_lines(RUBY_SEGFAULT_EXC), true)
     check_exception(RAILS_EXC, false)
   end
 
@@ -978,6 +979,10 @@ END
     check_multiline(detector, :start_trace, :inside_trace, JAVA_EXC_PART1)
     detector.reset
     check_no_multiline(detector, JAVA_EXC_PART2)
+  end
+
+  def strip_blank_lines(str)
+    str.split("\n").reject(&:empty?).join("\n") + "\n\n"
   end
 
   def feed_lines(buffer, *messages)
