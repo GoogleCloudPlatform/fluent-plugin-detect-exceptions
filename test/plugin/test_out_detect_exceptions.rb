@@ -148,7 +148,7 @@ languages #{language})
       single_line_exception = exception.gsub("\n", '\\n')
 
       # There is a nested exception within the body, we should ignore those!
-      json_line_with_exception = {
+      json_with_exception = {
         'timestamp' => {
           'nanos' => 998_152_494,
           'seconds' => 1_496_420_064
@@ -156,8 +156,9 @@ languages #{language})
         'message' => single_line_exception,
         'thread' => 139_658_267_147_048,
         'severity' => 'ERROR'
-      }.to_json + "\n"
-      json_line_without_exception = {
+      }
+      json_line_with_exception = "#{json_with_exception.to_json}\n"
+      json_without_exception = {
         'timestamp' => {
           'nanos' => 5_990_266,
           'seconds' => 1_496_420_065
@@ -165,7 +166,8 @@ languages #{language})
         'message' => 'next line',
         'thread' => 139_658_267_147_048,
         'severity' => 'INFO'
-      }.to_json + "\n"
+      }
+      json_line_without_exception = "#{json_without_exception.to_json}\n"
 
       router_mock = flexmock('router')
 
@@ -245,7 +247,7 @@ multiline_flush_interval 1)
       feed_lines(d, t2, "  at x\n  at y\n")
       d.instance.before_shutdown
     end
-    assert_equal(make_logs(t1, JAVA_EXC + "  at x\n  at y\n"), d.events)
+    assert_equal(make_logs(t1, "#{JAVA_EXC}  at x\n  at y\n"), d.events)
   end
 
   def test_remove_tag_prefix_is_required

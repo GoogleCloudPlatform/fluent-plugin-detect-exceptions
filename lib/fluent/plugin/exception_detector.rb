@@ -364,7 +364,7 @@ module Fluent
       unless message.nil?
         message_with_line_break =
           if @force_line_breaks && !@messages.empty? && !message.include?("\n")
-            "\n" + message
+            "\n#{message}"
           else
             message
           end
