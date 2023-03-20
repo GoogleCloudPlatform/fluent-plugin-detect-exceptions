@@ -61,7 +61,7 @@ Benchmark.bm do |x|
       random_text.each { |l| buffer.push(0, l) }
     end
   end
-  [:java, :python, :all].each do |detector_lang|
+  %i[java python all].each do |detector_lang|
     buffer = Fluent::TraceAccumulator.new(nil, detector_lang) {}
     exc_languages = detector_lang == :all ? exceptions.keys : [detector_lang]
     exc_languages.each do |exc_lang|

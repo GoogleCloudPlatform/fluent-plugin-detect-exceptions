@@ -43,6 +43,6 @@ task :fix_perms do
 end
 
 desc 'Run unit tests and RuboCop to check for style violations'
-task all: [:rubocop, :test, :fix_perms]
+task all: %i[rubocop test fix_perms]
 
 task default: :all

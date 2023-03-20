@@ -52,28 +52,28 @@ module Fluent
     end
 
     JAVA_RULES = [
-      rule([:start_state, :java_start_exception],
+      rule(%i[start_state java_start_exception],
            /(?:Exception|Error|Throwable|V8 errors stack trace)[:\r\n]/,
            :java_after_exception),
       rule(:java_after_exception, /^[\t ]*nested exception is:[\t ]*/,
            :java_start_exception),
       rule(:java_after_exception, /^[\r\n]*$/, :java_after_exception),
-      rule([:java_after_exception, :java], /^[\t ]+(?:eval )?at /, :java),
+      rule(%i[java_after_exception java], /^[\t ]+(?:eval )?at /, :java),
 
-      rule([:java_after_exception, :java],
+      rule(%i[java_after_exception java],
            # C# nested exception.
            /^[\t ]+--- End of inner exception stack trace ---$/,
            :java),
 
-      rule([:java_after_exception, :java],
+      rule(%i[java_after_exception java],
            # C# exception from async code.
            /^--- End of stack trace from previous (?x:
            )location where exception was thrown ---$/,
            :java),
 
-      rule([:java_after_exception, :java], /^[\t ]*(?:Caused by|Suppressed):/,
+      rule(%i[java_after_exception java], /^[\t ]*(?:Caused by|Suppressed):/,
            :java_after_exception),
-      rule([:java_after_exception, :java],
+      rule(%i[java_after_exception java],
            /^[\t ]*... \d+ (?:more|common frames omitted)/, :java)
     ].freeze
 
@@ -97,7 +97,7 @@ module Fluent
       rule(:start_state, /\bpanic: /, :go_after_panic),
       rule(:start_state, /http: panic serving/, :go_goroutine),
       rule(:go_after_panic, /^$/, :go_goroutine),
-      rule([:go_after_panic, :go_after_signal, :go_frame_1],
+      rule(%i[go_after_panic go_after_signal go_frame_1],
            /^$/, :go_goroutine),
       rule(:go_after_panic, /^\[signal /, :go_after_signal),
       rule(:go_goroutine, /^goroutine \d+ \[[^\]]+\]:$/, :go_frame_1),
