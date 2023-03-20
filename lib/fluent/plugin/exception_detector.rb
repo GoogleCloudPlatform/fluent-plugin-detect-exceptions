@@ -168,7 +168,7 @@ module Fluent
       all: ALL_RULES
     }.freeze
 
-    DEFAULT_FIELDS = %w(message log).freeze
+    DEFAULT_FIELDS = %w[message log].freeze
   end
 
   # State machine that consumes individual log lines and detects
