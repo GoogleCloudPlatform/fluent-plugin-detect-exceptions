@@ -318,7 +318,7 @@ END
 END
 
   # The whitespace on the second line is significant.
-  # rubocop:disable TrailingWhitespace
+  # rubocop:disable Layout/TrailingWhitespace
   RAILS_EXC = <<END.freeze
  ActionController::RoutingError (No route matches [GET] "/settings"):
   
