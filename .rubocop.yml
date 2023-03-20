@@ -5,6 +5,13 @@
 # Note that changes in the inspected code, or installation of new
 # versions of RuboCop, may require this file to be generated again.
 
+AllCops:
+  NewCops: disable
+
+# Rakefile doesn't need to be executable.
+Lint/ScriptPermission:
+  Enabled: false
+
 # Offense count: 2
 Metrics/AbcSize:
   Max: 120
