@@ -333,8 +333,7 @@ module Fluent
     end
 
     def update_buffer(detection_status, time_sec, record, message)
-      trigger_emit = detection_status == :no_trace ||
-                     detection_status == :end_trace
+      trigger_emit = %i[no_trace end_trace].include?(detection_status)
       if @messages.empty? && trigger_emit
         @emit.call(time_sec, record)
         return
