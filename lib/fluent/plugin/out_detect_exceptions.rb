@@ -77,8 +77,8 @@ module Fluent
       super
     end
 
-    def emit(tag, es, chain)
-      es.each do |time_sec, record|
+    def emit(tag, entries, chain)
+      entries.each do |time_sec, record|
         process_record(tag, time_sec, record)
       end
       chain.next

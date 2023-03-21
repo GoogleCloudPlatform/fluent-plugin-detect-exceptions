@@ -21,9 +21,9 @@ module Fluent
     class RuleTarget
       attr_accessor :pattern, :to_state
 
-      def initialize(p, s)
-        @pattern = p
-        @to_state = s
+      def initialize(pattern, state)
+        @pattern = pattern
+        @to_state = state
       end
 
       def ==(other)
@@ -97,13 +97,13 @@ module Fluent
       rule(:start_state, /\bpanic: /, :go_after_panic),
       rule(:start_state, /http: panic serving/, :go_goroutine),
       rule(:go_after_panic, /^$/, :go_goroutine),
-      rule(%i[go_after_panic go_after_signal go_frame_1],
+      rule(%i[go_after_panic go_after_signal go_frame_line1],
            /^$/, :go_goroutine),
       rule(:go_after_panic, /^\[signal /, :go_after_signal),
-      rule(:go_goroutine, /^goroutine \d+ \[[^\]]+\]:$/, :go_frame_1),
-      rule(:go_frame_1, /^(?:[^\s.:]+\.)*[^\s.():]+\(|^created by /,
-           :go_frame_2),
-      rule(:go_frame_2, /^\s/, :go_frame_1)
+      rule(:go_goroutine, /^goroutine \d+ \[[^\]]+\]:$/, :go_frame_line1),
+      rule(:go_frame_line1, /^(?:[^\s.:]+\.)*[^\s.():]+\(|^created by /,
+           :go_frame_line2),
+      rule(:go_frame_line2, /^\s/, :go_frame_line1)
     ].freeze
 
     RUBY_RULES = [
@@ -129,22 +129,22 @@ module Fluent
       rule(:dart_exc, /^Concurrent modification/, :dart_stack),
       rule(:dart_exc, /^Out of Memory/, :dart_stack),
       rule(:dart_exc, /^Stack Overflow/, :dart_stack),
-      rule(:dart_exc, /^'.+?':.+?$/, :dart_type_err_1),
-      rule(:dart_type_err_1, /^#\d+\s+.+?\(.+?\)$/, :dart_stack),
-      rule(:dart_type_err_1, /^.+?$/, :dart_type_err_2),
-      rule(:dart_type_err_2, /^.*?\^.*?$/, :dart_type_err_3),
-      rule(:dart_type_err_3, /^$/, :dart_type_err_4),
-      rule(:dart_type_err_4, /^$/, :dart_stack),
-      rule(:dart_exc, /^FormatException/, :dart_format_err_1),
-      rule(:dart_format_err_1, /^#\d+\s+.+?\(.+?\)$/, :dart_stack),
-      rule(:dart_format_err_1, /^./, :dart_format_err_2),
-      rule(:dart_format_err_2, /^.*?\^/, :dart_format_err_3),
-      rule(:dart_format_err_3, /^$/, :dart_stack),
-      rule(:dart_exc, /^NoSuchMethodError:/, :dart_method_err_1),
-      rule(:dart_method_err_1, /^Receiver:/, :dart_method_err_2),
-      rule(:dart_method_err_2, /^Tried calling:/, :dart_method_err_3),
-      rule(:dart_method_err_3, /^Found:/, :dart_stack),
-      rule(:dart_method_err_3, /^#\d+\s+.+?\(.+?\)$/, :dart_stack),
+      rule(:dart_exc, /^'.+?':.+?$/, :dart_type_err_line1),
+      rule(:dart_type_err_line1, /^#\d+\s+.+?\(.+?\)$/, :dart_stack),
+      rule(:dart_type_err_line1, /^.+?$/, :dart_type_err_line2),
+      rule(:dart_type_err_line2, /^.*?\^.*?$/, :dart_type_err_line3),
+      rule(:dart_type_err_line3, /^$/, :dart_type_err_line4),
+      rule(:dart_type_err_line4, /^$/, :dart_stack),
+      rule(:dart_exc, /^FormatException/, :dart_format_err_line1),
+      rule(:dart_format_err_line1, /^#\d+\s+.+?\(.+?\)$/, :dart_stack),
+      rule(:dart_format_err_line1, /^./, :dart_format_err_line2),
+      rule(:dart_format_err_line2, /^.*?\^/, :dart_format_err_line3),
+      rule(:dart_format_err_line3, /^$/, :dart_stack),
+      rule(:dart_exc, /^NoSuchMethodError:/, :dart_method_err_line1),
+      rule(:dart_method_err_line1, /^Receiver:/, :dart_method_err_line2),
+      rule(:dart_method_err_line2, /^Tried calling:/, :dart_method_err_line3),
+      rule(:dart_method_err_line3, /^Found:/, :dart_stack),
+      rule(:dart_method_err_line3, /^#\d+\s+.+?\(.+?\)$/, :dart_stack),
       rule(:dart_stack, /^#\d+\s+.+?\(.+?\)$/, :dart_stack),
       rule(:dart_stack, /^<asynchronous suspension>$/, :dart_stack)
     ].freeze

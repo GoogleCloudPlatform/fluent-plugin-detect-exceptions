@@ -76,22 +76,22 @@ class DetectExceptionsOutputTest < Test::Unit::TestCase
     log_entry
   end
 
-  def feed_lines_without_line_breaks(driver, t, *messages, stream: nil)
+  def feed_lines_without_line_breaks(driver, timestamp, *messages, stream: nil)
     count = 0
     messages.each do |m|
       m.each_line do |line|
         line.delete!("\n")
-        driver.emit(log_entry(line, count, stream), t + count)
+        driver.emit(log_entry(line, count, stream), timestamp + count)
         count += 1
       end
     end
   end
 
-  def feed_lines(driver, t, *messages, stream: nil)
+  def feed_lines(driver, timestamp, *messages, stream: nil)
     count = 0
     messages.each do |m|
       m.each_line do |line|
-        driver.emit(log_entry(line, count, stream), t + count)
+        driver.emit(log_entry(line, count, stream), timestamp + count)
         count += 1
       end
     end
@@ -104,11 +104,11 @@ class DetectExceptionsOutputTest < Test::Unit::TestCase
     end
   end
 
-  def make_logs(t, *messages, stream: nil)
+  def make_logs(timestamp, *messages, stream: nil)
     count = 0
     logs = []
     messages.each do |m|
-      logs << [t + count, log_entry(m, count, stream)]
+      logs << [timestamp + count, log_entry(m, count, stream)]
       count += m.lines.count
     end
     logs
