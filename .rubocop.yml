@@ -39,6 +39,11 @@ Metrics/MethodLength:
 Metrics/PerceivedComplexity:
   Max: 50
 
+# Offense count: 1
+# Configuration parameters: CountComments.
+Metrics/BlockLength:
+  Max: 50
+
 # TODO: Re-enable this and fix frozen strings.
 Style/FrozenStringLiteralComment:
   Enabled: false
