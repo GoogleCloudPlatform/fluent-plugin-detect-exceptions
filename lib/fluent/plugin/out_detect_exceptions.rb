@@ -121,6 +121,7 @@ module Fluent
           @flush_buffer_mutex.sleep(@check_flush_interval)
           now = Time.now
           break if @stop_check
+
           @accumulators.each_value do |acc|
             acc.force_flush if now - acc.buffer_start_time >
                                @multiline_flush_interval

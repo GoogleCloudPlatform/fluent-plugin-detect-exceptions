@@ -236,6 +236,7 @@ module Fluent
     def transition(line)
       @rules[@state].each do |r|
         next unless line =~ r.pattern
+
         @state = r.to_state
         return true
       end
