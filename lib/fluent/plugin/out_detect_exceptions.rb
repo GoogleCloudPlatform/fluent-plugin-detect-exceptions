@@ -44,9 +44,7 @@ module Fluent
     def configure(conf)
       super
 
-      if multiline_flush_interval
-        @check_flush_interval = [multiline_flush_interval * 0.1, 1].max
-      end
+      @check_flush_interval = [multiline_flush_interval * 0.1, 1].max if multiline_flush_interval
 
       @languages = languages.map(&:to_sym)
 
