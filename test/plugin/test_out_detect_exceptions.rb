@@ -317,9 +317,9 @@ max_lines 2)
     # For the following Java stack trace, the two lines of the first exception
     # are buffered and combined. So are the first two lines of the second
     # exception. Then the rest is logged line-by-line.
-    expected = [PYTHON_EXC.lines[0..1].join] + PYTHON_EXC.lines[2..-1] + \
+    expected = [PYTHON_EXC.lines[0..1].join] + PYTHON_EXC.lines[2..] + \
                [JAVA_EXC.lines[0..1].join] + [JAVA_EXC.lines[2..3].join] + \
-               JAVA_EXC.lines[4..-1]
+               JAVA_EXC.lines[4..]
     assert_equal(make_logs(t, *expected), d.events)
   end
 
@@ -332,9 +332,9 @@ stream stream)
     d.run do
       feed_lines(d, t, JAVA_EXC.lines[0], stream: 'java')
       feed_lines(d, t, PYTHON_EXC.lines[0..1].join, stream: 'python')
-      feed_lines(d, t, JAVA_EXC.lines[1..-1].join, stream: 'java')
+      feed_lines(d, t, JAVA_EXC.lines[1..].join, stream: 'java')
       feed_lines(d, t, JAVA_EXC, stream: 'java')
-      feed_lines(d, t, PYTHON_EXC.lines[2..-1].join, stream: 'python')
+      feed_lines(d, t, PYTHON_EXC.lines[2..].join, stream: 'python')
       feed_lines(d, t, 'something else', stream: 'java')
     end
     # Expected: the Python and the Java exceptions are handled separately
