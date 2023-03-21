@@ -6,6 +6,7 @@
 # versions of RuboCop, may require this file to be generated again.
 
 AllCops:
+  TargetRubyVersion: 2.6
   NewCops: disable
 
 # Rakefile doesn't need to be executable.
