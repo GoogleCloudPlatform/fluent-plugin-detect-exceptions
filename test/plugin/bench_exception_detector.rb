@@ -21,16 +21,16 @@ line_length = 50
 
 size = size_in_m << 20
 
-JAVA_EXC = <<END.freeze
+JAVA_EXC = <<END_JAVA.freeze
 Jul 09, 2015 3:23:29 PM com.google.devtools.search.cloud.feeder.MakeLog: RuntimeException: Run from this message!
   at com.my.app.Object.do$a1(MakeLog.java:50)
   at java.lang.Thing.call(Thing.java:10)
   at com.my.app.Object.help(MakeLog.java:40)
   at sun.javax.API.method(API.java:100)
   at com.jetty.Framework.main(MakeLog.java:30)
-END
+END_JAVA
 
-PYTHON_EXC = <<END.freeze
+PYTHON_EXC = <<END_PYTHON.freeze
 Traceback (most recent call last):
   File "/base/data/home/runtimes/python27/python27_lib/versions/third_party/webapp2-2.5.2/webapp2.py", line 1535, in __call__
     rv = self.handle_exception(request, response, e)
@@ -39,7 +39,7 @@ Traceback (most recent call last):
   File "/base/data/home/apps/s~nearfieldspy/1.378705245900539993/nearfieldspy.py", line 5, in get
     raise Exception('spam', 'eggs')
 Exception: ('spam', 'eggs')
-END
+END_PYTHON
 
 chars = [('a'..'z'), ('A'..'Z')].map(&:to_a).flatten
 

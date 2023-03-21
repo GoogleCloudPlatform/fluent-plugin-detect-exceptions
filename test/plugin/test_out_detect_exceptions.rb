@@ -22,9 +22,9 @@ class DetectExceptionsOutputTest < Test::Unit::TestCase
     Fluent::Test.setup
   end
 
-  CONFIG = <<END.freeze
+  CONFIG = <<END_CONFIG.freeze
 remove_tag_prefix prefix
-END
+END_CONFIG
 
   DEFAULT_TAG = 'prefix.test.tag'.freeze
 
@@ -32,37 +32,37 @@ END
 
   ARBITRARY_TEXT = 'This line is not an exception.'.freeze
 
-  JAVA_EXC = <<END.freeze
+  JAVA_EXC = <<END_JAVA.freeze
 SomeException: foo
   at bar
 Caused by: org.AnotherException
   at bar2
   at bar3
-END
+END_JAVA
 
-  PHP_EXC = <<END.freeze
+  PHP_EXC = <<END_PHP.freeze
 exception 'Exception' with message 'Custom exception' in /home/joe/work/test-php/test.php:5
 Stack trace:
 #0 /home/joe/work/test-php/test.php(9): func1()
 #1 /home/joe/work/test-php/test.php(13): func2()
 #2 {main}
-END
+END_PHP
 
-  PYTHON_EXC = <<END.freeze
+  PYTHON_EXC = <<END_PYTHON.freeze
 Traceback (most recent call last):
   File "/base/data/home/runtimes/python27/python27_lib/versions/third_party/webapp2-2.5.2/webapp2.py", line 1535, in __call__
     rv = self.handle_exception(request, response, e)
 Exception: ('spam', 'eggs')
-END
+END_PYTHON
 
-  RUBY_EXC = <<END.freeze
+  RUBY_EXC = <<END_RUBY.freeze
 examble.rb:18:in `thrower': An error has occurred. (RuntimeError)
   from examble.rb:14:in `caller'
   from examble.rb:10:in `helper'
   from examble.rb:6:in `writer'
   from examble.rb:2:in `runner'
   from examble.rb:21:in `<main>'
-END
+END_RUBY
 
   def create_driver(conf = CONFIG, tag = DEFAULT_TAG)
     d = Fluent::Test::OutputTestDriver.new(Fluent::DetectExceptionsOutput, tag)

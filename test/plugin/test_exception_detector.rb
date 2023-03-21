@@ -16,21 +16,21 @@ require_relative '../helper'
 require 'fluent/plugin/exception_detector'
 
 class ExceptionDetectorTest < Test::Unit::TestCase
-  JAVA_EXC_PART1 = <<END.freeze
+  JAVA_EXC_PART1 = <<END_JAVA_PART1.freeze
 Jul 09, 2015 3:23:29 PM com.google.devtools.search.cloud.feeder.MakeLog: RuntimeException: Run from this message!
   at com.my.app.Object.do$a1(MakeLog.java:50)
   at java.lang.Thing.call(Thing.java:10)
-END
+END_JAVA_PART1
 
-  JAVA_EXC_PART2 = <<END.freeze
+  JAVA_EXC_PART2 = <<END_JAVA_PART2.freeze
   at com.my.app.Object.help(MakeLog.java:40)
   at sun.javax.API.method(API.java:100)
   at com.jetty.Framework.main(MakeLog.java:30)
-END
+END_JAVA_PART2
 
   JAVA_EXC = (JAVA_EXC_PART1 + JAVA_EXC_PART2).freeze
 
-  COMPLEX_JAVA_EXC = <<END.freeze
+  COMPLEX_JAVA_EXC = <<END_COMPLEX_JAVA.freeze
 javax.servlet.ServletException: Something bad happened
     at com.example.myproject.OpenSessionInViewFilter.doFilter(OpenSessionInViewFilter.java:60)
     at org.mortbay.jetty.servlet.ServletHandler$CachedChain.doFilter(ServletHandler.java:1157)
@@ -60,9 +60,9 @@ Caused by: com.example.myproject.MyProjectServletException
     at org.mortbay.jetty.servlet.ServletHandler$CachedChain.doFilter(ServletHandler.java:1166)
     at com.example.myproject.OpenSessionInViewFilter.doFilter(OpenSessionInViewFilter.java:30)
     ... 27 common frames omitted
-END
+END_COMPLEX_JAVA
 
-  NESTED_JAVA_EXC = <<END.freeze
+  NESTED_JAVA_EXC = <<END_NESTED_JAVA.freeze
 java.lang.RuntimeException: javax.mail.SendFailedException: Invalid Addresses;
   nested exception is:
 com.sun.mail.smtp.SMTPAddressFailedException: 550 5.7.1 <[REDACTED_EMAIL_ADDRESS]>... Relaying denied
@@ -88,9 +88,9 @@ com.sun.mail.smtp.SMTPAddressFailedException: 550 5.7.1 <[REDACTED_EMAIL_ADDRESS
 	at com.nethunt.crm.api.server.adminsync.AutomaticEmailFacade.sendWithSmtp(AutomaticEmailFacade.java:229)
 	... 12 more
 Caused by: com.sun.mail.smtp.SMTPAddressFailedException: 550 5.7.1 <[REDACTED_EMAIL_ADDRESS]>... Relaying denied
-END
+END_NESTED_JAVA
 
-  NODE_JS_EXC = <<END.freeze
+  NODE_JS_EXC = <<END_NODE_JS.freeze
 ReferenceError: myArray is not defined
   at next (/app/node_modules/express/lib/router/index.js:256:14)
   at /app/node_modules/express/lib/router/index.js:615:15
@@ -102,18 +102,18 @@ ReferenceError: myArray is not defined
   at next (/app/node_modules/express/lib/router/route.js:131:13)
   at Layer.handle [as handle_request] (/app/node_modules/express/lib/router/layer.js:95:5)
   at /app/app.js:52:3
-END
+END_NODE_JS
 
-  CLIENT_JS_EXC = <<END.freeze
+  CLIENT_JS_EXC = <<END_CLIENT_JS.freeze
 Error
     at bls (<anonymous>:3:9)
     at <anonymous>:6:4
     at a_function_name
     at Object.InjectedScript._evaluateOn (http://<anonymous>/file.js?foo=bar:875:140)
     at Object.InjectedScript.evaluate (<anonymous>)
-END
+END_CLIENT_JS
 
-  V8_JS_EXC = <<END.freeze
+  V8_JS_EXC = <<END_V8_JS.freeze
 V8 errors stack trace
   eval at Foo.a (eval at Bar.z (myscript.js:10:3))
   at new Contructor.Name (native)
@@ -121,9 +121,9 @@ V8 errors stack trace
   at Type.functionName [as methodName] (file(copy).js?query='yes':12:9)
   at functionName [as methodName] (native)
   at Type.main(sample(copy).js:6:4)
-END
+END_V8_JS
 
-  PYTHON_EXC = <<END.freeze
+  PYTHON_EXC = <<END_PYTHON.freeze
 Traceback (most recent call last):
   File "/base/data/home/runtimes/python27/python27_lib/versions/third_party/webapp2-2.5.2/webapp2.py", line 1535, in __call__
     rv = self.handle_exception(request, response, e)
@@ -132,17 +132,17 @@ Traceback (most recent call last):
   File "/base/data/home/apps/s~nearfieldspy/1.378705245900539993/nearfieldspy.py", line 5, in get
     raise Exception('spam', 'eggs')
 Exception: ('spam', 'eggs')
-END
+END_PYTHON
 
-  PHP_EXC = <<END.freeze
+  PHP_EXC = <<END_PHP.freeze
 exception 'Exception' with message 'Custom exception' in /home/joe/work/test-php/test.php:5
 Stack trace:
 #0 /home/joe/work/test-php/test.php(9): func1()
 #1 /home/joe/work/test-php/test.php(13): func2()
 #2 {main}
-END
+END_PHP
 
-  PHP_ON_GAE_EXC = <<END.freeze
+  PHP_ON_GAE_EXC = <<END_PHP_ON_GAE.freeze
 PHP Fatal error:  Uncaught exception 'Exception' with message 'message' in /base/data/home/apps/s~crash-example-php/1.388306779641080894/errors.php:60
 Stack trace:
 #0 [internal function]: ErrorEntryGenerator::{closure}()
@@ -151,9 +151,9 @@ Stack trace:
 #3 /base/data/home/apps/s~crash-example-php/1.388306779641080894/index.php(36): ErrorEntry->raise()
 #4 {main}
   thrown in /base/data/home/apps/s~crash-example-php/1.388306779641080894/errors.php on line 60
-END
+END_PHP_ON_GAE
 
-  GO_EXC = <<END.freeze
+  GO_EXC = <<END_GO.freeze
 panic: my panic
 
 goroutine 4 [running]:
@@ -205,9 +205,9 @@ runtime.goexit()
 	/usr/local/go/src/runtime/asm_amd64.s:2337 +0x1 fp=0xc42003efe0 sp=0xc42003efd8 pc=0x44b4d1
 created by runtime.gcenable
 	/usr/local/go/src/runtime/mgc.go:216 +0x58
-END
+END_GO
 
-  GO_ON_GAE_EXC = <<END.freeze
+  GO_ON_GAE_EXC = <<END_GO_ON_GAE.freeze
 panic: runtime error: index out of range
 
 goroutine 12 [running]:
@@ -227,9 +227,9 @@ reflect.Value.call(0x1243fe0, 0x15819b0, 0x113, 0x12c8a20, 0x4, 0xc010485f78, 0x
 	/tmp/appengine/go/src/reflect/value.go:419 +0x10fd
 reflect.Value.Call(0x1243fe0, 0x15819b0, 0x113, 0xc010485f78, 0x3, 0x3, 0x0, 0x0, 0x0)
 	/tmp/ap
-END
+END_GO_ON_GAE
 
-  GO_SIGNAL_EXC = <<END.freeze
+  GO_SIGNAL_EXC = <<END_GO_SIGNAL.freeze
 panic: runtime error: invalid memory address or nil pointer dereference
 [signal SIGSEGV: segmentation violation code=0x1 addr=0x0 pc=0x7fd34f]
 
@@ -240,9 +240,9 @@ panics.Wait()
 	panics/panics.go:16 +0x3b
 created by main.main
 	server.go:20 +0x91
-END
+END_GO_SIGNAL
 
-  GO_HTTP = <<END.freeze
+  GO_HTTP = <<END_GO_HTTP.freeze
 2019/01/15 07:48:05 http: panic serving [::1]:54143: test panic
 goroutine 24 [running]:
 net/http.(*conn).serve.func1(0xc00007eaa0)
@@ -261,8 +261,9 @@ net/http.(*conn).serve(0xc00007eaa0, 0x12f10a0, 0xc00008a780)
 	/usr/local/go/src/net/http/server.go:1847 +0x646
 created by net/http.(*Server).Serve
 	/usr/local/go/src/net/http/server.go:2851 +0x2f5
-END
-  CSHARP_EXC = <<END.freeze
+END_GO_HTTP
+
+  CSHARP_EXC = <<END_CSHARP.freeze
 System.Collections.Generic.KeyNotFoundException: The given key was not present in the dictionary.
   at System.Collections.Generic.Dictionary`2[System.String,System.Collections.Generic.Dictionary`2[System.Int32,System.Double]].get_Item (System.String key) [0x00000] in <filename unknown>:0
   at File3.Consolidator_Class.Function5 (System.Collections.Generic.Dictionary`2 names, System.Text.StringBuilder param_4) [0x00007] in /usr/local/google/home/Csharp/another file.csharp:9
@@ -274,9 +275,9 @@ System.Collections.Generic.KeyNotFoundException: The given key was not present i
   at File2.Processor.Function1 (Int32 param_1, System.Collections.Generic.Dictionary`2 map) [0x00007] in /usr/local/google/home/Csharp/File2.csharp:34
   at Main.Welcome+<Main>c__AnonStorey0.<>m__0 () [0x00006] in /usr/local/google/home/Csharp/hello.csharp:48
   at System.Threading.Thread.StartInternal () [0x00000] in <filename unknown>:0
-END
+END_CSHARP
 
-  CSHARP_NESTED_EXC = <<END.freeze
+  CSHARP_NESTED_EXC = <<END_CSHARP_NESTED.freeze
 System.InvalidOperationException: This is the outer exception ---> System.InvalidOperationException: This is the inner exception
   at ExampleApp.NestedExceptionExample.LowestLevelMethod() in c:/ExampleApp/ExampleApp/NestedExceptionExample.cs:line 33
   at ExampleApp.NestedExceptionExample.ThirdLevelMethod() in c:/ExampleApp/ExampleApp/NestedExceptionExample.cs:line 28
@@ -285,9 +286,9 @@ System.InvalidOperationException: This is the outer exception ---> System.Invali
   at ExampleApp.NestedExceptionExample.SecondLevelMethod() in c:/ExampleApp/ExampleApp/NestedExceptionExample.cs:line 22
   at ExampleApp.NestedExceptionExample.TopLevelMethod() in c:/ExampleApp/ExampleApp/NestedExceptionExample.cs:line 11
   at ExampleApp.Program.Main(String[] args) in c:/ExampleApp/ExampleApp/Program.cs:line 11
-END
+END_CSHARP_NESTED
 
-  CSHARP_ASYNC_EXC = <<END.freeze
+  CSHARP_ASYNC_EXC = <<END_CSHARP_ASYNC.freeze
 System.InvalidOperationException: This is an exception
    at ExampleApp2.AsyncExceptionExample.LowestLevelMethod() in c:/ExampleApp/ExampleApp/AsyncExceptionExample.cs:line 36
    at ExampleApp2.AsyncExceptionExample.<ThirdLevelMethod>d__2.MoveNext() in c:/ExampleApp/ExampleApp/AsyncExceptionExample.cs:line 31
@@ -301,9 +302,9 @@ System.InvalidOperationException: This is an exception
    at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccessAndDebuggerNotification(Task task)
    at System.Runtime.CompilerServices.TaskAwaiter.GetResult()
    at ExampleApp2.AsyncExceptionExample.<TopLevelMethod>d__0.MoveNext() in c:/ExampleApp/ExampleApp/AsyncExceptionExample.cs:line 14
-END
+END_CSHARP_ASYNC
 
-  RUBY_EXC = <<END.freeze
+  RUBY_EXC = <<END_RUBY.freeze
  NoMethodError (undefined method `resursivewordload' for #<BooksController:0x007f8dd9a0c738>):
   app/controllers/books_controller.rb:69:in `recursivewordload'
   app/controllers/books_controller.rb:75:in `loadword'
@@ -315,11 +316,11 @@ END
   app/controllers/books_controller.rb:99:in `requestload'
   app/controllers/books_controller.rb:118:in `generror'
   config/error_reporting_logger.rb:62:in `tagged'
-END
+END_RUBY
 
   # The whitespace on the second line is significant.
   # rubocop:disable Layout/TrailingWhitespace
-  RAILS_EXC = <<END.freeze
+  RAILS_EXC = <<END_RAILS.freeze
  ActionController::RoutingError (No route matches [GET] "/settings"):
   
   actionpack (5.1.4) lib/action_dispatch/middleware/debug_exceptions.rb:63:in `call'
@@ -343,10 +344,10 @@ END
   puma (3.10.0) lib/puma/server.rb:437:in `process_client'
   puma (3.10.0) lib/puma/server.rb:301:in `block in run'
   puma (3.10.0) lib/puma/thread_pool.rb:120:in `block in spawn_thread'
-END
+END_RAILS
   # rubocop:enable Layout/TrailingWhitespace
 
-  DART_ERR = <<END.freeze
+  DART_ERR = <<END_DART.freeze
 Unhandled exception:
 Instance of 'MyError'
 #0      main.<anonymous closure> (file:///path/to/code/dartFile.dart:15:20)
@@ -354,9 +355,9 @@ Instance of 'MyError'
 #2      main (file:///path/to/code/dartFile.dart:15:3)
 #3      _startIsolate.<anonymous closure> (dart:isolate-patch/isolate_patch.dart:265)
 #4      _RawReceivePortImpl._handleMessage (dart:isolate-patch/isolate_patch.dart:151)
-END
+END_DART
 
-  DART_EXC = <<END.freeze
+  DART_EXC = <<END_DART_EXC.freeze
 Unhandled exception:
 Exception: exception message
 #0      main.<anonymous closure> (file:///path/to/code/dartFile.dart:17:20)
@@ -364,9 +365,9 @@ Exception: exception message
 #2      main (file:///path/to/code/dartFile.dart:17:3)
 #3      _startIsolate.<anonymous closure> (dart:isolate-patch/isolate_patch.dart:265)
 #4      _RawReceivePortImpl._handleMessage (dart:isolate-patch/isolate_patch.dart:151)
-END
+END_DART_EXC
 
-  DART_ASYNC_ERR = <<END.freeze
+  DART_ASYNC_ERR = <<END_DART_ASYNC.freeze
 Unhandled exception:
 Bad state: oops
 #0      handleFailure (file:///test/example/http/handling_an_httprequest_error.dart:16:3)
@@ -374,9 +375,9 @@ Bad state: oops
 <asynchronous suspension>
 #2      _startIsolate.<anonymous closure> (dart:isolate-patch/isolate_patch.dart:265)
 #3      _RawReceivePortImpl._handleMessage (dart:isolate-patch/isolate_patch.dart:151)
-END
+END_DART_ASYNC
 
-  DART_DIVIDE_BY_ZERO_ERR = <<END.freeze
+  DART_DIVIDE_BY_ZERO_ERR = <<END_DART_ZERO.freeze
 Unhandled exception:
 IntegerDivisionByZeroException
 #0      main.<anonymous closure> (file:///path/to/code/dartFile.dart:27:20)
@@ -384,9 +385,9 @@ IntegerDivisionByZeroException
 #2      main (file:///path/to/code/dartFile.dart:27:3)
 #3      _startIsolate.<anonymous closure> (dart:isolate-patch/isolate_patch.dart:265)
 #4      _RawReceivePortImpl._handleMessage (dart:isolate-patch/isolate_patch.dart:151)
-END
+END_DART_ZERO
 
-  DART_ARGUMENT_ERR = <<END.freeze
+  DART_ARGUMENT_ERR = <<END_DART_ARG.freeze
 Unhandled exception:
 Invalid argument(s): invalid argument
 #0      main.<anonymous closure> (file:///path/to/code/dartFile.dart:23:20)
@@ -394,9 +395,9 @@ Invalid argument(s): invalid argument
 #2      main (file:///path/to/code/dartFile.dart:23:3)
 #3      _startIsolate.<anonymous closure> (dart:isolate-patch/isolate_patch.dart:265)
 #4      _RawReceivePortImpl._handleMessage (dart:isolate-patch/isolate_patch.dart:151)
-END
+END_DART_ARG
 
-  DART_RANGE_ERR = <<END.freeze
+  DART_RANGE_ERR = <<END_DART_RANGE.freeze
 Unhandled exception:
 RangeError (index): Invalid value: Valid value range is empty: 1
 #0      List.[] (dart:core-patch/growable_array.dart:151)
@@ -405,9 +406,9 @@ RangeError (index): Invalid value: Valid value range is empty: 1
 #3      main (file:///path/to/code/dartFile.dart:29:3)
 #4      _startIsolate.<anonymous closure> (dart:isolate-patch/isolate_patch.dart:265)
 #5      _RawReceivePortImpl._handleMessage (dart:isolate-patch/isolate_patch.dart:151)
-END
+END_DART_RANGE
 
-  DART_ASSERTION_ERR = <<END.freeze
+  DART_ASSERTION_ERR = <<END_DART_ASSERT.freeze
 Unhandled exception:
 Assertion failed
 #0      main.<anonymous closure> (file:///path/to/code/dartFile.dart:9:20)
@@ -415,9 +416,9 @@ Assertion failed
 #2      main (file:///path/to/code/dartFile.dart:9:3)
 #3      _startIsolate.<anonymous closure> (dart:isolate-patch/isolate_patch.dart:265)
 #4      _RawReceivePortImpl._handleMessage (dart:isolate-patch/isolate_patch.dart:151)
-END
+END_DART_ASSERT
 
-  DART_ABSTRACT_CLASS_ERR = <<END.freeze
+  DART_ABSTRACT_CLASS_ERR = <<END_DART_ABC.freeze
 Unhandled exception:
 Cannot instantiate abstract class LNClassName: _url 'null' line null
 #0      main.<anonymous closure> (file:///path/to/code/dartFile.dart:12:20)
@@ -425,9 +426,9 @@ Cannot instantiate abstract class LNClassName: _url 'null' line null
 #2      main (file:///path/to/code/dartFile.dart:12:3)
 #3      _startIsolate.<anonymous closure> (dart:isolate-patch/isolate_patch.dart:265)
 #4      _RawReceivePortImpl._handleMessage (dart:isolate-patch/isolate_patch.dart:151)
-END
+END_DART_ABC
 
-  DART_READ_STATIC_ERR = <<END.freeze
+  DART_READ_STATIC_ERR = <<END_DART_STATIC.freeze
 Unhandled exception:
 Reading static variable 'variable' during its initialization
 #0      main.<anonymous closure> (file:///path/to/code/dartFile.dart:28:20)
@@ -435,9 +436,9 @@ Reading static variable 'variable' during its initialization
 #2      main (file:///path/to/code/dartFile.dart:28:3)
 #3      _startIsolate.<anonymous closure> (dart:isolate-patch/isolate_patch.dart:265)
 #4      _RawReceivePortImpl._handleMessage (dart:isolate-patch/isolate_patch.dart:151)
-END
+END_DART_STATIC
 
-  DART_UNIMPLEMENTED_ERROR = <<END.freeze
+  DART_UNIMPLEMENTED_ERROR = <<END_DART_UNIMPL.freeze
 Unhandled exception:
 UnimplementedError: unimplemented
 #0      main.<anonymous closure> (file:///path/to/code/dartFile.dart:38:20)
@@ -445,9 +446,9 @@ UnimplementedError: unimplemented
 #2      main (file:///path/to/code/dartFile.dart:38:3)
 #3      _startIsolate.<anonymous closure> (dart:isolate-patch/isolate_patch.dart:265)
 #4      _RawReceivePortImpl._handleMessage (dart:isolate-patch/isolate_patch.dart:151)
-END
+END_DART_UNIMPL
 
-  DART_UNSUPPORTED_ERR = <<END.freeze
+  DART_UNSUPPORTED_ERR = <<END_DART_UNSUPPORTED.freeze
 Unhandled exception:
 Unsupported operation: unsupported
 #0      main.<anonymous closure> (file:///path/to/code/dartFile.dart:36:20)
@@ -455,9 +456,9 @@ Unsupported operation: unsupported
 #2      main (file:///path/to/code/dartFile.dart:36:3)
 #3      _startIsolate.<anonymous closure> (dart:isolate-patch/isolate_patch.dart:265)
 #4      _RawReceivePortImpl._handleMessage (dart:isolate-patch/isolate_patch.dart:151)
-END
+END_DART_UNSUPPORTED
 
-  DART_CONCURRENT_MODIFICATION_ERR = <<END.freeze
+  DART_CONCURRENT_MODIFICATION_ERR = <<END_DART_CONCURRENT.freeze
 Unhandled exception:
 Concurrent modification during iteration.
 #0      main.<anonymous closure> (file:///path/to/code/dartFile.dart:35:20)
@@ -465,9 +466,9 @@ Concurrent modification during iteration.
 #2      main (file:///path/to/code/dartFile.dart:35:3)
 #3      _startIsolate.<anonymous closure> (dart:isolate-patch/isolate_patch.dart:265)
 #4      _RawReceivePortImpl._handleMessage (dart:isolate-patch/isolate_patch.dart:151)
-END
+END_DART_CONCURRENT
 
-  DART_OOM_ERR = <<END.freeze
+  DART_OOM_ERR = <<END_DART_OOM.freeze
 Unhandled exception:
 Out of Memory
 #0      main.<anonymous closure> (file:///path/to/code/dartFile.dart:34:20)
@@ -475,9 +476,9 @@ Out of Memory
 #2      main (file:///path/to/code/dartFile.dart:34:3)
 #3      _startIsolate.<anonymous closure> (dart:isolate-patch/isolate_patch.dart:265)
 #4      _RawReceivePortImpl._handleMessage (dart:isolate-patch/isolate_patch.dart:151)
-END
+END_DART_OOM
 
-  DART_STACK_OVERFLOW_ERR = <<END.freeze
+  DART_STACK_OVERFLOW_ERR = <<END_DART_STACK.freeze
 Unhandled exception:
 Stack Overflow
 #0      main.<anonymous closure> (file:///path/to/code/dartFile.dart:33:20)
@@ -485,9 +486,9 @@ Stack Overflow
 #2      main (file:///path/to/code/dartFile.dart:33:3)
 #3      _startIsolate.<anonymous closure> (dart:isolate-patch/isolate_patch.dart:265)
 #4      _RawReceivePortImpl._handleMessage (dart:isolate-patch/isolate_patch.dart:151)
-END
+END_DART_STACK
 
-  DART_FALLTHROUGH_ERR = <<END.freeze
+  DART_FALLTHROUGH_ERR = <<END_DART_FALLTHROUGH.freeze
 Unhandled exception:
 'null': Switch case fall-through at line null.
 #0      main.<anonymous closure> (file:///path/to/code/dartFile.dart:39:20)
@@ -495,9 +496,9 @@ Unhandled exception:
 #2      main (file:///path/to/code/dartFile.dart:39:3)
 #3      _startIsolate.<anonymous closure> (dart:isolate-patch/isolate_patch.dart:265)
 #4      _RawReceivePortImpl._handleMessage (dart:isolate-patch/isolate_patch.dart:151)
-END
+END_DART_FALLTHROUGH
 
-  DART_TYPE_ERR = <<END.freeze
+  DART_TYPE_ERR = <<END_DART_TYPE.freeze
 Unhandled exception:
 'file:///path/to/code/dartFile.dart': malformed type: line 7 pos 24: cannot resolve class 'NoType' from '::'
   printError( () { new NoType(); } );
@@ -510,9 +511,9 @@ Unhandled exception:
 #3      main (file:///path/to/code/dartFile.dart:7:3)
 #4      _startIsolate.<anonymous closure> (dart:isolate-patch/isolate_patch.dart:265)
 #5      _RawReceivePortImpl._handleMessage (dart:isolate-patch/isolate_patch.dart:151)
-END
+END_DART_TYPE
 
-  DART_FORMAT_ERR = <<END.freeze
+  DART_FORMAT_ERR = <<END_DART_FORMAT.freeze
 Unhandled exception:
 FormatException: format exception
 #0      main.<anonymous closure> (file:///path/to/code/dartFile.dart:25:20)
@@ -520,9 +521,9 @@ FormatException: format exception
 #2      main (file:///path/to/code/dartFile.dart:25:3)
 #3      _startIsolate.<anonymous closure> (dart:isolate-patch/isolate_patch.dart:265)
 #4      _RawReceivePortImpl._handleMessage (dart:isolate-patch/isolate_patch.dart:151)
-END
+END_DART_FORMAT
 
-  DART_FORMAT_WITH_CODE_ERR = <<END.freeze
+  DART_FORMAT_WITH_CODE_ERR = <<END_DART_FORMAT_CODE.freeze
 Unhandled exception:
 FormatException: Invalid base64 data (at line 3, character 8)
 this is not valid
@@ -533,9 +534,9 @@ this is not valid
 #2      main (file:///path/to/code/dartFile.dart:24:3)
 #3      _startIsolate.<anonymous closure> (dart:isolate-patch/isolate_patch.dart:265)
 #4      _RawReceivePortImpl._handleMessage (dart:isolate-patch/isolate_patch.dart:151)
-END
+END_DART_FORMAT_CODE
 
-  DART_NO_METHOD_ERR = <<END.freeze
+  DART_NO_METHOD_ERR = <<END_DART_NO_METHOD.freeze
 Unhandled exception:
 NoSuchMethodError: No constructor 'TypeError' with matching arguments declared in class 'TypeError'.
 Receiver: Type: class 'TypeError'
@@ -547,9 +548,9 @@ Found: new TypeError()
 #3      main (file:///path/to/code/dartFile.dart:8:3)
 #4      _startIsolate.<anonymous closure> (dart:isolate-patch/isolate_patch.dart:265)
 #5      _RawReceivePortImpl._handleMessage (dart:isolate-patch/isolate_patch.dart:151)
-END
+END_DART_NO_METHOD
 
-  DART_NO_METHOD_GLOBAL_ERR = <<END.freeze
+  DART_NO_METHOD_GLOBAL_ERR = <<END_DART_NO_GLOBAL.freeze
 Unhandled exception:
 NoSuchMethodError: No top-level method 'noMethod' declared.
 Receiver: top-level
@@ -560,14 +561,14 @@ Tried calling: noMethod()
 #3      main (file:///path/to/code/dartFile.dart:10:3)
 #4      _startIsolate.<anonymous closure> (dart:isolate-patch/isolate_patch.dart:265)
 #5      _RawReceivePortImpl._handleMessage (dart:isolate-patch/isolate_patch.dart:151)
-END
+END_DART_NO_GLOBAL
 
-  ARBITRARY_TEXT = <<END.freeze
+  ARBITRARY_TEXT = <<END_ARBITRARY.freeze
 This arbitrary text.
 It sounds tympanic: a word which means like a drum.
 
 I am glad it contains no exception.
-END
+END_ARBITRARY
 
   def check_multiline(detector, expected_first, expected_last, multiline)
     lines = multiline.lines

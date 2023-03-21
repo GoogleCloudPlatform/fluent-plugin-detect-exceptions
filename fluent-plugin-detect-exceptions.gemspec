@@ -1,11 +1,11 @@
 Gem::Specification.new do |gem|
   gem.name          = 'fluent-plugin-detect-exceptions'
-  gem.description   = <<-eos
+  gem.description   = <<-DESCRIPTION
    Fluentd output plugin which detects exception stack traces in a stream of
    JSON log messages and combines all single-line messages that belong to the
    same stack trace into one multi-line message.
    This is an official Google Ruby gem.
-  eos
+  DESCRIPTION
   gem.summary       = \
     'fluentd output plugin for combining stack traces as multi-line JSON logs'
   gem.homepage      = \
