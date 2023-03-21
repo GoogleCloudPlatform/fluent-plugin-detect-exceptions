@@ -128,7 +128,7 @@ module Fluent
           end
         end
       end
-    rescue
+    rescue StandardError
       log.error 'error in check_flush_loop', error: $ERROR_INFO.to_s
       log.error_backtrace
     end
