@@ -11,7 +11,7 @@ Gem::Specification.new do |gem|
   gem.homepage      = \
     'https://github.com/GoogleCloudPlatform/fluent-plugin-detect-exceptions'
   gem.license       = 'Apache-2.0'
-  gem.version       = '0.0.14'
+  gem.version       = '0.0.15'
   gem.authors       = ['Stackdriver Agents']
   gem.email         = ['stackdriver-agents@google.com']
   gem.required_ruby_version = Gem::Requirement.new('>= 2.6')
