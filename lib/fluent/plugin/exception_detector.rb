@@ -362,16 +362,16 @@ module Fluent
         @first_timestamp = time_sec
         @buffer_start_time = Time.now
       end
-      unless message.nil?
-        message_with_line_break =
-          if @force_line_breaks && !@messages.empty? && !message.include?("\n")
-            "\n#{message}"
-          else
-            message
-          end
-        @messages << message_with_line_break
-        @buffer_size += message_with_line_break.length
-      end
+      return if message.nil?
+
+      message_with_line_break =
+        if @force_line_breaks && !@messages.empty? && !message.include?("\n")
+          "\n#{message}"
+        else
+          message
+        end
+      @messages << message_with_line_break
+      @buffer_size += message_with_line_break.length
     end
   end
 end

@@ -55,11 +55,11 @@ module Fluent
     def start
       super
 
-      if multiline_flush_interval
-        @flush_buffer_mutex = Mutex.new
-        @stop_check = false
-        @thread = Thread.new(&method(:check_flush_loop))
-      end
+      return unless multiline_flush_interval
+
+      @flush_buffer_mutex = Mutex.new
+      @stop_check = false
+      @thread = Thread.new(&method(:check_flush_loop))
     end
 
     def before_shutdown
