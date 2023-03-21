@@ -344,6 +344,7 @@ END
   puma (3.10.0) lib/puma/server.rb:301:in `block in run'
   puma (3.10.0) lib/puma/thread_pool.rb:120:in `block in spawn_thread'
 END
+  # rubocop:enable Layout/TrailingWhitespace
 
   DART_ERR = <<END.freeze
 Unhandled exception:
