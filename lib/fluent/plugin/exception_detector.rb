@@ -281,14 +281,14 @@ module Fluent
         @exception_detector.reset
         detection_status = :no_trace
       else
-        force_flush if @max_bytes > 0 &&
+        force_flush if @max_bytes.positive? &&
                        @buffer_size + message.length > @max_bytes
         detection_status = @exception_detector.update(message)
       end
 
       update_buffer(detection_status, time_sec, record, message)
 
-      force_flush if @max_lines > 0 && @messages.length == @max_lines
+      force_flush if @max_lines.positive? && @messages.length == @max_lines
     end
 
     def flush
