@@ -44,9 +44,7 @@ module Fluent
     def configure(conf)
       super
 
-      if multiline_flush_interval
-        @check_flush_interval = [multiline_flush_interval * 0.1, 1].max
-      end
+      @check_flush_interval = [multiline_flush_interval * 0.1, 1].max if multiline_flush_interval
 
       @languages = languages.map(&:to_sym)
 
@@ -57,11 +55,11 @@ module Fluent
     def start
       super
 
-      if multiline_flush_interval
-        @flush_buffer_mutex = Mutex.new
-        @stop_check = false
-        @thread = Thread.new(&method(:check_flush_loop))
-      end
+      return unless multiline_flush_interval
+
+      @flush_buffer_mutex = Mutex.new
+      @stop_check = false
+      @thread = Thread.new(&method(:check_flush_loop))
     end
 
     def before_shutdown
@@ -77,8 +75,8 @@ module Fluent
       super
     end
 
-    def emit(tag, es, chain)
-      es.each do |time_sec, record|
+    def emit(tag, entries, chain)
+      entries.each do |time_sec, record|
         process_record(tag, time_sec, record)
       end
       chain.next
@@ -121,13 +119,14 @@ module Fluent
           @flush_buffer_mutex.sleep(@check_flush_interval)
           now = Time.now
           break if @stop_check
+
           @accumulators.each_value do |acc|
             acc.force_flush if now - acc.buffer_start_time >
                                @multiline_flush_interval
           end
         end
       end
-    rescue
+    rescue StandardError
       log.error 'error in check_flush_loop', error: $ERROR_INFO.to_s
       log.error_backtrace
     end

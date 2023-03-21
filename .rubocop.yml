@@ -5,6 +5,14 @@
 # Note that changes in the inspected code, or installation of new
 # versions of RuboCop, may require this file to be generated again.
 
+AllCops:
+  TargetRubyVersion: 2.6
+  NewCops: disable
+
+# Rakefile doesn't need to be executable.
+Lint/ScriptPermission:
+  Enabled: false
+
 # Offense count: 2
 Metrics/AbcSize:
   Max: 120
@@ -31,3 +39,12 @@ Metrics/MethodLength:
 # Offense count: 3
 Metrics/PerceivedComplexity:
   Max: 50
+
+# Offense count: 1
+# Configuration parameters: CountComments.
+Metrics/BlockLength:
+  Max: 50
+
+# TODO: Re-enable this and fix frozen strings.
+Style/FrozenStringLiteralComment:
+  Enabled: false

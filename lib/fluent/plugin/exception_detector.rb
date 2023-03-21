@@ -21,9 +21,9 @@ module Fluent
     class RuleTarget
       attr_accessor :pattern, :to_state
 
-      def initialize(p, s)
-        @pattern = p
-        @to_state = s
+      def initialize(pattern, state)
+        @pattern = pattern
+        @to_state = state
       end
 
       def ==(other)
@@ -52,28 +52,28 @@ module Fluent
     end
 
     JAVA_RULES = [
-      rule([:start_state, :java_start_exception],
+      rule(%i[start_state java_start_exception],
            /(?:Exception|Error|Throwable|V8 errors stack trace)[:\r\n]/,
            :java_after_exception),
       rule(:java_after_exception, /^[\t ]*nested exception is:[\t ]*/,
            :java_start_exception),
       rule(:java_after_exception, /^[\r\n]*$/, :java_after_exception),
-      rule([:java_after_exception, :java], /^[\t ]+(?:eval )?at /, :java),
+      rule(%i[java_after_exception java], /^[\t ]+(?:eval )?at /, :java),
 
-      rule([:java_after_exception, :java],
+      rule(%i[java_after_exception java],
            # C# nested exception.
            /^[\t ]+--- End of inner exception stack trace ---$/,
            :java),
 
-      rule([:java_after_exception, :java],
+      rule(%i[java_after_exception java],
            # C# exception from async code.
            /^--- End of stack trace from previous (?x:
            )location where exception was thrown ---$/,
            :java),
 
-      rule([:java_after_exception, :java], /^[\t ]*(?:Caused by|Suppressed):/,
+      rule(%i[java_after_exception java], /^[\t ]*(?:Caused by|Suppressed):/,
            :java_after_exception),
-      rule([:java_after_exception, :java],
+      rule(%i[java_after_exception java],
            /^[\t ]*... \d+ (?:more|common frames omitted)/, :java)
     ].freeze
 
@@ -97,13 +97,13 @@ module Fluent
       rule(:start_state, /\bpanic: /, :go_after_panic),
       rule(:start_state, /http: panic serving/, :go_goroutine),
       rule(:go_after_panic, /^$/, :go_goroutine),
-      rule([:go_after_panic, :go_after_signal, :go_frame_1],
+      rule(%i[go_after_panic go_after_signal go_frame_line1],
            /^$/, :go_goroutine),
       rule(:go_after_panic, /^\[signal /, :go_after_signal),
-      rule(:go_goroutine, /^goroutine \d+ \[[^\]]+\]:$/, :go_frame_1),
-      rule(:go_frame_1, /^(?:[^\s.:]+\.)*[^\s.():]+\(|^created by /,
-           :go_frame_2),
-      rule(:go_frame_2, /^\s/, :go_frame_1)
+      rule(:go_goroutine, /^goroutine \d+ \[[^\]]+\]:$/, :go_frame_line1),
+      rule(:go_frame_line1, /^(?:[^\s.:]+\.)*[^\s.():]+\(|^created by /,
+           :go_frame_line2),
+      rule(:go_frame_line2, /^\s/, :go_frame_line1)
     ].freeze
 
     RUBY_RULES = [
@@ -129,22 +129,22 @@ module Fluent
       rule(:dart_exc, /^Concurrent modification/, :dart_stack),
       rule(:dart_exc, /^Out of Memory/, :dart_stack),
       rule(:dart_exc, /^Stack Overflow/, :dart_stack),
-      rule(:dart_exc, /^'.+?':.+?$/, :dart_type_err_1),
-      rule(:dart_type_err_1, /^#\d+\s+.+?\(.+?\)$/, :dart_stack),
-      rule(:dart_type_err_1, /^.+?$/, :dart_type_err_2),
-      rule(:dart_type_err_2, /^.*?\^.*?$/, :dart_type_err_3),
-      rule(:dart_type_err_3, /^$/, :dart_type_err_4),
-      rule(:dart_type_err_4, /^$/, :dart_stack),
-      rule(:dart_exc, /^FormatException/, :dart_format_err_1),
-      rule(:dart_format_err_1, /^#\d+\s+.+?\(.+?\)$/, :dart_stack),
-      rule(:dart_format_err_1, /^./, :dart_format_err_2),
-      rule(:dart_format_err_2, /^.*?\^/, :dart_format_err_3),
-      rule(:dart_format_err_3, /^$/, :dart_stack),
-      rule(:dart_exc, /^NoSuchMethodError:/, :dart_method_err_1),
-      rule(:dart_method_err_1, /^Receiver:/, :dart_method_err_2),
-      rule(:dart_method_err_2, /^Tried calling:/, :dart_method_err_3),
-      rule(:dart_method_err_3, /^Found:/, :dart_stack),
-      rule(:dart_method_err_3, /^#\d+\s+.+?\(.+?\)$/, :dart_stack),
+      rule(:dart_exc, /^'.+?':.+?$/, :dart_type_err_line1),
+      rule(:dart_type_err_line1, /^#\d+\s+.+?\(.+?\)$/, :dart_stack),
+      rule(:dart_type_err_line1, /^.+?$/, :dart_type_err_line2),
+      rule(:dart_type_err_line2, /^.*?\^.*?$/, :dart_type_err_line3),
+      rule(:dart_type_err_line3, /^$/, :dart_type_err_line4),
+      rule(:dart_type_err_line4, /^$/, :dart_stack),
+      rule(:dart_exc, /^FormatException/, :dart_format_err_line1),
+      rule(:dart_format_err_line1, /^#\d+\s+.+?\(.+?\)$/, :dart_stack),
+      rule(:dart_format_err_line1, /^./, :dart_format_err_line2),
+      rule(:dart_format_err_line2, /^.*?\^/, :dart_format_err_line3),
+      rule(:dart_format_err_line3, /^$/, :dart_stack),
+      rule(:dart_exc, /^NoSuchMethodError:/, :dart_method_err_line1),
+      rule(:dart_method_err_line1, /^Receiver:/, :dart_method_err_line2),
+      rule(:dart_method_err_line2, /^Tried calling:/, :dart_method_err_line3),
+      rule(:dart_method_err_line3, /^Found:/, :dart_stack),
+      rule(:dart_method_err_line3, /^#\d+\s+.+?\(.+?\)$/, :dart_stack),
       rule(:dart_stack, /^#\d+\s+.+?\(.+?\)$/, :dart_stack),
       rule(:dart_stack, /^<asynchronous suspension>$/, :dart_stack)
     ].freeze
@@ -168,7 +168,7 @@ module Fluent
       all: ALL_RULES
     }.freeze
 
-    DEFAULT_FIELDS = %w(message log).freeze
+    DEFAULT_FIELDS = %w[message log].freeze
   end
 
   # State machine that consumes individual log lines and detects
@@ -236,6 +236,7 @@ module Fluent
     def transition(line)
       @rules[@state].each do |r|
         next unless line =~ r.pattern
+
         @state = r.to_state
         return true
       end
@@ -280,14 +281,14 @@ module Fluent
         @exception_detector.reset
         detection_status = :no_trace
       else
-        force_flush if @max_bytes > 0 &&
+        force_flush if @max_bytes.positive? &&
                        @buffer_size + message.length > @max_bytes
         detection_status = @exception_detector.update(message)
       end
 
       update_buffer(detection_status, time_sec, record, message)
 
-      force_flush if @max_lines > 0 && @messages.length == @max_lines
+      force_flush if @max_lines.positive? && @messages.length == @max_lines
     end
 
     def flush
@@ -332,8 +333,7 @@ module Fluent
     end
 
     def update_buffer(detection_status, time_sec, record, message)
-      trigger_emit = detection_status == :no_trace ||
-                     detection_status == :end_trace
+      trigger_emit = %i[no_trace end_trace].include?(detection_status)
       if @messages.empty? && trigger_emit
         @emit.call(time_sec, record)
         return
@@ -361,16 +361,16 @@ module Fluent
         @first_timestamp = time_sec
         @buffer_start_time = Time.now
       end
-      unless message.nil?
-        message_with_line_break =
-          if @force_line_breaks && !@messages.empty? && !message.include?("\n")
-            "\n" + message
-          else
-            message
-          end
-        @messages << message_with_line_break
-        @buffer_size += message_with_line_break.length
-      end
+      return if message.nil?
+
+      message_with_line_break =
+        if @force_line_breaks && !@messages.empty? && !message.include?("\n")
+          "\n#{message}"
+        else
+          message
+        end
+      @messages << message_with_line_break
+      @buffer_size += message_with_line_break.length
     end
   end
 end
