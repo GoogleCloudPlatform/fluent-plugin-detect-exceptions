@@ -14,7 +14,6 @@
 
 require 'rubygems'
 require 'bundler'
-
 begin
   Bundler.setup(:default, :development)
 rescue Bundler::BundlerError => e
@@ -24,21 +23,20 @@ rescue Bundler::BundlerError => e
   # rubocop:enable Style/StderrPuts
   exit e.status_code
 end
-
 require 'test/unit'
 
 $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
 $LOAD_PATH.unshift(File.dirname(__FILE__))
 require 'fluent/test'
-
 unless ENV.key?('VERBOSE')
   nulllogger = Object.new
   nulllogger.instance_eval do |_|
-    def respond_to_missing?
+    def respond_to_missing?(_method, _include_private = false)
       true
     end
 
     def method_missing(_method, *_args)
+      # pass
     end
   end
   # global $log variable is used by fluentd
