@@ -36,7 +36,7 @@ unless ENV.key?('VERBOSE')
       true
     end
 
-    def method_missing(_method, *_args) # rubocop:disable Style/MethodMissing
+    def method_missing(_method, *_args)
     end
   end
   # global $log variable is used by fluentd
