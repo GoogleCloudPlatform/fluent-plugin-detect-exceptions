@@ -31,3 +31,7 @@ Metrics/MethodLength:
 # Offense count: 3
 Metrics/PerceivedComplexity:
   Max: 50
+
+# TODO: Re-enable this and fix frozen strings.
+Style/FrozenStringLiteralComment:
+  Enabled: false
