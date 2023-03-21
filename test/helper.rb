@@ -18,8 +18,10 @@ require 'bundler'
 begin
   Bundler.setup(:default, :development)
 rescue Bundler::BundlerError => e
+  # rubocop:disable Style/StderrPuts
   $stderr.puts e.message
   $stderr.puts 'Run `bundle install` to install missing gems'
+  # rubocop:enable Style/StderrPuts
   exit e.status_code
 end
 
