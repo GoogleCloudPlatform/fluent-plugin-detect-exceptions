@@ -22,9 +22,9 @@ class DetectExceptionsOutputTest < Test::Unit::TestCase
     Fluent::Test.setup
   end
 
-  CONFIG = <<END.freeze
-remove_tag_prefix prefix
-END
+  CONFIG = <<~END_CONFIG.freeze
+    remove_tag_prefix prefix
+  END_CONFIG
 
   DEFAULT_TAG = 'prefix.test.tag'.freeze
 
@@ -32,37 +32,37 @@ END
 
   ARBITRARY_TEXT = 'This line is not an exception.'.freeze
 
-  JAVA_EXC = <<END.freeze
-SomeException: foo
-  at bar
-Caused by: org.AnotherException
-  at bar2
-  at bar3
-END
+  JAVA_EXC = <<~END_JAVA.freeze
+    SomeException: foo
+      at bar
+    Caused by: org.AnotherException
+      at bar2
+      at bar3
+  END_JAVA
 
-  PHP_EXC = <<END.freeze
-exception 'Exception' with message 'Custom exception' in /home/joe/work/test-php/test.php:5
-Stack trace:
-#0 /home/joe/work/test-php/test.php(9): func1()
-#1 /home/joe/work/test-php/test.php(13): func2()
-#2 {main}
-END
+  PHP_EXC = <<~END_PHP.freeze
+    exception 'Exception' with message 'Custom exception' in /home/joe/work/test-php/test.php:5
+    Stack trace:
+    #0 /home/joe/work/test-php/test.php(9): func1()
+    #1 /home/joe/work/test-php/test.php(13): func2()
+    #2 {main}
+  END_PHP
 
-  PYTHON_EXC = <<END.freeze
-Traceback (most recent call last):
-  File "/base/data/home/runtimes/python27/python27_lib/versions/third_party/webapp2-2.5.2/webapp2.py", line 1535, in __call__
-    rv = self.handle_exception(request, response, e)
-Exception: ('spam', 'eggs')
-END
+  PYTHON_EXC = <<~END_PYTHON.freeze
+    Traceback (most recent call last):
+      File "/base/data/home/runtimes/python27/python27_lib/versions/third_party/webapp2-2.5.2/webapp2.py", line 1535, in __call__
+        rv = self.handle_exception(request, response, e)
+    Exception: ('spam', 'eggs')
+  END_PYTHON
 
-  RUBY_EXC = <<END.freeze
-examble.rb:18:in `thrower': An error has occurred. (RuntimeError)
-  from examble.rb:14:in `caller'
-  from examble.rb:10:in `helper'
-  from examble.rb:6:in `writer'
-  from examble.rb:2:in `runner'
-  from examble.rb:21:in `<main>'
-END
+  RUBY_EXC = <<~END_RUBY.freeze
+    examble.rb:18:in `thrower': An error has occurred. (RuntimeError)
+      from examble.rb:14:in `caller'
+      from examble.rb:10:in `helper'
+      from examble.rb:6:in `writer'
+      from examble.rb:2:in `runner'
+      from examble.rb:21:in `<main>'
+  END_RUBY
 
   def create_driver(conf = CONFIG, tag = DEFAULT_TAG)
     d = Fluent::Test::OutputTestDriver.new(Fluent::DetectExceptionsOutput, tag)
@@ -76,22 +76,22 @@ END
     log_entry
   end
 
-  def feed_lines_without_line_breaks(driver, t, *messages, stream: nil)
+  def feed_lines_without_line_breaks(driver, timestamp, *messages, stream: nil)
     count = 0
     messages.each do |m|
       m.each_line do |line|
         line.delete!("\n")
-        driver.emit(log_entry(line, count, stream), t + count)
+        driver.emit(log_entry(line, count, stream), timestamp + count)
         count += 1
       end
     end
   end
 
-  def feed_lines(driver, t, *messages, stream: nil)
+  def feed_lines(driver, timestamp, *messages, stream: nil)
     count = 0
     messages.each do |m|
       m.each_line do |line|
-        driver.emit(log_entry(line, count, stream), t + count)
+        driver.emit(log_entry(line, count, stream), timestamp + count)
         count += 1
       end
     end
@@ -104,11 +104,11 @@ END
     end
   end
 
-  def make_logs(t, *messages, stream: nil)
+  def make_logs(timestamp, *messages, stream: nil)
     count = 0
     logs = []
     messages.each do |m|
-      logs << [t + count, log_entry(m, count, stream)]
+      logs << [timestamp + count, log_entry(m, count, stream)]
       count += m.lines.count
     end
     logs
@@ -148,7 +148,7 @@ languages #{language})
       single_line_exception = exception.gsub("\n", '\\n')
 
       # There is a nested exception within the body, we should ignore those!
-      json_line_with_exception = {
+      json_with_exception = {
         'timestamp' => {
           'nanos' => 998_152_494,
           'seconds' => 1_496_420_064
@@ -156,8 +156,9 @@ languages #{language})
         'message' => single_line_exception,
         'thread' => 139_658_267_147_048,
         'severity' => 'ERROR'
-      }.to_json + "\n"
-      json_line_without_exception = {
+      }
+      json_line_with_exception = "#{json_with_exception.to_json}\n"
+      json_without_exception = {
         'timestamp' => {
           'nanos' => 5_990_266,
           'seconds' => 1_496_420_065
@@ -165,7 +166,8 @@ languages #{language})
         'message' => 'next line',
         'thread' => 139_658_267_147_048,
         'severity' => 'INFO'
-      }.to_json + "\n"
+      }
+      json_line_without_exception = "#{json_without_exception.to_json}\n"
 
       router_mock = flexmock('router')
 
@@ -245,7 +247,7 @@ multiline_flush_interval 1)
       feed_lines(d, t2, "  at x\n  at y\n")
       d.instance.before_shutdown
     end
-    assert_equal(make_logs(t1, JAVA_EXC + "  at x\n  at y\n"), d.events)
+    assert_equal(make_logs(t1, "#{JAVA_EXC}  at x\n  at y\n"), d.events)
   end
 
   def test_remove_tag_prefix_is_required
@@ -317,9 +319,9 @@ max_lines 2)
     # For the following Java stack trace, the two lines of the first exception
     # are buffered and combined. So are the first two lines of the second
     # exception. Then the rest is logged line-by-line.
-    expected = [PYTHON_EXC.lines[0..1].join] + PYTHON_EXC.lines[2..-1] + \
+    expected = [PYTHON_EXC.lines[0..1].join] + PYTHON_EXC.lines[2..] + \
                [JAVA_EXC.lines[0..1].join] + [JAVA_EXC.lines[2..3].join] + \
-               JAVA_EXC.lines[4..-1]
+               JAVA_EXC.lines[4..]
     assert_equal(make_logs(t, *expected), d.events)
   end
 
@@ -332,9 +334,9 @@ stream stream)
     d.run do
       feed_lines(d, t, JAVA_EXC.lines[0], stream: 'java')
       feed_lines(d, t, PYTHON_EXC.lines[0..1].join, stream: 'python')
-      feed_lines(d, t, JAVA_EXC.lines[1..-1].join, stream: 'java')
+      feed_lines(d, t, JAVA_EXC.lines[1..].join, stream: 'java')
       feed_lines(d, t, JAVA_EXC, stream: 'java')
-      feed_lines(d, t, PYTHON_EXC.lines[2..-1].join, stream: 'python')
+      feed_lines(d, t, PYTHON_EXC.lines[2..].join, stream: 'python')
       feed_lines(d, t, 'something else', stream: 'java')
     end
     # Expected: the Python and the Java exceptions are handled separately

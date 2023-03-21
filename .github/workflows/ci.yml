@@ -6,9 +6,8 @@ jobs:
       fail-fast: false
       matrix:
         rvm:
+          - 2.7
           - 2.6
-          - 2.5
-          - 2.4
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2

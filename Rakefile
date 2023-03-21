@@ -36,6 +36,7 @@ task :fix_perms do
   files.each do |file|
     mode = File.stat(file).mode & 0o777
     next unless mode & 0o444 != 0o444
+
     puts "Changing mode of #{file} from #{mode.to_s(8)} to "\
          "#{(mode | 0o444).to_s(8)}"
     chmod mode | 0o444, file
@@ -43,6 +44,6 @@ task :fix_perms do
 end
 
 desc 'Run unit tests and RuboCop to check for style violations'
-task all: [:test, :rubocop, :fix_perms]
+task all: %i[rubocop test fix_perms]
 
 task default: :all
