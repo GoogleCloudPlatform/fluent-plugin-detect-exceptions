@@ -41,6 +41,10 @@ module Fluent
 
     Fluent::Plugin.register_output('detect_exceptions', self)
 
+    def multi_workers_ready?
+      true
+    end
+
     def configure(conf)
       super
 
