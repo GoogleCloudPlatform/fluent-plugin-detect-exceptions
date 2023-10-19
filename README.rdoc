@@ -70,7 +70,7 @@ The plugin supports the following parameters:
                             forwarded. If not set, incomplete exceptions stacks
                             are not flushed.
 
-[force_line_breaks]  Force line breaks between each lines when comibining exception stacks.
+[force_line_breaks]  Force line breaks between each lines when combining exception stacks.
                      This is useful if your exception is formatted
                      as a single line. i.e., logs retrieved from the docker's
                      logging driver don't have any line break.
