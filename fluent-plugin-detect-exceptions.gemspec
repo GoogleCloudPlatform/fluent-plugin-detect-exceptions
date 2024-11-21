@@ -11,7 +11,7 @@ Gem::Specification.new do |gem|
   gem.homepage      = \
     'https://github.com/GoogleCloudPlatform/fluent-plugin-detect-exceptions'
   gem.license       = 'Apache-2.0'
-  gem.version       = '0.0.15'
+  gem.version       = '0.0.16'
   gem.authors       = ['Stackdriver Agents']
   gem.email         = ['stackdriver-agents@google.com']
   gem.required_ruby_version = Gem::Requirement.new('>= 2.6')
@@ -20,7 +20,7 @@ Gem::Specification.new do |gem|
   gem.test_files    = gem.files.grep(/^(test)/)
   gem.require_paths = ['lib']
 
-  gem.add_runtime_dependency 'fluentd', '>= 0.10'
+  gem.add_runtime_dependency 'fluentd', '>= 1.14.2'
 
   gem.add_development_dependency 'flexmock', '~> 2.0'
   gem.add_development_dependency 'rake', '~> 10.3'
